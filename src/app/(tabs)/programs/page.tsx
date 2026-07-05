@@ -3,32 +3,32 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Screen } from '@/components/Screen';
-import { ASMETRY_PROGRAMS, PROGRAM_SECTIONS } from '@/data/programs';
+import { ASMETRY_PROGRAMS, PROGRAM_SECTIONS, levelKey, sectionKey } from '@/data/programs';
+import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 
 export default function ProgramsPage() {
+  const t = useT();
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
 
   return (
     <Screen>
-      <div className="mb-5 text-[28px] font-bold tracking-[-0.4px] text-ink">Programs</div>
+      <div className="mb-5 text-[28px] font-bold tracking-[-0.4px] text-ink">{t('programs_title')}</div>
 
       <div className="relative mb-3 h-[190px] overflow-hidden rounded-[24px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         <Image src="/images/programs-features.png" alt="" fill className="object-cover object-top" />
         <div className="absolute inset-x-0 bottom-0 bg-black/35 px-3.5 pt-4 pb-2">
-          <span className="text-[11px] font-medium text-white">Fig. 1 — Feature Map</span>
+          <span className="text-[11px] font-medium text-white">{t('feature_map_caption')}</span>
         </div>
       </div>
-      <p className="mb-7 text-[14px] leading-[1.5] text-soft">
-        Each program is a complete 4-week protocol with a daily checklist. Start one and it appears on Home.
-      </p>
+      <p className="mb-7 text-[14px] leading-[1.5] text-soft">{t('programs_intro')}</p>
 
       {PROGRAM_SECTIONS.map((section) => {
         const items = ASMETRY_PROGRAMS.filter((p) => p.section === section);
         return (
           <div key={section} className="mb-7">
-            <div className="mb-2.5 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{section}</div>
+            <div className="mb-2.5 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t(sectionKey(section))}</div>
             {items.map((p) => {
               const isActive = started.some((s) => s.id === p.id);
               return (
@@ -41,7 +41,7 @@ export default function ProgramsPage() {
                     <div className="text-[18px] font-bold tracking-[-0.2px] text-ink">{p.name}</div>
                     <div className="mt-0.5 text-[13px] text-soft">{p.tagline}</div>
                     <div className="mt-1.5 text-[12px] font-medium text-soft">
-                      28 days · {p.mins} min · {p.level.charAt(0) + p.level.slice(1).toLowerCase()}
+                      {t('days_28')} · {p.mins} {t('min_unit')} · {t(levelKey(p.level))}
                     </div>
                   </div>
                   <button
@@ -53,7 +53,7 @@ export default function ProgramsPage() {
                       isActive ? 'bg-accent text-white' : 'bg-accent/10 text-accent'
                     }`}
                   >
-                    {isActive ? 'Active' : 'Start'}
+                    {isActive ? t('active') : t('start')}
                   </button>
                 </Link>
               );
@@ -62,9 +62,7 @@ export default function ProgramsPage() {
         );
       })}
 
-      <p className="mt-1.5 text-center text-[12px] leading-[1.5] text-soft">
-        Programs are educational and not medical advice. Consult a professional before starting.
-      </p>
+      <p className="mt-1.5 text-center text-[12px] leading-[1.5] text-soft">{t('programs_disclaimer')}</p>
     </Screen>
   );
 }

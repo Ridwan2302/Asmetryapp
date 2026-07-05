@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useT } from '@/lib/i18n';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -21,6 +22,7 @@ function isIos(): boolean {
 }
 
 export function InstallPrompt() {
+  const t = useT();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   // `visible`/`ios` start false so the server render and the pre-hydration client render match
   // (avoiding a hydration mismatch); this effect is what's allowed to differ post-hydration
@@ -78,10 +80,8 @@ export function InstallPrompt() {
             <Image src="/icons/icon-192.png" alt="Asmetry" fill className="object-cover" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[15px] font-semibold text-ink">Get the Asmetry app</div>
-            <div className="truncate text-[13px] text-soft">
-              {ios ? 'Tap Share, then "Add to Home Screen"' : 'Install for the full-screen, app-like experience'}
-            </div>
+            <div className="text-[15px] font-semibold text-ink">{t('install_title')}</div>
+            <div className="truncate text-[13px] text-soft">{ios ? t('install_ios_hint') : t('install_android_hint')}</div>
           </div>
           {ios ? (
             <span className="flex shrink-0 items-center justify-center rounded-full bg-fill p-2">
@@ -93,10 +93,10 @@ export function InstallPrompt() {
               disabled={installing}
               className="press shrink-0 rounded-full bg-accent px-4 py-[9px] text-[14px] font-semibold text-white disabled:opacity-50"
             >
-              {installing ? '…' : 'Install'}
+              {installing ? '…' : t('install_button')}
             </button>
           )}
-          <button onClick={dismiss} className="press shrink-0 text-[20px] leading-none text-soft" aria-label="Dismiss">
+          <button onClick={dismiss} className="press shrink-0 text-[20px] leading-none text-soft" aria-label={t('dismiss')}>
             ×
           </button>
         </div>

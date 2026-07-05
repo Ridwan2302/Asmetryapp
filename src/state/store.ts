@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { monthYear } from '../lib/calc';
-import { DEFAULT_PROFILE, DEFAULT_SETTINGS, Profile, ScanEntry, Settings, StartedProgram } from './types';
+import { DEFAULT_PROFILE, DEFAULT_SETTINGS, Language, Profile, ScanEntry, Settings, StartedProgram } from './types';
 
 interface AppState {
   hasHydrated: boolean;
@@ -11,8 +11,10 @@ interface AppState {
   started: StartedProgram[];
   scans: ScanEntry[];
   settings: Settings;
+  language: Language;
 
   setHasHydrated: (v: boolean) => void;
+  setLanguage: (lang: Language) => void;
   completeOnboarding: (profile: Profile) => void;
   updateProfile: (profile: Profile) => void;
   setProfilePic: (uri: string | null) => void;
@@ -38,6 +40,7 @@ const initialState = {
   started: [] as StartedProgram[],
   scans: [] as ScanEntry[],
   settings: DEFAULT_SETTINGS,
+  language: 'en' as Language,
 };
 
 const noopStorage = {
@@ -52,6 +55,7 @@ export const useAppStore = create<AppState>()(
       ...initialState,
 
       setHasHydrated: (v) => set({ hasHydrated: v }),
+      setLanguage: (lang) => set({ language: lang }),
 
       completeOnboarding: (profile) =>
         set({ onboarded: true, profile: { ...profile, since: profile.since || monthYear() } }),
@@ -123,6 +127,7 @@ export const useAppStore = create<AppState>()(
         started: state.started,
         scans: state.scans,
         settings: state.settings,
+        language: state.language,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

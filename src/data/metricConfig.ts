@@ -1,19 +1,25 @@
+import type { Translator, TranslationKey } from '../lib/i18n';
 import type { ScanMetrics } from '../state/types';
 
 export interface MetricConfig {
   key: keyof ScanMetrics;
-  label: string;
+  labelKey: TranslationKey;
   programId: string;
-  notes: [string, string, string]; // [strong, mid, weak]
+  noteKeys: [TranslationKey, TranslationKey, TranslationKey]; // [strong, mid, weak]
 }
 
 /** Ported verbatim from the design reference's METRIC table (metric label, mapped program, banded notes). */
 export const METRIC_CONFIG: MetricConfig[] = [
-  { key: 'sym', label: 'FACIAL SYMMETRY', programId: 'face-structure', notes: ['Left and right halves align closely.', 'Minor deviation along the vertical axis.', 'Noticeable imbalance — trainable.'] },
-  { key: 'jaw', label: 'JAWLINE DEFINITION', programId: 'jawmaxing', notes: ['Sharp, well-defined gonial angle.', 'Moderate definition, room to sharpen.', 'Soft lower third — masseter focus.'] },
-  { key: 'canthal', label: 'CANTHAL TILT', programId: 'hunter-eyes', notes: ['Positive upward tilt.', 'Near-neutral tilt.', 'Slightly negative — orbital work advised.'] },
-  { key: 'cheek', label: 'CHEEKBONE PROMINENCE', programId: 'face-structure', notes: ['High, prominent zygomatic arch.', 'Balanced midface volume.', 'Flat midface — lift protocol.'] },
-  { key: 'eye', label: 'UNDER-EYE CLARITY', programId: 'hunter-eyes', notes: ['Bright, low fluid retention.', 'Mild puffiness detected.', 'Visible under-eye fatigue.'] },
-  { key: 'prop', label: 'FACIAL PROPORTION', programId: 'skinmaxing', notes: ['Thirds are well balanced.', 'Slight elongation of lower third.', 'Proportion imbalance in vertical thirds.'] },
-  { key: 'skin', label: 'SKIN CLARITY', programId: 'skin-clarity', notes: ['Firm, even, clear tone.', 'Adequate tone, maintain.', 'Congestion / dullness detected.'] },
+  { key: 'sym', labelKey: 'metric_sym_label', programId: 'face-structure', noteKeys: ['metric_sym_note_0', 'metric_sym_note_1', 'metric_sym_note_2'] },
+  { key: 'jaw', labelKey: 'metric_jaw_label', programId: 'jawmaxing', noteKeys: ['metric_jaw_note_0', 'metric_jaw_note_1', 'metric_jaw_note_2'] },
+  { key: 'canthal', labelKey: 'metric_canthal_label', programId: 'hunter-eyes', noteKeys: ['metric_canthal_note_0', 'metric_canthal_note_1', 'metric_canthal_note_2'] },
+  { key: 'cheek', labelKey: 'metric_cheek_label', programId: 'face-structure', noteKeys: ['metric_cheek_note_0', 'metric_cheek_note_1', 'metric_cheek_note_2'] },
+  { key: 'eye', labelKey: 'metric_eye_label', programId: 'hunter-eyes', noteKeys: ['metric_eye_note_0', 'metric_eye_note_1', 'metric_eye_note_2'] },
+  { key: 'prop', labelKey: 'metric_prop_label', programId: 'skinmaxing', noteKeys: ['metric_prop_note_0', 'metric_prop_note_1', 'metric_prop_note_2'] },
+  { key: 'skin', labelKey: 'metric_skin_label', programId: 'skin-clarity', noteKeys: ['metric_skin_note_0', 'metric_skin_note_1', 'metric_skin_note_2'] },
 ];
+
+export function metricNoteFor(m: MetricConfig, value: number, t: Translator): string {
+  const idx = value >= 80 ? 0 : value >= 65 ? 1 : 2;
+  return t(m.noteKeys[idx]);
+}

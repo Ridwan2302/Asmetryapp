@@ -1,6 +1,7 @@
 'use client';
 
 import { getProgram } from '@/data/programs';
+import { useT } from '@/lib/i18n';
 import { tapHaptic } from '@/lib/haptics';
 import { requestNotificationPermission } from '@/lib/notifications';
 import { useAppStore } from '@/state/store';
@@ -9,6 +10,7 @@ import { DemoButton } from './DemoButton';
 import { ProgressBar } from './ProgressBar';
 
 export function ActiveProgramCard({ started }: { started: StartedProgram }) {
+  const t = useT();
   const program = getProgram(started.id);
   const toggleExpanded = useAppStore((s) => s.toggleExpanded);
   const toggleTask = useAppStore((s) => s.toggleTask);
@@ -54,7 +56,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
         <div className="flex-1">
           <div className="text-[19px] font-bold tracking-[-0.2px] text-ink">{program.name}</div>
           <div className="mt-0.5 text-[13px] text-soft">
-            Week {week} · {wk.focus}
+            {t('week_label')} {week} · {wk.focus}
           </div>
         </div>
         <div className="flex items-center gap-2 pl-2.5">
@@ -67,11 +69,11 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
       </button>
 
       <div className="mt-3 flex items-center gap-2">
-        <span className="w-14 text-[11px] font-medium text-soft">Overall</span>
+        <span className="w-14 text-[11px] font-medium text-soft">{t('overall')}</span>
         <ProgressBar pct={overallPct} className="flex-1" />
       </div>
       <div className="mt-2 flex items-center gap-2">
-        <span className="w-14 text-[11px] font-medium text-soft">Today</span>
+        <span className="w-14 text-[11px] font-medium text-soft">{t('today')}</span>
         <ProgressBar pct={todayPct} fillClassName={allDone ? 'bg-success' : 'bg-accent'} className="flex-1" />
         <span className={`w-10 text-right text-[12px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
           {doneCount}/{tasks.length}
@@ -80,7 +82,9 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
 
       {started.expanded && (
         <div className="mt-4">
-          <div className="mb-1.5 text-[12px] font-semibold tracking-[0.3px] text-soft uppercase">Today · Day {dayNum}</div>
+          <div className="mb-1.5 text-[12px] font-semibold tracking-[0.3px] text-soft uppercase">
+            {t('today_day')} {dayNum}
+          </div>
           {tasks.map((text, i) => {
             const checked = !!started.checks[i];
             return (
@@ -102,7 +106,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
 
           <div className="mt-3.5 flex items-center justify-between border-t border-border pt-3.5">
             <div className="flex items-center gap-2">
-              <span className="text-[13px] font-medium text-soft">Remind</span>
+              <span className="text-[13px] font-medium text-soft">{t('remind')}</span>
               <input
                 type="time"
                 value={started.reminder}
@@ -115,11 +119,11 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
               disabled={!allDone}
               className={`press rounded-full px-4 py-[9px] text-[13px] font-semibold ${allDone ? 'bg-accent text-white' : 'bg-fill text-soft'}`}
             >
-              {started.done >= 28 ? 'Complete' : allDone ? 'Log Day ✓' : 'Finish Tasks'}
+              {started.done >= 28 ? t('complete') : allDone ? t('log_day') : t('finish_tasks')}
             </button>
           </div>
           <button onClick={handleStop} className="mt-3 block w-full py-1.5 text-center text-[13px] font-medium text-negative">
-            Stop Program
+            {t('stop_program')}
           </button>
         </div>
       )}

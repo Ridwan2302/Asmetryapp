@@ -1,4 +1,5 @@
 export type Sex = 'M' | 'F';
+export type Language = 'en' | 'fr';
 
 export interface Profile {
   name: string;

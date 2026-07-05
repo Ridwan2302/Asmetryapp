@@ -4,34 +4,27 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
+import { LanguageToggle } from '@/components/LanguageToggle';
 import { Pill } from '@/components/Pill';
 import { bmiAdvice, bmiCategory, bmiOf } from '@/lib/calc';
+import { Translator, useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 import { Sex } from '@/state/types';
 
-const introData = [
-  {
-    step: 'Step 1 · Analyze',
-    title: 'Scan your face',
-    body: 'A quick capture measures symmetry, proportion and seven structural traits.',
-    img: '/images/onboarding/intro-scan.png',
-  },
-  {
-    step: 'Step 2 · Protocol',
-    title: 'Follow the program',
-    body: 'Get 4-week daily protocols built around your weakest metrics — mewing, jawmaxing, hunter eyes and more.',
-    img: '/images/onboarding/intro-jaw.png',
-  },
-  {
-    step: 'Step 3 · Track',
-    title: 'Watch it change',
-    body: 'Check off daily tasks, get reminders, and re-scan to see the structure improve.',
-    img: '/images/onboarding/welcome-hero.png',
-  },
+const introData: {
+  stepKey: 'intro1_step' | 'intro2_step' | 'intro3_step';
+  titleKey: 'intro1_title' | 'intro2_title' | 'intro3_title';
+  bodyKey: 'intro1_body' | 'intro2_body' | 'intro3_body';
+  img: string;
+}[] = [
+  { stepKey: 'intro1_step', titleKey: 'intro1_title', bodyKey: 'intro1_body', img: '/images/onboarding/intro-scan.png' },
+  { stepKey: 'intro2_step', titleKey: 'intro2_title', bodyKey: 'intro2_body', img: '/images/onboarding/intro-jaw.png' },
+  { stepKey: 'intro3_step', titleKey: 'intro3_title', bodyKey: 'intro3_body', img: '/images/onboarding/welcome-hero.png' },
 ];
 
 export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
   const router = useRouter();
+  const t = useT();
   const profile = useAppStore((s) => s.profile);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
   const updateProfile = useAppStore((s) => s.updateProfile);
@@ -59,7 +52,7 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
   }
   function finish() {
     const finalProfile = {
-      name: (name || 'You').trim(),
+      name: (name || t('profile_name_fallback')).trim(),
       sex,
       age: parseInt(age, 10) || 24,
       height: parseInt(height, 10) || 178,
@@ -77,8 +70,8 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
 
   return (
     <div className="min-h-dvh bg-paper">
-      {step === 0 && <Welcome onNext={next} />}
-      {step >= 1 && step <= 3 && <Intro idx={step - 1} onNext={next} onSkip={skipIntro} />}
+      {step === 0 && <Welcome onNext={next} t={t} />}
+      {step >= 1 && step <= 3 && <Intro idx={step - 1} onNext={next} onSkip={skipIntro} t={t} />}
       {step === 4 && (
         <StatsForm
           name={name}
@@ -93,6 +86,7 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
           setWeight={setWeight}
           ready={statsReady}
           onNext={next}
+          t={t}
         />
       )}
       {step >= 5 && (
@@ -102,13 +96,14 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
           height={parseInt(height, 10) || profile.height}
           weight={parseInt(weight, 10) || profile.weight}
           onFinish={finish}
+          t={t}
         />
       )}
     </div>
   );
 }
 
-function Welcome({ onNext }: { onNext: () => void }) {
+function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
   return (
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+28px)] pb-10">
       <div className="flex items-center gap-3">
@@ -119,7 +114,7 @@ function Welcome({ onNext }: { onNext: () => void }) {
           <div className="text-[19px] font-bold tracking-[-0.3px] text-ink">
             asmetry<span className="font-medium text-soft">.io</span>
           </div>
-          <div className="text-[13px] text-soft">Facial analysis · Looksmaxing OS</div>
+          <div className="text-[13px] text-soft">{t('brand_tagline')}</div>
         </div>
       </div>
 
@@ -130,32 +125,34 @@ function Welcome({ onNext }: { onNext: () => void }) {
       </div>
 
       <div>
-        <h1 className="mb-6 text-[32px] leading-[1.15] font-bold tracking-[-0.5px] text-ink">
-          Measure your face. Follow the protocol. Watch the structure change.
-        </h1>
-        <PrimaryButton label="Begin" onClick={onNext} />
-        <div className="mt-4 text-center text-[12px] text-soft">Takes 90 seconds · Data stays on device</div>
+        <h1 className="mb-6 text-[32px] leading-[1.15] font-bold tracking-[-0.5px] text-ink">{t('welcome_headline')}</h1>
+        <div className="mb-4">
+          <div className="mb-1.5 text-[13px] font-medium text-soft">{t('language_label')}</div>
+          <LanguageToggle />
+        </div>
+        <PrimaryButton label={t('welcome_begin')} onClick={onNext} />
+        <div className="mt-4 text-center text-[12px] text-soft">{t('welcome_subtitle')}</div>
       </div>
     </div>
   );
 }
 
-function Intro({ idx, onNext, onSkip }: { idx: number; onNext: () => void; onSkip: () => void }) {
+function Intro({ idx, onNext, onSkip, t }: { idx: number; onNext: () => void; onSkip: () => void; t: Translator }) {
   const cur = introData[idx];
   return (
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <Pill label={cur.step} tone="accent" />
+          <Pill label={t(cur.stepKey)} tone="accent" />
           <button onClick={onSkip} className="text-[14px] font-medium text-soft">
-            Skip Intro
+            {t('skip_intro')}
           </button>
         </div>
         <div className="relative mb-6 h-[320px] overflow-hidden rounded-[28px] shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
           <Image src={cur.img} alt="" fill className="object-cover" />
         </div>
-        <h2 className="text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{cur.title}</h2>
-        <p className="mt-2 text-[16px] leading-[1.45] text-soft">{cur.body}</p>
+        <h2 className="text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{t(cur.titleKey)}</h2>
+        <p className="mt-2 text-[16px] leading-[1.45] text-soft">{t(cur.bodyKey)}</p>
       </div>
       <div>
         <div className="mb-5 flex justify-center gap-[6px]">
@@ -167,7 +164,7 @@ function Intro({ idx, onNext, onSkip }: { idx: number; onNext: () => void; onSki
             />
           ))}
         </div>
-        <PrimaryButton label={idx === 2 ? 'Continue' : 'Next'} onClick={onNext} />
+        <PrimaryButton label={idx === 2 ? t('continue') : t('next')} onClick={onNext} />
       </div>
     </div>
   );
@@ -222,64 +219,68 @@ function StatsForm(props: {
   setWeight: (v: string) => void;
   ready: boolean;
   onNext: () => void;
+  t: Translator;
 }) {
-  const { name, setName, sex, setSex, age, setAge, height, setHeight, weight, setWeight, ready, onNext } = props;
+  const { name, setName, sex, setSex, age, setAge, height, setHeight, weight, setWeight, ready, onNext, t } = props;
   return (
     <div className="min-h-dvh px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
-      <Pill label="Step 4 · Your Baseline" tone="accent" className="mb-4" />
-      <h2 className="mb-6 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">Tell us about you</h2>
+      <Pill label={t('stats_step')} tone="accent" className="mb-4" />
+      <h2 className="mb-6 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{t('stats_title')}</h2>
 
       <div className="space-y-5">
-        <FormField label="Name" value={name} onChange={setName} placeholder="Your name" />
+        <FormField label={t('field_name')} value={name} onChange={setName} placeholder={t('field_name_placeholder')} />
 
         <div>
-          <label className="mb-1.5 block text-[13px] font-medium text-soft">Sex (for anatomy model)</label>
+          <label className="mb-1.5 block text-[13px] font-medium text-soft">{t('field_sex')}</label>
           <SegmentedControl
             value={sex}
             onChange={setSex}
             options={[
-              { value: 'M', label: 'Male' },
-              { value: 'F', label: 'Female' },
+              { value: 'M', label: t('sex_male') },
+              { value: 'F', label: t('sex_female') },
             ]}
           />
         </div>
 
         <div className="flex gap-3">
-          <FormField label="Age" value={age} onChange={setAge} placeholder="24" inputMode="numeric" />
-          <FormField label="Height, cm" value={height} onChange={setHeight} placeholder="178" inputMode="numeric" />
-          <FormField label="Weight, kg" value={weight} onChange={setWeight} placeholder="72" inputMode="numeric" />
+          <FormField label={t('field_age')} value={age} onChange={setAge} placeholder="24" inputMode="numeric" />
+          <FormField label={t('field_height')} value={height} onChange={setHeight} placeholder="178" inputMode="numeric" />
+          <FormField label={t('field_weight')} value={weight} onChange={setWeight} placeholder="72" inputMode="numeric" />
         </div>
       </div>
 
-      <div className="mt-10">{ready ? <PrimaryButton label="Calculate" onClick={onNext} /> : <OutlineButton label="Calculate" onClick={onNext} />}</div>
+      <div className="mt-10">
+        {ready ? <PrimaryButton label={t('calculate')} onClick={onNext} /> : <OutlineButton label={t('calculate')} onClick={onNext} />}
+      </div>
     </div>
   );
 }
 
-function ResultStep({ bmi, age, height, weight, onFinish }: { bmi: number; age: number; height: number; weight: number; onFinish: () => void }) {
+function ResultStep({ bmi, age, height, weight, onFinish, t }: { bmi: number; age: number; height: number; weight: number; onFinish: () => void; t: Translator }) {
+  const healthy = bmi > 0 && bmi >= 18.5 && bmi < 25;
   return (
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
       <div>
-        <Pill label="Step 5 · Your Model" tone="accent" className="mb-4" />
-        <h2 className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">Baseline captured</h2>
+        <Pill label={t('result_step')} tone="accent" className="mb-4" />
+        <h2 className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{t('baseline_captured')}</h2>
         <div className="flex items-center gap-4 rounded-[24px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
           <div className="relative h-[190px] w-[120px] shrink-0 overflow-hidden rounded-[16px]">
             <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
           </div>
           <div className="flex-1">
-            <div className="text-[13px] font-medium text-soft">Body Mass Index</div>
+            <div className="text-[13px] font-medium text-soft">{t('bmi_label')}</div>
             <div className="mt-1 text-[48px] leading-[0.9] font-bold text-ink">{bmi ? bmi.toFixed(1) : '—'}</div>
-            <Pill label={bmiCategory(bmi)} tone={bmiCategory(bmi) === 'HEALTHY RANGE' ? 'success' : 'ink'} className="mt-2" />
+            <Pill label={bmiCategory(bmi, t)} tone={healthy ? 'success' : 'ink'} className="mt-2" />
             <div className="mt-3 space-y-1 text-[13px] text-soft">
-              <StatRow label="Age" value={`${age} yrs`} />
-              <StatRow label="Height" value={`${height} cm`} />
-              <StatRow label="Weight" value={`${weight} kg`} />
+              <StatRow label={t('stat_age')} value={`${age} ${t('yrs')}`} />
+              <StatRow label={t('stat_height')} value={`${height} cm`} />
+              <StatRow label={t('stat_weight')} value={`${weight} kg`} />
             </div>
           </div>
         </div>
-        <p className="mt-5 text-[16px] leading-[1.45] text-soft">{bmiAdvice(bmi)}</p>
+        <p className="mt-5 text-[16px] leading-[1.45] text-soft">{bmiAdvice(bmi, t)}</p>
       </div>
-      <PrimaryButton label="Enter Asmetry" onClick={onFinish} />
+      <PrimaryButton label={t('enter_asmetry')} onClick={onFinish} />
     </div>
   );
 }

@@ -154,3 +154,24 @@ export function getProgram(id: string): Program | undefined {
 }
 
 export const PROGRAM_SECTIONS: ProgramSection[] = ['STRUCTURE', 'BODY', 'SKIN & GROOMING', 'SYSTEMS'];
+
+const SECTION_KEYS: Record<ProgramSection, 'section_structure' | 'section_body' | 'section_skin' | 'section_systems'> = {
+  STRUCTURE: 'section_structure',
+  BODY: 'section_body',
+  'SKIN & GROOMING': 'section_skin',
+  SYSTEMS: 'section_systems',
+};
+
+const LEVEL_KEYS: Record<ProgramLevel, 'level_core' | 'level_intermediate' | 'level_advanced'> = {
+  CORE: 'level_core',
+  INTERMEDIATE: 'level_intermediate',
+  ADVANCED: 'level_advanced',
+};
+
+export function sectionKey(section: ProgramSection) {
+  return SECTION_KEYS[section];
+}
+
+export function levelKey(level: ProgramLevel) {
+  return LEVEL_KEYS[level];
+}

@@ -6,13 +6,14 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AnatomyPlate } from '@/components/AnatomyPlate';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
-import { DemoButton } from '@/components/DemoButton';
 import { Screen } from '@/components/Screen';
-import { getProgram } from '@/data/programs';
+import { getProgram, levelKey, sectionKey } from '@/data/programs';
+import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 
 export function ProgramDetail({ id }: { id: string }) {
   const router = useRouter();
+  const t = useT();
   const program = getProgram(id);
   const [openWeek, setOpenWeek] = useState(1);
   const started = useAppStore((s) => s.started);
@@ -35,9 +36,9 @@ export function ProgramDetail({ id }: { id: string }) {
         <svg width={10} height={16} viewBox="0 0 10 16" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
           <path d="M8 2 2 8l6 6" />
         </svg>
-        Programs
+        {t('programs_back')}
       </button>
-      <div className="text-[13px] font-semibold text-soft">{program.section}</div>
+      <div className="text-[13px] font-semibold text-soft">{t(sectionKey(program.section))}</div>
       <div className="mt-1 text-[32px] leading-[1.05] font-bold tracking-[-0.4px] text-ink">{program.name}</div>
       <div className="mt-1 mb-5 text-[16px] text-soft">{program.tagline}</div>
 
@@ -50,26 +51,30 @@ export function ProgramDetail({ id }: { id: string }) {
           </div>
         )}
         <div className="absolute bottom-3 left-3.5 rounded-full bg-white/85 px-2.5 py-1 backdrop-blur">
-          <span className="text-[11px] font-semibold text-ink">Target · {program.anatomy}</span>
+          <span className="text-[11px] font-semibold text-ink">
+            {t('target_prefix')} · {program.anatomy}
+          </span>
         </div>
       </div>
 
       <div className="mb-6 flex gap-2.5">
-        <StatTile value="28" label="Days" />
-        <StatTile value={String(program.mins)} label="Min / day" />
-        <StatTile value={program.level.charAt(0) + program.level.slice(1).toLowerCase()} label="Level" small />
+        <StatTile value="28" label={t('stat_days')} />
+        <StatTile value={String(program.mins)} label={t('stat_min_day')} />
+        <StatTile value={t(levelKey(program.level))} label={t('stat_level')} small />
       </div>
 
       <p className="mb-6 text-[16px] leading-[1.45] text-soft">{program.overview}</p>
 
-      <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">The 4-week protocol</div>
+      <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('four_week_protocol')}</div>
       {program.weeks.map((w) => {
         const open = openWeek === w.n;
         return (
           <div key={w.n} className="mb-2.5 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
             <button className="press flex w-full items-center justify-between p-4 text-left" onClick={() => setOpenWeek(open ? 0 : w.n)}>
               <div>
-                <div className="text-[12px] font-semibold text-soft">Week {w.n}</div>
+                <div className="text-[12px] font-semibold text-soft">
+                  {t('week_label')} {w.n}
+                </div>
                 <div className="mt-0.5 text-[18px] font-bold text-ink">{w.focus}</div>
               </div>
               <ChevronDown open={open} />
@@ -80,7 +85,6 @@ export function ProgramDetail({ id }: { id: string }) {
                   <div key={i} className="flex items-center gap-3 border-t border-border py-2.5">
                     <span className="mt-[1px] h-[5px] w-[5px] shrink-0 rounded-full bg-accent" />
                     <span className="flex-1 text-[16px] leading-[1.35] font-medium text-ink">{task}</span>
-                    <DemoButton task={task} />
                   </div>
                 ))}
               </div>
@@ -91,14 +95,14 @@ export function ProgramDetail({ id }: { id: string }) {
 
       <div className="mt-6">
         {isActive ? (
-          <OutlineButton label="Stop Program" onClick={() => toggleProgram(program.id)} />
+          <OutlineButton label={t('stop_program')} onClick={() => toggleProgram(program.id)} />
         ) : (
-          <PrimaryButton label="Start Program" onClick={() => toggleProgram(program.id)} />
+          <PrimaryButton label={t('start_program')} onClick={() => toggleProgram(program.id)} />
         )}
       </div>
       {isActive && (
         <Link href="/home" className="mt-3 block text-center text-[14px] font-semibold text-accent">
-          Go to today&apos;s checklist →
+          {t('go_to_checklist')}
         </Link>
       )}
     </Screen>

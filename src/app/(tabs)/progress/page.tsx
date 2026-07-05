@@ -3,18 +3,20 @@
 import Link from 'next/link';
 import { Screen } from '@/components/Screen';
 import { deltaColorClass, signedDelta } from '@/lib/calc';
+import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 
 export default function ProgressPage() {
+  const t = useT();
   const scans = useAppStore((s) => s.scans);
 
   if (scans.length === 0) {
     return (
       <Screen>
-        <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">Progress</div>
+        <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">{t('progress_title')}</div>
         <Link href="/scan" className="press block rounded-[20px] bg-fill p-8 text-center">
-          <div className="text-[17px] font-semibold text-ink">No scans yet</div>
-          <div className="mt-1 text-[13px] font-medium text-accent">Run your first analysis →</div>
+          <div className="text-[17px] font-semibold text-ink">{t('no_scans_yet')}</div>
+          <div className="mt-1 text-[13px] font-medium text-accent">{t('run_first_analysis')}</div>
         </Link>
       </Screen>
     );
@@ -34,23 +36,25 @@ export default function ProgressPage() {
 
   return (
     <Screen>
-      <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">Progress</div>
+      <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">{t('progress_title')}</div>
 
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <div className="text-[13px] font-medium text-soft">Current score</div>
+          <div className="text-[13px] font-medium text-soft">{t('current_score')}</div>
           <div className="mt-1 text-[56px] leading-[0.85] font-bold text-ink">{latest.overall}</div>
         </div>
         <div className="text-right">
-          <div className="text-[12px] font-medium text-soft">vs last scan</div>
+          <div className="text-[12px] font-medium text-soft">{t('vs_last_scan')}</div>
           <div className={`text-[26px] leading-[1] font-bold ${deltaColorClass(progDelta)}`}>{signedDelta(progDelta)}</div>
         </div>
       </div>
 
       <div className="mb-7 rounded-[24px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         <div className="mb-4 flex items-baseline justify-between">
-          <span className="text-[13px] font-semibold text-soft">Harmony Index · Trend</span>
-          <span className={`text-[13px] font-bold ${deltaColorClass(trendDeltaNum)}`}>{signedDelta(trendDeltaNum)} since baseline</span>
+          <span className="text-[13px] font-semibold text-soft">{t('harmony_trend')}</span>
+          <span className={`text-[13px] font-bold ${deltaColorClass(trendDeltaNum)}`}>
+            {signedDelta(trendDeltaNum)} {t('since_baseline')}
+          </span>
         </div>
         <div className="flex h-[130px] items-end gap-2.5">
           {recent.map((s, i) => (
@@ -66,11 +70,11 @@ export default function ProgressPage() {
         </div>
       </div>
 
-      <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">Every Scan</div>
+      <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('every_scan')}</div>
       {scanArchive.map((s, i) => {
         const older = scanArchive[i + 1];
         const delta = older ? s.overall - older.overall : 0;
-        const note = !older ? 'Baseline' : delta > 0 ? 'Improved' : delta < 0 ? 'Dipped' : 'Held';
+        const note = !older ? t('baseline_note') : delta > 0 ? t('improved') : delta < 0 ? t('dipped') : t('held');
         return (
           <div key={s.id} className="mb-2.5 flex items-center gap-3.5 rounded-2xl bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
             <div className="h-16 w-[52px] shrink-0 overflow-hidden rounded-[12px] bg-placeholder">
@@ -87,7 +91,7 @@ export default function ProgressPage() {
             </div>
             <div className="text-right">
               <div className="text-[22px] leading-[1] font-bold text-ink">{s.overall}</div>
-              <div className={`text-[12px] font-semibold ${older ? deltaColorClass(delta) : 'text-soft'}`}>{older ? signedDelta(delta) : 'Base'}</div>
+              <div className={`text-[12px] font-semibold ${older ? deltaColorClass(delta) : 'text-soft'}`}>{older ? signedDelta(delta) : t('base')}</div>
             </div>
           </div>
         );

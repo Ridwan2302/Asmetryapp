@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { TranslationKey, useT } from '@/lib/i18n';
 
-const TABS: { href: string; label: string; icon: (active: boolean, color: string) => React.ReactNode }[] = [
+const TABS: { href: string; labelKey: TranslationKey; icon: (active: boolean, color: string) => React.ReactNode }[] = [
   {
     href: '/home',
-    label: 'Home',
+    labelKey: 'tab_home',
     icon: (active, c) =>
       active ? (
         <svg width={26} height={26} viewBox="0 0 24 24" fill={c}>
@@ -21,7 +22,7 @@ const TABS: { href: string; label: string; icon: (active: boolean, color: string
   },
   {
     href: '/scan',
-    label: 'Scan',
+    labelKey: 'tab_scan',
     icon: (active, c) => (
       <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8" />
@@ -34,7 +35,7 @@ const TABS: { href: string; label: string; icon: (active: boolean, color: string
   },
   {
     href: '/programs',
-    label: 'Programs',
+    labelKey: 'tab_programs',
     icon: (active, c) =>
       active ? (
         <svg width={26} height={26} viewBox="0 0 24 24" fill={c}>
@@ -52,7 +53,7 @@ const TABS: { href: string; label: string; icon: (active: boolean, color: string
   },
   {
     href: '/progress',
-    label: 'Progress',
+    labelKey: 'tab_progress',
     icon: (active, c) => (
       <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 20V4" />
@@ -63,7 +64,7 @@ const TABS: { href: string; label: string; icon: (active: boolean, color: string
   },
   {
     href: '/profile',
-    label: 'Profile',
+    labelKey: 'tab_profile',
     icon: (active, c) =>
       active ? (
         <svg width={26} height={26} viewBox="0 0 24 24" fill={c}>
@@ -81,6 +82,7 @@ const TABS: { href: string; label: string; icon: (active: boolean, color: string
 
 export function TabBar() {
   const pathname = usePathname();
+  const t = useT();
 
   return (
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[480px] -translate-x-1/2">
@@ -95,7 +97,7 @@ export function TabBar() {
             <Link key={tab.href} href={tab.href} className="press flex flex-1 flex-col items-center gap-0.5 py-1">
               {tab.icon(active, color)}
               <span className="text-[10px] font-medium" style={{ color }}>
-                {tab.label}
+                {t(tab.labelKey)}
               </span>
             </Link>
           );

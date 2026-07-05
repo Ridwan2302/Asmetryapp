@@ -4,13 +4,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
-import { METRIC_CONFIG } from '@/data/metricConfig';
+import { METRIC_CONFIG, metricNoteFor } from '@/data/metricConfig';
 import { getProgram } from '@/data/programs';
-import { band, dateStr, gradeOf, noteFor, summaryFor } from '@/lib/calc';
+import { band, dateStr, gradeOf, summaryFor } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
+import { Translator, useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 
-const STAGES = ['Detecting landmarks', 'Mapping symmetry axis', 'Measuring proportions', 'Scoring features', 'Compiling protocol'];
+type StageKey = 'stage_landmarks' | 'stage_symmetry' | 'stage_proportions' | 'stage_scoring' | 'stage_compiling';
+const STAGE_KEYS: StageKey[] = ['stage_landmarks', 'stage_symmetry', 'stage_proportions', 'stage_scoring', 'stage_compiling'];
 
 /** The real analysis usually finishes in well under a second — that reads as fake/broken, so we
  * hold the scanning UI open for at least this long to make the scan feel substantial. */
@@ -20,6 +22,7 @@ const MIN_ERROR_MS = 1500;
 type Phase = 'idle' | 'camera' | 'scanning' | 'result' | 'error';
 
 export default function ScanPage() {
+  const t = useT();
   const [phase, setPhase] = useState<Phase>('idle');
   const [cameraError, setCameraError] = useState(false);
   const [captureUrl, setCaptureUrl] = useState<string | null>(null);
@@ -43,7 +46,7 @@ export default function ScanPage() {
   }, []);
 
   function stopCamera() {
-    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
   }
 
@@ -121,7 +124,7 @@ export default function ScanPage() {
       const elapsed = Date.now() - start;
       const pct = Math.min(97, Math.round((elapsed / MIN_SCAN_MS) * 100));
       setProgress(pct);
-      setStageIdx(Math.min(STAGES.length - 1, Math.floor((elapsed / MIN_SCAN_MS) * STAGES.length)));
+      setStageIdx(Math.min(STAGE_KEYS.length - 1, Math.floor((elapsed / MIN_SCAN_MS) * STAGE_KEYS.length)));
     }, 80);
 
     analyzeFace(canvas, canvas.width, canvas.height)
@@ -138,22 +141,18 @@ export default function ScanPage() {
         const elapsed = Date.now() - start;
         if (elapsed < MIN_ERROR_MS) await sleep(MIN_ERROR_MS - elapsed);
         if (progressTimer.current) clearInterval(progressTimer.current);
-        setErrorMsg(
-          err instanceof NoFaceDetectedError
-            ? err.message
-            : 'Something went wrong analyzing that photo. Please try again with clearer, even lighting.'
-        );
+        setErrorMsg(err instanceof NoFaceDetectedError ? err.message : t('error_generic'));
         setPhase('error');
       });
   }
 
   if (phase === 'result' && result) {
-    return <ResultView captureUrl={captureUrl} result={result} onDone={resetToIdle} />;
+    return <ResultView captureUrl={captureUrl} result={result} onDone={resetToIdle} t={t} />;
   }
 
   return (
     <Screen>
-      <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">Facial Scan</div>
+      <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">{t('facial_scan_title')}</div>
 
       <div className="relative h-[420px] w-full overflow-hidden rounded-[28px] bg-black shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.12)]">
         {phase === 'camera' && !cameraError && (
@@ -165,12 +164,12 @@ export default function ScanPage() {
             {!cameraError ? (
               <>
                 <div className="h-[160px] w-[128px] rounded-[74px_74px_64px_64px] border-2 border-dashed border-white/25" />
-                <div className="text-center text-[14px] font-medium text-white/50">Position your face within the outline</div>
+                <div className="text-center text-[14px] font-medium text-white/50">{t('position_face')}</div>
               </>
             ) : (
               <>
-                <div className="text-[13px] font-medium text-white/50">Camera unavailable</div>
-                <div className="text-[20px] font-bold text-white">Upload a photo instead</div>
+                <div className="text-[13px] font-medium text-white/50">{t('camera_unavailable')}</div>
+                <div className="text-[20px] font-bold text-white">{t('upload_instead')}</div>
               </>
             )}
           </div>
@@ -192,7 +191,7 @@ export default function ScanPage() {
                 <div className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-150" style={{ width: `${progress}%` }} />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[13px] font-semibold text-white">{STAGES[stageIdx]}…</span>
+                <span className="text-[13px] font-semibold text-white">{t(STAGE_KEYS[stageIdx])}…</span>
                 <span className="text-[13px] font-bold text-white">{progress}%</span>
               </div>
             </div>
@@ -201,7 +200,7 @@ export default function ScanPage() {
 
         {phase === 'error' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-8 text-center">
-            <div className="text-[13px] font-medium text-white/50">Analysis failed</div>
+            <div className="text-[13px] font-medium text-white/50">{t('analysis_failed')}</div>
             <div className="text-[18px] font-semibold text-white">{errorMsg}</div>
           </div>
         )}
@@ -215,13 +214,13 @@ export default function ScanPage() {
       {(phase === 'idle' || phase === 'error') && (
         <>
           <div className="mt-5 flex flex-col gap-2.5">
-            <PrimaryButton label="Begin Live Scan" onClick={handleBeginLiveScan} />
-            <OutlineButton label="Upload Photo" onClick={handleUploadPhoto} />
+            <PrimaryButton label={t('begin_live_scan')} onClick={handleBeginLiveScan} />
+            <OutlineButton label={t('upload_photo')} onClick={handleUploadPhoto} />
           </div>
           <div className="mt-6 space-y-0.5">
-            <Requirement label="Neutral expression" value="Required" />
-            <Requirement label="Even frontal light" value="Required" />
-            <Requirement label="Hair off forehead" value="Advised" last />
+            <Requirement label={t('req_neutral_expr')} value={t('req_required')} />
+            <Requirement label={t('req_even_light')} value={t('req_required')} />
+            <Requirement label={t('req_hair')} value={t('req_advised')} last />
           </div>
         </>
       )}
@@ -229,7 +228,7 @@ export default function ScanPage() {
       {phase === 'camera' && !cameraError && (
         <div className="mt-6 flex items-center justify-center gap-8">
           <button onClick={resetToIdle} className="text-[15px] font-medium text-soft">
-            Cancel
+            {t('cancel')}
           </button>
           <button onClick={handleCapture} className="press flex h-[76px] w-[76px] items-center justify-center rounded-full border-[3px] border-ink">
             <div className="h-[60px] w-[60px] rounded-full bg-ink" />
@@ -239,7 +238,7 @@ export default function ScanPage() {
       )}
       {phase === 'camera' && cameraError && (
         <div className="mt-5">
-          <OutlineButton label="Upload Photo" onClick={handleUploadPhoto} />
+          <OutlineButton label={t('upload_photo')} onClick={handleUploadPhoto} />
         </div>
       )}
 
@@ -267,7 +266,7 @@ function Requirement({ label, value, last }: { label: string; value: string; las
   );
 }
 
-function ResultView({ captureUrl, result, onDone }: { captureUrl: string | null; result: AnalysisResult; onDone: () => void }) {
+function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | null; result: AnalysisResult; onDone: () => void; t: Translator }) {
   const router = useRouter();
   const addScan = useAppStore((s) => s.addScan);
   const started = useAppStore((s) => s.started);
@@ -288,7 +287,7 @@ function ResultView({ captureUrl, result, onDone }: { captureUrl: string | null;
     addScan({
       id: `${Date.now()}`,
       date: dateStr(),
-      title: 'New Scan',
+      title: t('new_scan_title'),
       overall: result.overall,
       thumb: captureUrl,
       m: result.metrics,
@@ -299,12 +298,14 @@ function ResultView({ captureUrl, result, onDone }: { captureUrl: string | null;
 
   return (
     <Screen>
-      <div className="text-[13px] font-medium text-soft">Analysis complete · {dateStr()}</div>
+      <div className="text-[13px] font-medium text-soft">
+        {t('analysis_complete')} · {dateStr()}
+      </div>
       <div className="mt-1 mb-6 flex items-end justify-between">
-        <div className="text-[28px] font-bold tracking-[-0.4px] text-ink">Your Results</div>
+        <div className="text-[28px] font-bold tracking-[-0.4px] text-ink">{t('your_results')}</div>
         <div className="text-right">
           <div className="text-[44px] leading-[0.85] font-bold text-ink">{result.overall}</div>
-          <div className="text-[12px] font-medium text-soft">{gradeOf(result.overall)}</div>
+          <div className="text-[12px] font-medium text-soft">{gradeOf(result.overall, t)}</div>
         </div>
       </div>
 
@@ -313,7 +314,7 @@ function ResultView({ captureUrl, result, onDone }: { captureUrl: string | null;
           // eslint-disable-next-line @next/next/no-img-element
           <img src={captureUrl} alt="" className="h-[110px] w-[88px] rounded-[14px] object-cover [transform:scaleX(-1)]" />
         )}
-        <div className="flex-1 text-[15px] leading-[1.4] font-medium text-ink self-center">{summaryFor(result.overall)}</div>
+        <div className="flex-1 text-[15px] leading-[1.4] font-medium text-ink self-center">{summaryFor(result.overall, t)}</div>
       </div>
 
       {METRIC_CONFIG.map((m) => {
@@ -321,21 +322,21 @@ function ResultView({ captureUrl, result, onDone }: { captureUrl: string | null;
         return (
           <div key={m.key} className="border-t border-border py-3.5">
             <div className="flex items-baseline justify-between">
-              <span className="text-[15px] font-semibold text-ink">{m.label}</span>
+              <span className="text-[15px] font-semibold text-ink">{t(m.labelKey)}</span>
               <span>
                 <span className="text-[20px] font-bold text-ink">{value}</span>
-                <span className="text-[12px] font-medium text-soft"> {band(value)}</span>
+                <span className="text-[12px] font-medium text-soft"> {band(value, t)}</span>
               </span>
             </div>
             <div className="my-2 h-1.5 rounded-full bg-fill">
               <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
             </div>
-            <div className="text-[13px] leading-[1.4] text-soft">{noteFor(value, m.notes)}</div>
+            <div className="text-[13px] leading-[1.4] text-soft">{metricNoteFor(m, value, t)}</div>
           </div>
         );
       })}
 
-      <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">Recommended Programs</div>
+      <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('recommended_programs')}</div>
       {picks.map((m) => {
         const program = getProgram(m.programId);
         if (!program) return null;
@@ -345,20 +346,20 @@ function ResultView({ captureUrl, result, onDone }: { captureUrl: string | null;
             <div>
               <div className="text-[17px] font-semibold text-ink">{program.name}</div>
               <div className="mt-0.5 text-[13px] text-soft">
-                {m.label} · {result.metrics[m.key]}
+                {t(m.labelKey)} · {result.metrics[m.key]}
               </div>
             </div>
             <button
               onClick={() => toggleProgram(m.programId)}
               className={`press rounded-full px-4 py-2 text-[13px] font-semibold ${isActive ? 'bg-accent text-white' : 'bg-accent/10 text-accent'}`}
             >
-              {isActive ? 'Added' : 'Add'}
+              {isActive ? t('added') : t('add')}
             </button>
           </div>
         );
       })}
 
-      <PrimaryButton label="Save to Progress" onClick={handleSave} className="mt-4" />
+      <PrimaryButton label={t('save_to_progress')} onClick={handleSave} className="mt-4" />
     </Screen>
   );
 }
