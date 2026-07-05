@@ -241,7 +241,7 @@ const fr: Record<keyof typeof en, string> = {
   tab_profile: 'Profil',
 
   brand_tagline: 'Analyse faciale · OS Looksmaxing',
-  welcome_headline: 'Mesurez votre visage. Suivez le protocole. Regardez la structure changer.',
+  welcome_headline: 'Analysez votre visage. Suivez un plan guidé. Regardez la structure changer.',
   welcome_begin: 'Commencer',
   welcome_subtitle: '90 secondes · Les données restent sur l’appareil',
   language_label: 'Langue',
@@ -250,7 +250,7 @@ const fr: Record<keyof typeof en, string> = {
   intro1_title: 'Scannez votre visage',
   intro1_body: 'Une capture rapide mesure la symétrie, les proportions et sept traits structurels.',
   intro2_step: 'Étape 2 · Protocole',
-  intro2_title: 'Suivez le programme',
+  intro2_title: 'Suivez un programme',
   intro2_body: 'Recevez des protocoles quotidiens de 4 semaines conçus autour de vos points faibles — mewing, jawmaxing, hunter eyes et plus.',
   intro3_step: 'Étape 3 · Suivre',
   intro3_title: 'Observez le changement',

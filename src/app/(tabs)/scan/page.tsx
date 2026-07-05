@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
 import { METRIC_CONFIG, metricNoteFor } from '@/data/metricConfig';
-import { getProgram } from '@/data/programs';
+import { getProgram, localizeProgram } from '@/data/programs';
 import { band, dateStr, gradeOf, summaryFor } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { Translator, useT } from '@/lib/i18n';
@@ -271,6 +271,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   const addScan = useAppStore((s) => s.addScan);
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
+  const language = useAppStore((s) => s.language);
 
   const sorted = [...METRIC_CONFIG].sort((a, b) => result.metrics[a.key] - result.metrics[b.key]);
   const seenPrograms = new Set<string>();
@@ -341,10 +342,11 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
         const program = getProgram(m.programId);
         if (!program) return null;
         const isActive = started.some((s) => s.id === m.programId);
+        const copy = localizeProgram(program, language);
         return (
           <div key={m.programId} className="mb-2.5 flex items-center justify-between rounded-2xl bg-card p-3.5 px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
             <div>
-              <div className="text-[17px] font-semibold text-ink">{program.name}</div>
+              <div className="text-[17px] font-semibold text-ink">{copy.name}</div>
               <div className="mt-0.5 text-[13px] text-soft">
                 {t(m.labelKey)} · {result.metrics[m.key]}
               </div>

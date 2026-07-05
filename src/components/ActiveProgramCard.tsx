@@ -1,6 +1,6 @@
 'use client';
 
-import { getProgram } from '@/data/programs';
+import { getProgram, localizeProgram } from '@/data/programs';
 import { useT } from '@/lib/i18n';
 import { tapHaptic } from '@/lib/haptics';
 import { requestNotificationPermission } from '@/lib/notifications';
@@ -11,6 +11,7 @@ import { ProgressBar } from './ProgressBar';
 
 export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const t = useT();
+  const language = useAppStore((s) => s.language);
   const program = getProgram(started.id);
   const toggleExpanded = useAppStore((s) => s.toggleExpanded);
   const toggleTask = useAppStore((s) => s.toggleTask);
@@ -20,9 +21,10 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
 
   if (!program) return null;
 
+  const copy = localizeProgram(program, language);
   const dayNum = Math.min(28, started.done + 1);
   const week = Math.min(4, Math.ceil(dayNum / 7));
-  const wk = program.weeks[week - 1] ?? program.weeks[0];
+  const wk = copy.weeks[week - 1] ?? copy.weeks[0];
   const tasks = wk.tasks;
   const doneCount = tasks.reduce((acc, _, i) => acc + (started.checks[i] ? 1 : 0), 0);
   const allDone = tasks.length > 0 && doneCount === tasks.length;
@@ -54,7 +56,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
     <div className="mb-3 rounded-[22px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
       <button className="press flex w-full items-start justify-between text-left" onClick={() => toggleExpanded(started.id)}>
         <div className="flex-1">
-          <div className="text-[19px] font-bold tracking-[-0.2px] text-ink">{program.name}</div>
+          <div className="text-[19px] font-bold tracking-[-0.2px] text-ink">{copy.name}</div>
           <div className="mt-0.5 text-[13px] text-soft">
             {t('week_label')} {week} · {wk.focus}
           </div>

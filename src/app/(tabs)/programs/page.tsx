@@ -3,12 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Screen } from '@/components/Screen';
-import { ASMETRY_PROGRAMS, PROGRAM_SECTIONS, levelKey, sectionKey } from '@/data/programs';
+import { ASMETRY_PROGRAMS, PROGRAM_SECTIONS, levelKey, localizeProgram, sectionKey } from '@/data/programs';
 import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 
 export default function ProgramsPage() {
   const t = useT();
+  const language = useAppStore((s) => s.language);
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
 
@@ -31,6 +32,7 @@ export default function ProgramsPage() {
             <div className="mb-2.5 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t(sectionKey(section))}</div>
             {items.map((p) => {
               const isActive = started.some((s) => s.id === p.id);
+              const copy = localizeProgram(p, language);
               return (
                 <Link
                   key={p.id}
@@ -38,8 +40,8 @@ export default function ProgramsPage() {
                   className="press mb-2.5 flex items-start rounded-[20px] bg-card p-4 px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
                 >
                   <div className="flex-1 pr-3">
-                    <div className="text-[18px] font-bold tracking-[-0.2px] text-ink">{p.name}</div>
-                    <div className="mt-0.5 text-[13px] text-soft">{p.tagline}</div>
+                    <div className="text-[18px] font-bold tracking-[-0.2px] text-ink">{copy.name}</div>
+                    <div className="mt-0.5 text-[13px] text-soft">{copy.tagline}</div>
                     <div className="mt-1.5 text-[12px] font-medium text-soft">
                       {t('days_28')} · {p.mins} {t('min_unit')} · {t(levelKey(p.level))}
                     </div>

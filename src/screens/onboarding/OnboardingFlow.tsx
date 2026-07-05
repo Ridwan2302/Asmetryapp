@@ -126,12 +126,11 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
 
       <div>
         <h1 className="mb-6 text-[32px] leading-[1.15] font-bold tracking-[-0.5px] text-ink">{t('welcome_headline')}</h1>
-        <div className="mb-4">
-          <div className="mb-1.5 text-[13px] font-medium text-soft">{t('language_label')}</div>
-          <LanguageToggle />
-        </div>
         <PrimaryButton label={t('welcome_begin')} onClick={onNext} />
         <div className="mt-4 text-center text-[12px] text-soft">{t('welcome_subtitle')}</div>
+        <div className="mt-3 flex justify-center">
+          <LanguageToggle size="sm" />
+        </div>
       </div>
     </div>
   );

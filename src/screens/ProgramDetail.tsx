@@ -7,13 +7,14 @@ import { useState } from 'react';
 import { AnatomyPlate } from '@/components/AnatomyPlate';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
-import { getProgram, levelKey, sectionKey } from '@/data/programs';
+import { getProgram, levelKey, localizeProgram, sectionKey } from '@/data/programs';
 import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 
 export function ProgramDetail({ id }: { id: string }) {
   const router = useRouter();
   const t = useT();
+  const language = useAppStore((s) => s.language);
   const program = getProgram(id);
   const [openWeek, setOpenWeek] = useState(1);
   const started = useAppStore((s) => s.started);
@@ -29,6 +30,7 @@ export function ProgramDetail({ id }: { id: string }) {
   }
 
   const isActive = started.some((s) => s.id === program.id);
+  const copy = localizeProgram(program, language);
 
   return (
     <Screen withTabBarSpacing={false}>
@@ -39,8 +41,8 @@ export function ProgramDetail({ id }: { id: string }) {
         {t('programs_back')}
       </button>
       <div className="text-[13px] font-semibold text-soft">{t(sectionKey(program.section))}</div>
-      <div className="mt-1 text-[32px] leading-[1.05] font-bold tracking-[-0.4px] text-ink">{program.name}</div>
-      <div className="mt-1 mb-5 text-[16px] text-soft">{program.tagline}</div>
+      <div className="mt-1 text-[32px] leading-[1.05] font-bold tracking-[-0.4px] text-ink">{copy.name}</div>
+      <div className="mt-1 mb-5 text-[16px] text-soft">{copy.tagline}</div>
 
       <div className="relative mb-5 flex h-[240px] items-center justify-center overflow-hidden rounded-[24px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         {program.img ? (
@@ -52,7 +54,7 @@ export function ProgramDetail({ id }: { id: string }) {
         )}
         <div className="absolute bottom-3 left-3.5 rounded-full bg-white/85 px-2.5 py-1 backdrop-blur">
           <span className="text-[11px] font-semibold text-ink">
-            {t('target_prefix')} · {program.anatomy}
+            {t('target_prefix')} · {copy.anatomy}
           </span>
         </div>
       </div>
@@ -63,10 +65,10 @@ export function ProgramDetail({ id }: { id: string }) {
         <StatTile value={t(levelKey(program.level))} label={t('stat_level')} small />
       </div>
 
-      <p className="mb-6 text-[16px] leading-[1.45] text-soft">{program.overview}</p>
+      <p className="mb-6 text-[16px] leading-[1.45] text-soft">{copy.overview}</p>
 
       <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('four_week_protocol')}</div>
-      {program.weeks.map((w) => {
+      {copy.weeks.map((w) => {
         const open = openWeek === w.n;
         return (
           <div key={w.n} className="mb-2.5 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
