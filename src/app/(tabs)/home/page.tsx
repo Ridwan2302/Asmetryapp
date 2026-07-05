@@ -92,8 +92,7 @@ export default function HomePage() {
 
       {started.length === 0 ? (
         <Link href="/programs" className="press block rounded-[20px] bg-fill p-8 text-center">
-          <div className="text-[17px] font-semibold text-ink">No active programs yet</div>
-          <div className="mt-1 text-[13px] font-medium text-accent">Browse the library →</div>
+          <div className="text-[17px] font-semibold text-ink">Start a program</div>
         </Link>
       ) : (
         started.map((s) => <ActiveProgramCard key={s.id} started={s} />)

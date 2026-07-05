@@ -5,6 +5,7 @@ import { tapHaptic } from '@/lib/haptics';
 import { requestNotificationPermission } from '@/lib/notifications';
 import { useAppStore } from '@/state/store';
 import type { StartedProgram } from '@/state/types';
+import { DemoButton } from './DemoButton';
 import { ProgressBar } from './ProgressBar';
 
 export function ActiveProgramCard({ started }: { started: StartedProgram }) {
@@ -83,16 +84,19 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
           {tasks.map((text, i) => {
             const checked = !!started.checks[i];
             return (
-              <button key={i} className="press flex w-full items-start gap-3 py-[9px] text-left" onClick={() => handleToggleTask(i)}>
-                <span
-                  className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
-                    checked ? 'bg-accent' : 'bg-fill-strong'
-                  }`}
-                >
-                  {checked && '✓'}
-                </span>
-                <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft line-through' : 'text-ink'}`}>{text}</span>
-              </button>
+              <div key={i} className="flex w-full items-center gap-3 py-[9px]">
+                <button className="press flex flex-1 items-start gap-3 text-left" onClick={() => handleToggleTask(i)}>
+                  <span
+                    className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
+                      checked ? 'bg-accent' : 'bg-fill-strong'
+                    }`}
+                  >
+                    {checked && '✓'}
+                  </span>
+                  <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft line-through' : 'text-ink'}`}>{text}</span>
+                </button>
+                <DemoButton task={text} />
+              </div>
             );
           })}
 

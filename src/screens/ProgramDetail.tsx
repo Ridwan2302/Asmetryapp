@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AnatomyPlate } from '@/components/AnatomyPlate';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
+import { DemoButton } from '@/components/DemoButton';
 import { Screen } from '@/components/Screen';
 import { getProgram } from '@/data/programs';
 import { useAppStore } from '@/state/store';
@@ -76,9 +77,10 @@ export function ProgramDetail({ id }: { id: string }) {
             {open && (
               <div className="px-4 pb-3.5">
                 {w.tasks.map((task, i) => (
-                  <div key={i} className="flex gap-3 border-t border-border py-2.5">
-                    <span className="mt-[9px] h-[5px] w-[5px] shrink-0 rounded-full bg-accent" />
-                    <span className="text-[16px] leading-[1.35] font-medium text-ink">{task}</span>
+                  <div key={i} className="flex items-center gap-3 border-t border-border py-2.5">
+                    <span className="mt-[1px] h-[5px] w-[5px] shrink-0 rounded-full bg-accent" />
+                    <span className="flex-1 text-[16px] leading-[1.35] font-medium text-ink">{task}</span>
+                    <DemoButton task={task} />
                   </div>
                 ))}
               </div>
