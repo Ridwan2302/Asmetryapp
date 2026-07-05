@@ -15,6 +15,9 @@ export interface StartedProgram {
   checks: Record<number, boolean>; // today's task checkmarks, keyed by task index
   reminder: string; // "HH:MM", 24h
   expanded?: boolean;
+  /** "YYYY-MM-DD HH:MM" of the last time this program's reminder actually fired —
+   * dedupes the in-browser reminder poll (see lib/notifications.ts) so it only fires once. */
+  lastRem?: string;
 }
 
 export interface ScanMetrics {

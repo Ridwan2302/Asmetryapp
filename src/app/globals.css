@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #f4f2ed;
+  --color-ink: #14110e;
+  --color-soft: #9c968b;
+  --color-card: #fbfaf7;
+  --color-accent: #14110e;
+  --color-success: #3b7a4f;
+  --color-negative: #a33333;
+  --color-border: rgba(20, 17, 14, 0.14);
+  --color-border-strong: rgba(20, 17, 14, 0.2);
+  --color-border-soft: rgba(20, 17, 14, 0.1);
+  --color-placeholder: #eae7df;
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-ink: var(--color-ink);
+  --color-soft: var(--color-soft);
+  --color-card: var(--color-card);
+  --color-accent: var(--color-accent);
+  --color-success: var(--color-success);
+  --color-negative: var(--color-negative);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-border-soft: var(--color-border-soft);
+  --color-placeholder: var(--color-placeholder);
+  --font-display: var(--font-cormorant-garamond);
+  --font-ui: var(--font-montserrat);
+}
+
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-ui);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+@keyframes dotgrid-pulse {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(320px);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

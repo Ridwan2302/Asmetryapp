@@ -1,48 +1,53 @@
 # Asmetry
 
-React Native (Expo SDK 57) implementation of the Asmetry facial-analysis / looksmaxing app, built from the design handoff. File-based routing via `expo-router`.
+A Next.js (App Router, TypeScript, Tailwind v4) web app implementation of the Asmetry facial-analysis / looksmaxing design handoff. Deploys to Vercel with zero config.
 
 ## Running it
 
-This app uses native modules (camera, ML Kit face detection, native time picker, image manipulation) that **do not run in Expo Go**. You need a custom dev client:
-
 ```bash
 npm install
-npx expo prebuild
-npx expo run:ios      # or: npx expo run:android
+npm run dev
 ```
 
-For subsequent runs, `npx expo start --dev-client` is enough once the dev client is installed on the simulator/device.
+Camera access (`getUserMedia`) requires HTTPS or `localhost` — both work out of the box in dev and on Vercel.
 
 ## Architecture
 
-- **Routing**: `app/` — `(onboarding)` group for first-run flow, `(tabs)` for the 5 main tabs, `program/[id]` and `edit-stats` as pushed full-screen routes.
-- **State**: `src/state/store.ts` — Zustand + AsyncStorage persistence, mirroring the design's `asmetry_state_v2` shape (profile, started programs, scans, settings).
-- **Data**: `src/data/programs.ts` — the 11 programs ported verbatim from `programs.js`.
-- **Design tokens**: `src/theme/tokens.ts` — Warm Paper palette, Cormorant Garamond (display) + Montserrat (UI/body, standing in for Gotham per the handoff).
-- **Face analysis**: `src/lib/faceAnalysis.ts` — real analysis, not mocked:
-  - Symmetry, jawline taper, canthal tilt, cheekbone prominence, under-eye puffiness, and facial-thirds proportion are all computed from `@react-native-ml-kit/face-detection` landmarks/contours on the captured photo (geometry, not random numbers).
-  - Skin clarity is computed from actual pixel data: two cheek patches are cropped via `expo-image-manipulator`, decoded with a small in-repo PNG parser (`src/lib/pngPixels.ts`, zlib inflate via `pako`), and scored from real luminance variance.
+- **Routing**: `src/app/` — App Router. `(tabs)` route group holds the 5 main tabs (no `/tabs` in the URL); `/program/[id]` and `/edit-stats` are pushed full-screen routes outside the tab bar.
+- **State**: `src/state/store.ts` — Zustand persisted to `localStorage`, mirroring the design's `asmetry_state_v2` shape (profile, started programs, scans, settings). Hydration is gated (`Providers.tsx`) to avoid SSR/client mismatches.
+- **Data**: `src/data/programs.ts` — the 11 programs ported verbatim from the handoff's `programs.js`.
+- **Design tokens**: `src/app/globals.css` (`@theme` block) — Warm Paper palette, Cormorant Garamond (display) + Montserrat (UI/body, standing in for Gotham per the handoff), loaded via `next/font/google`.
+- **Face analysis**: `src/lib/faceAnalysis.ts` — real analysis, not mocked, entirely client-side:
+  - Symmetry, jawline taper, canthal tilt, cheekbone prominence, under-eye puffiness, and facial-thirds proportion are computed from a real **MediaPipe FaceLandmarker** mesh (`@mediapipe/tasks-vision`, runs in-browser via WASM) run on the captured photo — geometry, not random numbers.
+  - Skin clarity is computed from actual pixel data read straight off a `<canvas>` (`getImageData`) for two cheek patches, scored from real luminance variance.
+  - The WASM runtime is self-hosted in `public/mediapipe/wasm/` (no CDN dependency at runtime); the `.task` model file is fetched from Google's official MediaPipe model host on first use.
   - Every metric has a documented, deterministic fallback if a signal is missing — never a random placeholder.
-- **Notifications**: `src/lib/notifications.ts` — real OS-level daily-repeating local notifications per active program (`expo-notifications`), rescheduled on time/day/setting changes and resynced on app start.
+- **Camera**: `getUserMedia` + `<canvas>` capture (mirrored preview, matching the original design prototype's own approach), with a file-upload fallback (`capture="user"` hints mobile browsers to open the front camera).
+- **Notifications**: `src/lib/notifications.ts` — best-effort browser `Notification` API, polled every 15s while any tab is open. **Not** reliable once every tab/browser is fully closed — that needs a Web Push backend (VAPID keys + a server holding subscriptions), which is out of scope for a static/serverless deploy. See below.
+
+## Known limitation: reminders
+
+Browsers have no equivalent of a mobile OS's "fire a local notification even when the app is closed." What's shipped: `Notification` permission + an in-app poll that fires reminders while any tab is open (backgrounded tabs are fine — closed tabs are not). If you want true closed-browser delivery later, that requires:
+1. A backend to store push subscriptions (e.g. a small DB + a couple of Vercel serverless functions).
+2. VAPID keys and the Web Push protocol.
+3. A cron trigger (e.g. Vercel Cron) to check due reminders and push them.
 
 ## Known deviations from the design reference (intentional)
 
-- **Seed data removed.** The prototype ships with 3 fake sample scans and 2 pre-started programs for a non-empty first look. This build ships empty (`scans: []`, `started: []`) and has real empty states for Home/Progress instead — matching "data stays on device" and not fabricating a user's history. (The README's own suggestion.)
-- **`assets/images/onboarding/welcome-hero.png` is a placeholder.** The upload bundle didn't include `welcome-hero.png` (used for the welcome hero and the 3rd intro slide); it's currently a copy of `intro-scan.png`. Swap in the real asset before shipping.
-- **Hormonal Optimization Diet now has a hero image** (`hormonal.png` was included in this asset bundle but wasn't wired into `programs.js`). Sleep and Hydration still have no photo and fall back to the code-drawn SVG plates, same as the reference.
+- **Seed data removed.** The prototype ships with 3 fake sample scans and 2 pre-started programs for a non-empty first look. This build ships empty (`scans: []`, `started: []`) with real empty states for Home/Progress instead — matching "data stays on device" and not fabricating a user's history.
+- **`public/images/onboarding/welcome-hero.png` is a placeholder.** The design asset bundle didn't include a `welcome-hero.png` (used for the welcome hero and 3rd intro slide); it's currently a copy of `intro-scan.png`. Swap in the real asset before shipping.
+- **Hormonal Optimization Diet has a hero image** even though the original `programs.js` didn't reference one — a `hormonal.png` was included in the asset bundle but never wired in. Sleep and Hydration still have no photo and fall back to the code-drawn SVG plates, same as the reference.
 - **Gotham not included.** Montserrat is used everywhere per the handoff's own fallback instruction; swap in licensed Gotham if/when available.
-- **No in-app reminder banner.** The prototype's banner only fired while the app was open; it's fully replaced by real OS notifications, which is what the handoff asked for.
 
 ## Directory map
 
 ```
-app/                      expo-router screens
+src/app/                  Next.js App Router pages
 src/components/           shared UI primitives
 src/data/                 programs.ts, metric→program mapping
-src/lib/                  calc, face analysis, notifications, media, haptics
-src/screens/onboarding/   the multi-step onboarding flow component
+src/lib/                  calc, face analysis, notifications, haptics
+src/screens/              multi-step onboarding flow, program detail
 src/state/                zustand store + types
-src/theme/                design tokens
-assets/images/            ported design assets
+public/images/            ported design assets
+public/mediapipe/wasm/    self-hosted MediaPipe WASM runtime
 ```

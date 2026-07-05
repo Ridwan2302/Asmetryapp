@@ -1,42 +1,37 @@
-import { Image } from 'expo-image';
-import { router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { OutlineButton, PrimaryButton } from '../../components/Button';
-import { Pill } from '../../components/Pill';
-import { bmiAdvice, bmiCategory, bmiOf } from '../../lib/calc';
-import { useAppStore } from '../../state/store';
-import { Sex } from '../../state/types';
-import { colors, fonts } from '../../theme/tokens';
+'use client';
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { OutlineButton, PrimaryButton } from '@/components/Button';
+import { Pill } from '@/components/Pill';
+import { bmiAdvice, bmiCategory, bmiOf } from '@/lib/calc';
+import { useAppStore } from '@/state/store';
+import { Sex } from '@/state/types';
 
 const introData = [
   {
     label: 'STEP 01 · ANALYZE',
     title: 'Scan your face',
     body: 'A quick capture measures symmetry, proportion and seven structural traits.',
-    img: require('../../../assets/images/onboarding/intro-scan.png'),
+    img: '/images/onboarding/intro-scan.png',
   },
   {
     label: 'STEP 02 · PROTOCOL',
     title: 'Follow the program',
     body: 'Get 4-week daily protocols built around your weakest metrics — mewing, jawmaxing, hunter eyes and more.',
-    img: require('../../../assets/images/onboarding/intro-jaw.png'),
+    img: '/images/onboarding/intro-jaw.png',
   },
   {
     label: 'STEP 03 · TRACK',
     title: 'Watch it change',
     body: 'Check off daily tasks, get reminders, and re-scan to see the structure improve.',
-    img: require('../../../assets/images/onboarding/welcome-hero.png'),
+    img: '/images/onboarding/welcome-hero.png',
   },
 ];
 
-interface Props {
-  mode: 'initial' | 'edit';
-}
-
-export function OnboardingFlow({ mode }: Props) {
-  const insets = useSafeAreaInsets();
+export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
+  const router = useRouter();
   const profile = useAppStore((s) => s.profile);
   const completeOnboarding = useAppStore((s) => s.completeOnboarding);
   const updateProfile = useAppStore((s) => s.updateProfile);
@@ -76,19 +71,16 @@ export function OnboardingFlow({ mode }: Props) {
       router.back();
     } else {
       completeOnboarding(finalProfile);
-      router.replace('/(tabs)');
+      router.replace('/home');
     }
   }
 
-  const topPad = insets.top + 20;
-
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      {step === 0 && <Welcome topPad={topPad} onNext={next} />}
-      {step >= 1 && step <= 3 && <Intro topPad={topPad} idx={step - 1} onNext={next} onSkip={skipIntro} />}
+    <div className="min-h-dvh">
+      {step === 0 && <Welcome onNext={next} />}
+      {step >= 1 && step <= 3 && <Intro idx={step - 1} onNext={next} onSkip={skipIntro} />}
       {step === 4 && (
         <StatsForm
-          topPad={topPad}
           name={name}
           setName={setName}
           sex={sex}
@@ -105,7 +97,6 @@ export function OnboardingFlow({ mode }: Props) {
       )}
       {step >= 5 && (
         <ResultStep
-          topPad={topPad}
           bmi={bmiLive}
           age={parseInt(age, 10) || profile.age}
           height={parseInt(height, 10) || profile.height}
@@ -113,63 +104,78 @@ export function OnboardingFlow({ mode }: Props) {
           onFinish={finish}
         />
       )}
-    </KeyboardAvoidingView>
+    </div>
   );
 }
 
-function Welcome({ topPad, onNext }: { topPad: number; onNext: () => void }) {
+function Welcome({ onNext }: { onNext: () => void }) {
   return (
-    <View style={[styles.screen, { paddingTop: topPad, paddingBottom: 46, justifyContent: 'space-between' }]}>
-      <View style={styles.headerRow}>
-        <Image source={require('../../../assets/images/logo.png')} style={styles.logo} contentFit="cover" />
-        <View>
-          <Text style={styles.wordmark}>
-            asmetry<Text style={{ color: colors.soft, fontWeight: '400' }}>.io</Text>
-          </Text>
-          <Text style={styles.tagline}>FACIAL ANALYSIS · LOOKSMAXING OS</Text>
-        </View>
-      </View>
+    <div className="flex min-h-dvh flex-col justify-between px-[30px] pt-[calc(env(safe-area-inset-top)+40px)] pb-[46px]">
+      <div className="flex items-center gap-3">
+        <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.12)]">
+          <Image src="/images/logo.png" alt="Asmetry logo" fill className="object-cover" />
+        </div>
+        <div>
+          <div className="font-display text-[28px] leading-none font-bold tracking-[-0.5px] text-ink">
+            asmetry<span className="font-normal text-soft">.io</span>
+          </div>
+          <div className="mt-[3px] font-ui text-[8.5px] tracking-[2.5px] text-soft">FACIAL ANALYSIS · LOOKSMAXING OS</div>
+        </div>
+      </div>
 
-      <View style={styles.heroWrap}>
-        <Image source={require('../../../assets/images/onboarding/welcome-hero.png')} style={styles.heroImage} contentFit="cover" />
-      </View>
+      <div className="my-6 flex flex-1 items-center">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[26px] shadow-[0_24px_50px_rgba(0,0,0,0.28)]">
+          <Image src="/images/onboarding/welcome-hero.png" alt="" fill className="object-cover" priority />
+        </div>
+      </div>
 
-      <View>
-        <Text style={styles.welcomeHeadline}>Measure your face.{'\n'}Follow the protocol.{'\n'}Watch the structure change.</Text>
-        <PrimaryButton label="BEGIN →" onPress={onNext} />
-        <Text style={styles.caption}>TAKES 90 SECONDS · DATA STAYS ON DEVICE</Text>
-      </View>
-    </View>
+      <div>
+        <div className="mb-[22px] max-w-[320px] font-display text-[32px] leading-[1.15] text-ink">
+          Measure your face.
+          <br />
+          Follow the protocol.
+          <br />
+          Watch the structure change.
+        </div>
+        <PrimaryButton label="BEGIN →" onClick={onNext} />
+        <div className="mt-4 text-center font-ui text-[9px] tracking-[1px] text-soft">TAKES 90 SECONDS · DATA STAYS ON DEVICE</div>
+      </div>
+    </div>
   );
 }
 
-function Intro({ topPad, idx, onNext, onSkip }: { topPad: number; idx: number; onNext: () => void; onSkip: () => void }) {
+function Intro({ idx, onNext, onSkip }: { idx: number; onNext: () => void; onSkip: () => void }) {
   const cur = introData[idx];
   return (
-    <View style={[styles.screen, { paddingTop: topPad + 36, paddingBottom: 46, justifyContent: 'space-between' }]}>
-      <View>
-        <Text style={styles.stepLabel}>{cur.label}</Text>
-        <Image source={cur.img} style={styles.introImage} contentFit="cover" />
-        <Text style={styles.introTitle}>{cur.title}</Text>
-        <Text style={styles.introBody}>{cur.body}</Text>
-      </View>
-      <View>
-        <View style={styles.dotsRow}>
+    <div className="flex min-h-dvh flex-col justify-between px-[34px] pt-[calc(env(safe-area-inset-top)+56px)] pb-[46px]">
+      <div>
+        <div className="font-ui text-[11px] tracking-[3px] text-soft">{cur.label}</div>
+        <div className="relative my-[22px] h-[300px] overflow-hidden rounded-[22px] shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
+          <Image src={cur.img} alt="" fill className="object-cover" />
+        </div>
+        <div className="font-display text-[40px] leading-[1.02] tracking-[-0.5px] text-ink">{cur.title}</div>
+        <div className="mt-[14px] font-display text-[20px] leading-[1.4] text-[#3B352D]">{cur.body}</div>
+      </div>
+      <div>
+        <div className="mb-[22px] flex justify-center gap-[6px]">
           {introData.map((_, i) => (
-            <View key={i} style={[styles.dot, { width: i === idx ? 20 : 6, backgroundColor: i === idx ? colors.accent : 'rgba(20,17,14,0.2)' }]} />
+            <div
+              key={i}
+              className="h-[6px] rounded-full transition-all"
+              style={{ width: i === idx ? 20 : 6, backgroundColor: i === idx ? '#14110E' : 'rgba(20,17,14,0.2)' }}
+            />
           ))}
-        </View>
-        <PrimaryButton label={idx === 2 ? 'CONTINUE' : 'NEXT →'} onPress={onNext} />
-        <Pressable onPress={onSkip}>
-          <Text style={styles.skipLink}>SKIP INTRO</Text>
-        </Pressable>
-      </View>
-    </View>
+        </div>
+        <PrimaryButton label={idx === 2 ? 'CONTINUE' : 'NEXT →'} onClick={onNext} />
+        <button onClick={onSkip} className="mt-[14px] block w-full text-center font-ui text-[9px] tracking-[1px] text-soft">
+          SKIP INTRO
+        </button>
+      </div>
+    </div>
   );
 }
 
 function StatsForm(props: {
-  topPad: number;
   name: string;
   setName: (v: string) => void;
   sex: Sex;
@@ -183,166 +189,106 @@ function StatsForm(props: {
   ready: boolean;
   onNext: () => void;
 }) {
-  const { topPad, name, setName, sex, setSex, age, setAge, height, setHeight, weight, setWeight, ready, onNext } = props;
+  const { name, setName, sex, setSex, age, setAge, height, setHeight, weight, setWeight, ready, onNext } = props;
   return (
-    <ScrollView contentContainerStyle={[styles.screen, { paddingTop: topPad + 40, paddingBottom: 46 }]} keyboardShouldPersistTaps="handled">
-      <Text style={styles.stepLabel}>STEP 04 · YOUR BASELINE</Text>
-      <Text style={styles.formTitle}>Tell us about you</Text>
+    <div className="min-h-dvh px-[34px] pt-[calc(env(safe-area-inset-top)+60px)] pb-[46px]">
+      <div className="font-ui text-[11px] tracking-[3px] text-soft">STEP 04 · YOUR BASELINE</div>
+      <div className="mt-[6px] mb-7 font-display text-[40px] leading-[1.02] tracking-[-0.5px] text-ink">Tell us about you</div>
 
-      <Text style={styles.fieldLabel}>NAME</Text>
-      <TextInput
+      <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">NAME</label>
+      <input
         value={name}
-        onChangeText={setName}
+        onChange={(e) => setName(e.target.value)}
         placeholder="Your name"
-        placeholderTextColor={colors.soft}
-        style={styles.underlineInput}
+        className="mb-[26px] w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
       />
 
-      <Text style={[styles.fieldLabel, { marginTop: 26 }]}>SEX (FOR ANATOMY MODEL)</Text>
-      <View style={styles.sexRow}>
+      <label className="mb-[10px] block font-ui text-[10px] tracking-[1.5px] text-soft">SEX (FOR ANATOMY MODEL)</label>
+      <div className="mb-[26px] flex gap-2">
         {(['M', 'F'] as Sex[]).map((v) => (
-          <Pressable
+          <button
             key={v}
-            onPress={() => setSex(v)}
-            style={[styles.sexOption, { backgroundColor: sex === v ? colors.ink : 'transparent' }]}
+            onClick={() => setSex(v)}
+            className={`flex-1 rounded-[14px] border border-border-strong py-[13px] text-center font-ui text-[11px] tracking-[1px] ${
+              sex === v ? 'bg-ink text-paper' : 'bg-transparent text-ink'
+            }`}
           >
-            <Text style={[styles.sexLabel, { color: sex === v ? colors.paper : colors.ink }]}>{v === 'M' ? 'MALE' : 'FEMALE'}</Text>
-          </Pressable>
+            {v === 'M' ? 'MALE' : 'FEMALE'}
+          </button>
         ))}
-      </View>
+      </div>
 
-      <View style={[styles.rowGap, { marginTop: 26 }]}>
-        <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>AGE</Text>
-          <TextInput
+      <div className="flex gap-[14px]">
+        <div className="flex-1">
+          <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">AGE</label>
+          <input
             value={age}
-            onChangeText={setAge}
+            onChange={(e) => setAge(e.target.value)}
             placeholder="24"
-            placeholderTextColor={colors.soft}
-            keyboardType="number-pad"
-            style={styles.underlineInput}
+            inputMode="numeric"
+            className="w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
           />
-        </View>
-        <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>HEIGHT · CM</Text>
-          <TextInput
+        </div>
+        <div className="flex-1">
+          <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">HEIGHT · CM</label>
+          <input
             value={height}
-            onChangeText={setHeight}
+            onChange={(e) => setHeight(e.target.value)}
             placeholder="178"
-            placeholderTextColor={colors.soft}
-            keyboardType="number-pad"
-            style={styles.underlineInput}
+            inputMode="numeric"
+            className="w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
           />
-        </View>
-        <View style={styles.flex1}>
-          <Text style={styles.fieldLabel}>WEIGHT · KG</Text>
-          <TextInput
+        </div>
+        <div className="flex-1">
+          <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">WEIGHT · KG</label>
+          <input
             value={weight}
-            onChangeText={setWeight}
+            onChange={(e) => setWeight(e.target.value)}
             placeholder="72"
-            placeholderTextColor={colors.soft}
-            keyboardType="number-pad"
-            style={styles.underlineInput}
+            inputMode="numeric"
+            className="w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
           />
-        </View>
-      </View>
+        </div>
+      </div>
 
-      {ready ? (
-        <PrimaryButton label="CALCULATE →" onPress={onNext} style={{ marginTop: 40 }} />
-      ) : (
-        <OutlineButton label="CALCULATE →" onPress={onNext} style={{ marginTop: 40 }} />
-      )}
-    </ScrollView>
+      <div className="mt-10">{ready ? <PrimaryButton label="CALCULATE →" onClick={onNext} /> : <OutlineButton label="CALCULATE →" onClick={onNext} />}</div>
+    </div>
   );
 }
 
-function ResultStep({
-  topPad,
-  bmi,
-  age,
-  height,
-  weight,
-  onFinish,
-}: {
-  topPad: number;
-  bmi: number;
-  age: number;
-  height: number;
-  weight: number;
-  onFinish: () => void;
-}) {
+function ResultStep({ bmi, age, height, weight, onFinish }: { bmi: number; age: number; height: number; weight: number; onFinish: () => void }) {
   return (
-    <View style={[styles.screen, { paddingTop: topPad + 30, paddingBottom: 46, justifyContent: 'space-between' }]}>
-      <View>
-        <Text style={styles.stepLabel}>STEP 05 · YOUR MODEL</Text>
-        <Text style={styles.formTitle}>Baseline captured</Text>
-        <View style={styles.resultRow}>
-          <Image source={require('../../../assets/images/body-model.png')} style={styles.bodyModel} contentFit="cover" />
-          <View style={styles.flex1}>
-            <Text style={styles.fieldLabel}>BODY MASS INDEX</Text>
-            <Text style={styles.bmiNumber}>{bmi ? bmi.toFixed(1) : '—'}</Text>
-            <Pill label={bmiCategory(bmi)} style={{ marginTop: 8 }} />
-            <View style={{ marginTop: 16 }}>
+    <div className="flex min-h-dvh flex-col justify-between px-[34px] pt-[calc(env(safe-area-inset-top)+50px)] pb-[46px]">
+      <div>
+        <div className="font-ui text-[11px] tracking-[3px] text-soft">STEP 05 · YOUR MODEL</div>
+        <div className="mt-[6px] mb-5 font-display text-[38px] leading-[1.02] tracking-[-0.5px] text-ink">Baseline captured</div>
+        <div className="flex items-center gap-[18px]">
+          <div className="relative h-[240px] w-[150px] shrink-0 overflow-hidden rounded-2xl">
+            <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
+          </div>
+          <div className="flex-1">
+            <div className="font-ui text-[10px] tracking-[1.5px] text-soft">BODY MASS INDEX</div>
+            <div className="mt-[6px] font-display text-[64px] leading-[0.85] text-ink">{bmi ? bmi.toFixed(1) : '—'}</div>
+            <Pill label={bmiCategory(bmi)} className="mt-2" />
+            <div className="mt-4 font-ui text-[10px] leading-[1.9] text-soft">
               <StatRow label="AGE" value={`${age} YRS`} />
               <StatRow label="HEIGHT" value={`${height} CM`} />
               <StatRow label="WEIGHT" value={`${weight} KG`} last />
-            </View>
-          </View>
-        </View>
-        <Text style={styles.advice}>{bmiAdvice(bmi)}</Text>
-      </View>
-      <PrimaryButton label="ENTER ASMETRY →" onPress={onFinish} />
-    </View>
+            </div>
+          </div>
+        </div>
+        <div className="mt-6 font-display text-[19px] leading-[1.4] text-[#3B352D]">{bmiAdvice(bmi)}</div>
+      </div>
+      <PrimaryButton label="ENTER ASMETRY →" onClick={onFinish} />
+    </div>
   );
 }
 
 function StatRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
-    <View style={[styles.statRow, !last && styles.statRowBorder]}>
-      <Text style={styles.statLabel}>{label}</Text>
-      <Text style={styles.statLabel}>{value}</Text>
-    </View>
+    <div className={`flex justify-between py-[3px] ${!last ? 'border-b border-border-soft' : ''}`}>
+      <span>{label}</span>
+      <span>{value}</span>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.paper },
-  flex1: { flex: 1 },
-  screen: { flexGrow: 1, paddingHorizontal: 34, backgroundColor: colors.paper },
-  headerRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  logo: { width: 44, height: 44, borderRadius: 12 },
-  wordmark: { fontFamily: fonts.ui700, fontSize: 28, color: colors.ink, letterSpacing: -0.5 },
-  tagline: { fontFamily: fonts.ui500, fontSize: 8.5, letterSpacing: 2.5, color: colors.soft, marginTop: 3 },
-  heroWrap: { flex: 1, justifyContent: 'center', marginVertical: 24 },
-  heroImage: { width: '100%', aspectRatio: 1, borderRadius: 26 },
-  welcomeHeadline: { fontFamily: fonts.display, fontSize: 32, lineHeight: 37, color: colors.ink, marginBottom: 22, maxWidth: 320 },
-  caption: { textAlign: 'center', marginTop: 16, fontFamily: fonts.ui500, fontSize: 9, letterSpacing: 1, color: colors.soft },
-  stepLabel: { fontFamily: fonts.ui600, fontSize: 11, letterSpacing: 3, color: colors.soft },
-  introImage: { width: '100%', height: 300, borderRadius: 22, marginVertical: 22 },
-  introTitle: { fontFamily: fonts.display, fontSize: 40, color: colors.ink, letterSpacing: -0.5 },
-  introBody: { fontFamily: fonts.displayMedium, fontSize: 20, lineHeight: 28, color: '#3B352D', marginTop: 14 },
-  dotsRow: { flexDirection: 'row', gap: 6, justifyContent: 'center', marginBottom: 22 },
-  dot: { height: 6, borderRadius: 6 },
-  skipLink: { textAlign: 'center', marginTop: 14, fontFamily: fonts.ui500, fontSize: 9, letterSpacing: 1, color: colors.soft },
-  formTitle: { fontFamily: fonts.display, fontSize: 40, color: colors.ink, letterSpacing: -0.5, marginTop: 6, marginBottom: 28 },
-  fieldLabel: { fontFamily: fonts.ui500, fontSize: 10, letterSpacing: 1.5, color: colors.soft, marginBottom: 8 },
-  underlineInput: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(20,17,14,0.25)',
-    paddingVertical: 10,
-    fontSize: 18,
-    color: colors.ink,
-    fontFamily: fonts.ui400,
-  },
-  rowGap: { flexDirection: 'row', gap: 14 },
-  sexRow: { flexDirection: 'row', gap: 8 },
-  sexOption: { flex: 1, alignItems: 'center', paddingVertical: 13, borderRadius: 14, borderWidth: 1, borderColor: colors.borderStrong },
-  sexLabel: { fontFamily: fonts.ui500, fontSize: 11, letterSpacing: 1 },
-  resultRow: { flexDirection: 'row', gap: 18, alignItems: 'center', marginTop: 20 },
-  bodyModel: { width: 150, height: 240, borderRadius: 16 },
-  bmiNumber: { fontFamily: fonts.display, fontSize: 64, color: colors.ink, marginTop: 6, lineHeight: 58 },
-  statRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 },
-  statRowBorder: { borderBottomWidth: 1, borderBottomColor: colors.borderSoft },
-  statLabel: { fontFamily: fonts.ui500, fontSize: 10, color: colors.soft },
-  advice: { fontFamily: fonts.displayMedium, fontSize: 19, lineHeight: 26, color: '#3B352D', marginTop: 24 },
-});

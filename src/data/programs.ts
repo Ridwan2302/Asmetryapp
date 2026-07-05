@@ -1,6 +1,5 @@
 /* asmetry.io — full program library. 11 programs, each a 4-week (28-day) daily protocol.
  * Ported verbatim from the design handoff's programs.js. */
-import { ImageSourcePropType } from 'react-native';
 
 export type ProgramSection = 'STRUCTURE' | 'BODY' | 'SKIN & GROOMING' | 'SYSTEMS';
 export type ProgramLevel = 'CORE' | 'INTERMEDIATE' | 'ADVANCED';
@@ -21,7 +20,7 @@ export interface Program {
   level: ProgramLevel;
   anatomy: string;
   plate: AnatomyPlate;
-  img?: ImageSourcePropType;
+  img?: string;
   overview: string;
   weeks: ProgramWeek[];
 }
@@ -29,7 +28,7 @@ export interface Program {
 export const ASMETRY_PROGRAMS: Program[] = [
   {
     id: 'face-structure', name: 'Face Structure', section: 'STRUCTURE', tagline: 'Maxilla · midface · overall harmony',
-    mins: 12, level: 'CORE', anatomy: 'Facial Musculature', plate: 'face', img: require('../../assets/images/programs/face-structure.png'),
+    mins: 12, level: 'CORE', anatomy: 'Facial Musculature', plate: 'face', img: '/images/programs/face-structure.png',
     overview: 'A month of tongue posture, midface activation and lymphatic work to lift the entire facial framework and sharpen its underlying structure.',
     weeks: [
       { n: 1, focus: 'Establish tongue posture', tasks: ['Full-tongue mewing, 3× 10-min holds', 'Nasal breathing check every waking hour', 'Cheekbone lift: 3 sets of 15', 'AM + PM lymphatic face massage, 2 min'] },
@@ -40,7 +39,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'jawmaxing', name: 'Jawmaxing', section: 'STRUCTURE', tagline: 'Masseter hypertrophy · gonial angle',
-    mins: 10, level: 'INTERMEDIATE', anatomy: 'Masseter & Mandible', plate: 'jaw', img: require('../../assets/images/programs/jawmaxing-profile.png'),
+    mins: 10, level: 'INTERMEDIATE', anatomy: 'Masseter & Mandible', plate: 'jaw', img: '/images/programs/jawmaxing-profile.png',
     overview: 'Progressive resistance chewing and clench training to hypertrophy the masseter, sharpen the gonial angle and widen the lower-face silhouette.',
     weeks: [
       { n: 1, focus: 'Prime the masseter', tasks: ['Warm-up: 20 slow jaw clenches', 'Resistance gum: 3 min per side', 'Chin tucks: 3 sets of 12', 'Jaw-fascia release massage, 2 min'] },
@@ -51,7 +50,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'hunter-eyes', name: 'Hunter Eyes Program', section: 'STRUCTURE', tagline: 'Canthal tilt · orbital · upper-eyelid exposure',
-    mins: 8, level: 'ADVANCED', anatomy: 'Orbital Region', plate: 'eyes', img: require('../../assets/images/programs/hunter-eyes.png'),
+    mins: 8, level: 'ADVANCED', anatomy: 'Orbital Region', plate: 'eyes', img: '/images/programs/hunter-eyes.png',
     overview: 'Orbital and periorbital training to reduce upper-eyelid exposure, support a positive canthal tilt and create a more hooded, forward-set hunter-eye look.',
     weeks: [
       { n: 1, focus: 'Wake the orbital ring', tasks: ['Lateral gaze holds: 3 × 8s per side', 'Under-eye de-puff cold compress, 60s', 'Outer-corner lift + squint: 3 × 12', 'Inner-to-outer drainage taps, 90s'] },
@@ -62,7 +61,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'bodymaxing', name: 'Bodymaxing', section: 'BODY', tagline: 'V-taper · shoulders · lean composition',
-    mins: 35, level: 'INTERMEDIATE', anatomy: 'Upper-Body Musculature', plate: 'body', img: require('../../assets/images/programs/bodymaxing-labeled.png'),
+    mins: 35, level: 'INTERMEDIATE', anatomy: 'Upper-Body Musculature', plate: 'body', img: '/images/programs/bodymaxing-labeled.png',
     overview: 'A four-week push toward a wider, leaner frame: shoulder and back volume for the V-taper, a tighter waist, and daily habits that reveal definition.',
     weeks: [
       { n: 1, focus: 'Build the base', tasks: ['Push session: chest, shoulders, triceps', 'Lateral raises: 4 sets of 15', '8k steps for the day', 'Protein target: 1.6g per kg bodyweight'] },
@@ -73,7 +72,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'posture', name: 'Posture Reset', section: 'BODY', tagline: 'Spinal alignment · forward-head correction',
-    mins: 15, level: 'CORE', anatomy: 'Spinal Column', plate: 'posture', img: require('../../assets/images/programs/posture-reset.png'),
+    mins: 15, level: 'CORE', anatomy: 'Spinal Column', plate: 'posture', img: '/images/programs/posture-reset.png',
     overview: 'Undo forward-head and rounded-shoulder posture with daily mobility, thoracic extension and strengthening — the fastest change to how your frame reads.',
     weeks: [
       { n: 1, focus: 'Open & release', tasks: ['Chin tucks: 3 sets of 12', 'Chest doorway stretch: 3 × 30s', 'Thoracic extensions over chair: 10 reps', 'Hourly posture reset alarm'] },
@@ -84,7 +83,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'skinmaxing', name: 'Skinmaxing', section: 'SKIN & GROOMING', tagline: 'Barrier · glow · collagen support',
-    mins: 10, level: 'CORE', anatomy: 'Skin Cross-Section', plate: 'skin', img: require('../../assets/images/programs/skinmaxing.png'),
+    mins: 10, level: 'CORE', anatomy: 'Skin Cross-Section', plate: 'skin', img: '/images/programs/skinmaxing.png',
     overview: 'Build a resilient barrier and a real glow: a simple, consistent routine plus the sleep, sun and nutrition inputs that skin actually responds to.',
     weeks: [
       { n: 1, focus: 'Establish the routine', tasks: ['AM: cleanse, vitamin C, SPF 30+', 'PM: cleanse + moisturize', 'Water target: 2.5L', 'Pillowcase change (2×/week)'] },
@@ -95,7 +94,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'skin-clarity', name: 'Skin Clarity Reset', section: 'SKIN & GROOMING', tagline: 'Breakout control · texture · tone',
-    mins: 8, level: 'INTERMEDIATE', anatomy: 'Skin Cross-Section', plate: 'skin', img: require('../../assets/images/programs/skin-clarity.png'),
+    mins: 8, level: 'INTERMEDIATE', anatomy: 'Skin Cross-Section', plate: 'skin', img: '/images/programs/skin-clarity.png',
     overview: 'A focused reset for congestion and uneven tone — calm active breakouts, clear texture, and rebuild an even, clear complexion over 28 days.',
     weeks: [
       { n: 1, focus: 'Calm & simplify', tasks: ['Gentle cleanse AM/PM only', 'Spot treat with BHA/benzoyl', 'SPF every morning', 'Cut dairy + high-sugar test'] },
@@ -106,7 +105,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'grooming', name: 'Power Grooming System', section: 'SKIN & GROOMING', tagline: 'Brows · hair · beard · presentation',
-    mins: 10, level: 'CORE', anatomy: 'Frontal Presentation', plate: 'face', img: require('../../assets/images/programs/grooming.png'),
+    mins: 10, level: 'CORE', anatomy: 'Frontal Presentation', plate: 'face', img: '/images/programs/grooming.png',
     overview: 'Dial in the controllables that instantly raise presentation: brows, hairline, facial hair, teeth and grooming detail — refined and maintained weekly.',
     weeks: [
       { n: 1, focus: 'Audit & shape', tasks: ['Brow clean-up (map, then trim)', 'Book / plan a sharp haircut', 'Define beard or clean shave line', 'Start whitening routine'] },
@@ -117,7 +116,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   },
   {
     id: 'hormonal', name: 'Hormonal Optimization Diet', section: 'SYSTEMS', tagline: 'Testosterone · insulin · body composition',
-    mins: 20, level: 'ADVANCED', anatomy: 'Metabolic Profile', plate: 'body', img: require('../../assets/images/programs/hormonal.png'),
+    mins: 20, level: 'ADVANCED', anatomy: 'Metabolic Profile', plate: 'body', img: '/images/programs/hormonal.png',
     overview: 'Eat and train to support natural hormonal balance: protein and micronutrient targets, blood-sugar control, and the lifestyle inputs that move the needle.',
     weeks: [
       { n: 1, focus: 'Fix the foundation', tasks: ['Protein: 1.8g per kg bodyweight', 'Cut liquid sugar + seed-oil fried food', 'Sunlight 15 min before noon', 'Sleep 8h window'] },

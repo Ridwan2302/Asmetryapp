@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { monthYear } from '../lib/calc';
@@ -24,6 +23,7 @@ interface AppState {
   logDay: (id: string) => void;
   setReminder: (id: string, time: string) => void;
   toggleExpanded: (id: string) => void;
+  markReminderFired: (id: string, key: string) => void;
 
   addScan: (entry: ScanEntry) => void;
   toggleSetting: (id: keyof Settings) => void;
@@ -38,6 +38,12 @@ const initialState = {
   started: [] as StartedProgram[],
   scans: [] as ScanEntry[],
   settings: DEFAULT_SETTINGS,
+};
+
+const noopStorage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
 };
 
 export const useAppStore = create<AppState>()(
@@ -91,6 +97,11 @@ export const useAppStore = create<AppState>()(
           started: state.started.map((s) => (s.id === id ? { ...s, expanded: !s.expanded } : { ...s, expanded: false })),
         })),
 
+      markReminderFired: (id, key) =>
+        set((state) => ({
+          started: state.started.map((s) => (s.id === id ? { ...s, lastRem: key } : s)),
+        })),
+
       addScan: (entry) => set((state) => ({ scans: [...state.scans, entry] })),
 
       toggleSetting: (id) =>
@@ -100,7 +111,11 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'asmetry_state_v2',
-      storage: createJSONStorage(() => AsyncStorage),
+      // Skip auto-hydration: the store module also evaluates during SSR/build where
+      // `localStorage` doesn't exist. Providers.tsx calls `.persist.rehydrate()` itself
+      // once mounted on the client, and gates rendering on `hasHydrated`.
+      skipHydration: true,
+      storage: createJSONStorage(() => (typeof window === 'undefined' ? noopStorage : window.localStorage)),
       partialize: (state) => ({
         onboarded: state.onboarded,
         profile: state.profile,

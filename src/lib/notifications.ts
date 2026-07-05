@@ -1,23 +1,26 @@
-import * as Notifications from 'expo-notifications';
 import { getProgram } from '../data/programs';
-import type { StartedProgram } from '../state/types';
+import { useAppStore } from '../state/store';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+/** Browser reminders, best-effort: fire while a tab is open (any tab, backgrounded is fine),
+ * via the Notification API. There is no reliable way to deliver a notification once every
+ * browser tab is fully closed without a Web Push backend (VAPID keys + a server to hold
+ * subscriptions) — out of scope for a static deploy. See README for the tradeoff. */
 
-const idFor = (programId: string) => `asmetry-reminder-${programId}`;
+export function notificationsSupported(): boolean {
+  return typeof window !== 'undefined' && 'Notification' in window;
+}
 
-export async function ensureNotificationPermission(): Promise<boolean> {
-  const current = await Notifications.getPermissionsAsync();
-  if (current.granted) return true;
-  const requested = await Notifications.requestPermissionsAsync();
-  return requested.granted;
+export async function requestNotificationPermission(): Promise<boolean> {
+  if (!notificationsSupported()) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+function todayKey(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 
 function taskListFor(programId: string, dayNumber: number): string {
@@ -27,49 +30,27 @@ function taskListFor(programId: string, dayNumber: number): string {
   return week.tasks.join(' · ');
 }
 
-/** Schedules (or replaces) the daily repeating reminder for one active program. */
-export async function scheduleProgramReminder(started: StartedProgram, notificationsEnabled: boolean) {
-  const identifier = idFor(started.id);
-  await Notifications.cancelScheduledNotificationAsync(identifier).catch(() => {});
-  if (!notificationsEnabled) return;
+/** Call periodically (see NotificationScheduler). Checks every active program's reminder
+ * time against the current minute and fires a browser Notification once per program per day. */
+export function checkAndFireReminders() {
+  if (!notificationsSupported() || Notification.permission !== 'granted') return;
+  const { started, settings, markReminderFired } = useAppStore.getState();
+  if (!settings.notifications) return;
 
-  const program = getProgram(started.id);
-  if (!program) return;
-  const [hourStr, minuteStr] = started.reminder.split(':');
-  const hour = parseInt(hourStr, 10);
-  const minute = parseInt(minuteStr, 10);
-  if (Number.isNaN(hour) || Number.isNaN(minute)) return;
+  const now = new Date();
+  const hm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  const key = `${todayKey()} ${hm}`;
 
-  const granted = await ensureNotificationPermission();
-  if (!granted) return;
-
-  const dayNumber = Math.min(28, started.done + 1);
-
-  await Notifications.scheduleNotificationAsync({
-    identifier,
-    content: {
-      title: program.name,
-      body: `DAY ${dayNumber}/28 · ${taskListFor(started.id, dayNumber)}`,
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour,
-      minute,
-    },
-  });
-}
-
-export async function cancelProgramReminder(programId: string) {
-  await Notifications.cancelScheduledNotificationAsync(idFor(programId)).catch(() => {});
-}
-
-/** Reschedules every active program's reminder — call after settings/state changes that affect timing or content. */
-export async function resyncAllReminders(started: StartedProgram[], notificationsEnabled: boolean) {
-  if (!notificationsEnabled) {
-    await Notifications.cancelAllScheduledNotificationsAsync().catch(() => {});
-    return;
-  }
   for (const s of started) {
-    await scheduleProgramReminder(s, true);
+    if (s.reminder === hm && s.lastRem !== key) {
+      const program = getProgram(s.id);
+      if (!program) continue;
+      const dayNumber = Math.min(28, s.done + 1);
+      markReminderFired(s.id, key);
+      new Notification(program.name, {
+        body: `DAY ${dayNumber}/28 · ${taskListFor(s.id, dayNumber)}`,
+        tag: `asmetry-${s.id}`,
+      });
+    }
   }
 }

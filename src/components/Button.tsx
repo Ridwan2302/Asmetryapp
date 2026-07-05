@@ -1,72 +1,29 @@
-import React from 'react';
-import { Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
-import { colors, fonts } from '../theme/tokens';
+'use client';
 
-interface ButtonProps {
+import { ButtonHTMLAttributes } from 'react';
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
-  onPress: () => void;
-  disabled?: boolean;
-  style?: ViewStyle;
 }
 
-export function PrimaryButton({ label, onPress, disabled, style }: ButtonProps) {
+export function PrimaryButton({ label, className = '', ...rest }: ButtonProps) {
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      style={({ pressed }) => [
-        styles.primary,
-        disabled && styles.disabled,
-        pressed && !disabled && styles.pressed,
-        style,
-      ]}
+    <button
+      {...rest}
+      className={`w-full rounded-[20px] bg-ink py-[19px] text-center font-ui text-[12px] font-semibold tracking-[2px] text-paper transition-opacity active:opacity-85 disabled:opacity-35 ${className}`}
     >
-      <Text style={styles.primaryLabel}>{label}</Text>
-    </Pressable>
+      {label}
+    </button>
   );
 }
 
-export function OutlineButton({ label, onPress, disabled, style }: ButtonProps) {
+export function OutlineButton({ label, className = '', ...rest }: ButtonProps) {
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      style={({ pressed }) => [styles.outline, pressed && !disabled && styles.pressedOutline, style]}
+    <button
+      {...rest}
+      className={`w-full rounded-[20px] border border-border-strong py-[19px] text-center font-ui text-[12px] font-semibold tracking-[2px] text-ink transition-opacity active:opacity-60 disabled:opacity-35 ${className}`}
     >
-      <Text style={styles.outlineLabel}>{label}</Text>
-    </Pressable>
+      {label}
+    </button>
   );
 }
-
-const styles = StyleSheet.create({
-  primary: {
-    backgroundColor: colors.ink,
-    borderRadius: 20,
-    paddingVertical: 19,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primaryLabel: {
-    color: colors.paper,
-    fontFamily: fonts.ui600,
-    fontSize: 12,
-    letterSpacing: 2,
-  },
-  outline: {
-    borderWidth: 1,
-    borderColor: colors.borderStrong,
-    borderRadius: 20,
-    paddingVertical: 19,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  outlineLabel: {
-    color: colors.ink,
-    fontFamily: fonts.ui600,
-    fontSize: 12,
-    letterSpacing: 2,
-  },
-  disabled: { opacity: 0.35 },
-  pressed: { opacity: 0.85 },
-  pressedOutline: { opacity: 0.6 },
-});

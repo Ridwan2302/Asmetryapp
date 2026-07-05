@@ -1,5 +1,3 @@
-import { colors } from '../theme/tokens';
-
 export function bmiOf(heightCm: number, weightKg: number): number {
   const m = heightCm / 100;
   return m > 0 ? weightKg / (m * m) : 0;
@@ -77,8 +75,8 @@ export function signedDelta(delta: number): string {
   return (delta >= 0 ? '+' : '') + delta;
 }
 
-export function deltaColor(delta: number): string {
-  if (delta > 0) return colors.accent;
-  if (delta < 0) return colors.negative;
-  return colors.soft;
+export function deltaColorClass(delta: number): string {
+  if (delta > 0) return 'text-ink';
+  if (delta < 0) return 'text-negative';
+  return 'text-soft';
 }

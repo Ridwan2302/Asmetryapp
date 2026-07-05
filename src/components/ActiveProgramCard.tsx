@@ -1,13 +1,11 @@
-import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { getProgram } from '../data/programs';
-import { tapHaptic } from '../lib/haptics';
-import { cancelProgramReminder, scheduleProgramReminder } from '../lib/notifications';
-import { useAppStore } from '../state/store';
-import type { StartedProgram } from '../state/types';
-import { colors, fonts } from '../theme/tokens';
+'use client';
+
+import { getProgram } from '@/data/programs';
+import { tapHaptic } from '@/lib/haptics';
+import { requestNotificationPermission } from '@/lib/notifications';
+import { useAppStore } from '@/state/store';
+import type { StartedProgram } from '@/state/types';
 import { ProgressBar } from './ProgressBar';
-import { TimePickerField } from './TimePickerField';
 
 export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const program = getProgram(started.id);
@@ -16,7 +14,6 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const logDay = useAppStore((s) => s.logDay);
   const setReminder = useAppStore((s) => s.setReminder);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
-  const notificationsEnabled = useAppStore((s) => s.settings.notifications);
 
   if (!program) return null;
 
@@ -31,20 +28,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
 
   function handleReminderChange(time: string) {
     setReminder(started.id, time);
-    scheduleProgramReminder({ ...started, reminder: time }, notificationsEnabled);
-  }
-
-  function handleLogDay() {
-    if (!allDone) return;
-    tapHaptic();
-    logDay(started.id);
-    scheduleProgramReminder({ ...started, done: Math.min(28, started.done + 1), checks: {} }, notificationsEnabled);
-  }
-
-  function handleStop() {
-    tapHaptic();
-    toggleProgram(started.id);
-    cancelProgramReminder(started.id);
+    void requestNotificationPermission();
   }
 
   function handleToggleTask(i: number) {
@@ -52,106 +36,89 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
     toggleTask(started.id, i);
   }
 
-  return (
-    <View style={styles.card}>
-      <Pressable style={styles.headerRow} onPress={() => toggleExpanded(started.id)}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.name}>{program.name}</Text>
-          <Text style={styles.meta}>
-            WEEK {week} · {wk.focus}
-          </Text>
-        </View>
-        <View style={{ alignItems: 'flex-end', paddingLeft: 10 }}>
-          <Text style={styles.dayCount}>
-            {started.done}
-            <Text style={styles.dayTotal}>/28</Text>
-          </Text>
-          <Text style={styles.chevron}>{started.expanded ? '▾' : '▸'}</Text>
-        </View>
-      </Pressable>
+  function handleLogDay() {
+    if (!allDone) return;
+    tapHaptic();
+    logDay(started.id);
+  }
 
-      <View style={styles.barRow}>
-        <Text style={styles.barLabel}>OVERALL</Text>
-        <ProgressBar pct={overallPct} style={{ flex: 1 }} />
-      </View>
-      <View style={styles.barRow}>
-        <Text style={styles.barLabel}>TODAY</Text>
-        <ProgressBar pct={todayPct} fillColor={allDone ? colors.success : colors.accent} style={{ flex: 1 }} />
-        <Text style={[styles.todayCount, { color: allDone ? colors.success : colors.ink }]}>
+  function handleStop() {
+    tapHaptic();
+    toggleProgram(started.id);
+  }
+
+  return (
+    <div className="mb-3 rounded-[20px] border border-border bg-card p-[18px]">
+      <button className="flex w-full items-start justify-between text-left" onClick={() => toggleExpanded(started.id)}>
+        <div className="flex-1">
+          <div className="font-display text-[22px] leading-[1.05] text-ink">{program.name}</div>
+          <div className="mt-[3px] font-ui text-[9px] tracking-[1px] text-soft">
+            WEEK {week} · {wk.focus}
+          </div>
+        </div>
+        <div className="pl-[10px] text-right">
+          <span className="font-display text-[24px] text-ink">{started.done}</span>
+          <span className="font-ui text-[10px] text-soft">/28</span>
+          <div className="mt-[2px] font-ui text-[14px] text-soft">{started.expanded ? '▾' : '▸'}</div>
+        </div>
+      </button>
+
+      <div className="mt-[10px] flex items-center gap-2">
+        <span className="w-[52px] font-ui text-[8px] tracking-[1px] text-soft">OVERALL</span>
+        <ProgressBar pct={overallPct} className="flex-1" />
+      </div>
+      <div className="mt-2 flex items-center gap-2">
+        <span className="w-[52px] font-ui text-[8px] tracking-[1px] text-soft">TODAY</span>
+        <ProgressBar pct={todayPct} fillClassName={allDone ? 'bg-success' : 'bg-accent'} className="flex-1" />
+        <span className={`w-[34px] text-right font-ui text-[9px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
           {doneCount}/{tasks.length}
-        </Text>
-      </View>
+        </span>
+      </div>
 
       {started.expanded && (
-        <View style={styles.expanded}>
-          <Text style={styles.todayHeader}>TODAY · DAY {dayNum}</Text>
+        <div className="mt-4">
+          <div className="mb-2 font-ui text-[9px] tracking-[1.5px] text-soft">TODAY · DAY {dayNum}</div>
           {tasks.map((text, i) => {
             const checked = !!started.checks[i];
             return (
-              <Pressable key={i} style={styles.taskRow} onPress={() => handleToggleTask(i)}>
-                <View style={[styles.checkbox, { backgroundColor: checked ? colors.accent : 'transparent', borderColor: checked ? colors.accent : 'rgba(20,17,14,0.3)' }]}>
-                  {checked && <Text style={styles.checkmark}>✓</Text>}
-                </View>
-                <Text style={[styles.taskText, checked && styles.taskTextDone]}>{text}</Text>
-              </Pressable>
+              <button key={i} className="flex w-full items-start gap-3 py-[9px] text-left" onClick={() => handleToggleTask(i)}>
+                <span
+                  className={`mt-[1px] flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-[1.5px] text-[12px] text-paper ${
+                    checked ? 'border-accent bg-accent' : 'border-[rgba(20,17,14,0.3)] bg-transparent'
+                  }`}
+                >
+                  {checked && '✓'}
+                </span>
+                <span className={`font-display text-[17px] leading-[1.3] ${checked ? 'text-soft line-through' : 'text-ink'}`}>{text}</span>
+              </button>
             );
           })}
 
-          <View style={styles.footerRow}>
-            <View style={styles.reminderRow}>
-              <Text style={styles.reminderLabel}>REMIND</Text>
-              <TimePickerField value={started.reminder} onChange={handleReminderChange} />
-            </View>
-            <Pressable
-              onPress={handleLogDay}
+          <div className="mt-[14px] flex items-center justify-between border-t border-border-soft pt-[14px]">
+            <div className="flex items-center gap-2">
+              <span className="font-ui text-[9px] tracking-[1px] text-soft">REMIND</span>
+              <input
+                type="time"
+                value={started.reminder}
+                onChange={(e) => handleReminderChange(e.target.value)}
+                className="rounded-[10px] border border-border-strong bg-transparent px-2 py-[5px] font-ui text-[12px] text-ink outline-none"
+              />
+            </div>
+            <button
+              onClick={handleLogDay}
               disabled={!allDone}
-              style={[styles.logButton, { backgroundColor: allDone ? colors.accent : 'transparent' }]}
+              className={`rounded-full border border-border-strong px-4 py-[9px] font-ui text-[10px] tracking-[1px] ${
+                allDone ? 'bg-accent text-paper' : 'bg-transparent text-soft'
+              }`}
             >
-              <Text style={[styles.logLabel, { color: allDone ? colors.paper : colors.soft }]}>
-                {started.done >= 28 ? 'COMPLETE' : allDone ? 'LOG DAY ✓' : 'FINISH TASKS'}
-              </Text>
-            </Pressable>
-          </View>
-          <Pressable onPress={handleStop} style={styles.stopButton}>
-            <Text style={styles.stopLabel}>■ STOP PROGRAM</Text>
-          </Pressable>
-        </View>
+              {started.done >= 28 ? 'COMPLETE' : allDone ? 'LOG DAY ✓' : 'FINISH TASKS'}
+            </button>
+          </div>
+          <button onClick={handleStop} className="mt-3 block w-full py-[6px] text-center font-ui text-[9px] tracking-[1.5px] text-soft">
+            ■ STOP PROGRAM
+          </button>
+        </div>
       )}
-    </View>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  card: { borderWidth: 1, borderColor: colors.border, borderRadius: 20, padding: 18, marginBottom: 12, backgroundColor: colors.card },
-  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  name: { fontFamily: fonts.display, fontSize: 22, color: colors.ink, lineHeight: 24 },
-  meta: { fontFamily: fonts.ui500, fontSize: 9, letterSpacing: 1, color: colors.soft, marginTop: 3 },
-  dayCount: { fontFamily: fonts.display, fontSize: 24, color: colors.ink },
-  dayTotal: { fontFamily: fonts.ui500, fontSize: 10, color: colors.soft },
-  chevron: { fontFamily: fonts.ui500, fontSize: 14, color: colors.soft, marginTop: 2 },
-  barRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
-  barLabel: { fontFamily: fonts.ui600, fontSize: 8, letterSpacing: 1, color: colors.soft, width: 52 },
-  todayCount: { fontFamily: fonts.ui700, fontSize: 9, width: 34, textAlign: 'right' },
-  expanded: { marginTop: 16 },
-  todayHeader: { fontFamily: fonts.ui600, fontSize: 9, letterSpacing: 1.5, color: colors.soft, marginBottom: 8 },
-  taskRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, paddingVertical: 9 },
-  checkbox: { width: 20, height: 20, borderRadius: 6, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center', marginTop: 1 },
-  checkmark: { color: colors.paper, fontSize: 12 },
-  taskText: { flex: 1, fontFamily: fonts.displayMedium, fontSize: 17, lineHeight: 22, color: colors.ink },
-  taskTextDone: { color: colors.soft, textDecorationLine: 'line-through' },
-  footerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 14,
-    paddingTop: 14,
-    borderTopWidth: 1,
-    borderTopColor: colors.borderSoft,
-  },
-  reminderRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  reminderLabel: { fontFamily: fonts.ui500, fontSize: 9, letterSpacing: 1, color: colors.soft },
-  logButton: { paddingVertical: 9, paddingHorizontal: 16, borderRadius: 20, borderWidth: 1, borderColor: colors.borderStrong },
-  logLabel: { fontFamily: fonts.ui500, fontSize: 10, letterSpacing: 1 },
-  stopButton: { marginTop: 12, alignItems: 'center', paddingVertical: 6 },
-  stopLabel: { fontFamily: fonts.ui500, fontSize: 9, letterSpacing: 1.5, color: colors.soft },
-});
