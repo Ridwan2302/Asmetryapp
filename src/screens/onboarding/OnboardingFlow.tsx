@@ -11,19 +11,19 @@ import { Sex } from '@/state/types';
 
 const introData = [
   {
-    label: 'STEP 01 · ANALYZE',
+    step: 'Step 1 · Analyze',
     title: 'Scan your face',
     body: 'A quick capture measures symmetry, proportion and seven structural traits.',
     img: '/images/onboarding/intro-scan.png',
   },
   {
-    label: 'STEP 02 · PROTOCOL',
+    step: 'Step 2 · Protocol',
     title: 'Follow the program',
     body: 'Get 4-week daily protocols built around your weakest metrics — mewing, jawmaxing, hunter eyes and more.',
     img: '/images/onboarding/intro-jaw.png',
   },
   {
-    label: 'STEP 03 · TRACK',
+    step: 'Step 3 · Track',
     title: 'Watch it change',
     body: 'Check off daily tasks, get reminders, and re-scan to see the structure improve.',
     img: '/images/onboarding/welcome-hero.png',
@@ -76,7 +76,7 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
   }
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh bg-paper">
       {step === 0 && <Welcome onNext={next} />}
       {step >= 1 && step <= 3 && <Intro idx={step - 1} onNext={next} onSkip={skipIntro} />}
       {step === 4 && (
@@ -110,35 +110,31 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
 
 function Welcome({ onNext }: { onNext: () => void }) {
   return (
-    <div className="flex min-h-dvh flex-col justify-between px-[30px] pt-[calc(env(safe-area-inset-top)+40px)] pb-[46px]">
+    <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+28px)] pb-10">
       <div className="flex items-center gap-3">
-        <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.12)]">
-          <Image src="/images/logo.png" alt="Asmetry logo" fill className="object-cover" />
+        <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-[12px] shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
+          <Image src="/icons/icon-192.png" alt="Asmetry" fill className="object-cover" />
         </div>
         <div>
-          <div className="font-display text-[28px] leading-none font-bold tracking-[-0.5px] text-ink">
-            asmetry<span className="font-normal text-soft">.io</span>
+          <div className="text-[19px] font-bold tracking-[-0.3px] text-ink">
+            asmetry<span className="font-medium text-soft">.io</span>
           </div>
-          <div className="mt-[3px] font-ui text-[8.5px] tracking-[2.5px] text-soft">FACIAL ANALYSIS · LOOKSMAXING OS</div>
+          <div className="text-[13px] text-soft">Facial analysis · Looksmaxing OS</div>
         </div>
       </div>
 
       <div className="my-6 flex flex-1 items-center">
-        <div className="relative aspect-square w-full overflow-hidden rounded-[26px] shadow-[0_24px_50px_rgba(0,0,0,0.28)]">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
           <Image src="/images/onboarding/welcome-hero.png" alt="" fill className="object-cover" priority />
         </div>
       </div>
 
       <div>
-        <div className="mb-[22px] max-w-[320px] font-display text-[32px] leading-[1.15] text-ink">
-          Measure your face.
-          <br />
-          Follow the protocol.
-          <br />
-          Watch the structure change.
-        </div>
-        <PrimaryButton label="BEGIN →" onClick={onNext} />
-        <div className="mt-4 text-center font-ui text-[9px] tracking-[1px] text-soft">TAKES 90 SECONDS · DATA STAYS ON DEVICE</div>
+        <h1 className="mb-6 text-[32px] leading-[1.15] font-bold tracking-[-0.5px] text-ink">
+          Measure your face. Follow the protocol. Watch the structure change.
+        </h1>
+        <PrimaryButton label="Begin" onClick={onNext} />
+        <div className="mt-4 text-center text-[12px] text-soft">Takes 90 seconds · Data stays on device</div>
       </div>
     </div>
   );
@@ -147,30 +143,68 @@ function Welcome({ onNext }: { onNext: () => void }) {
 function Intro({ idx, onNext, onSkip }: { idx: number; onNext: () => void; onSkip: () => void }) {
   const cur = introData[idx];
   return (
-    <div className="flex min-h-dvh flex-col justify-between px-[34px] pt-[calc(env(safe-area-inset-top)+56px)] pb-[46px]">
+    <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
       <div>
-        <div className="font-ui text-[11px] tracking-[3px] text-soft">{cur.label}</div>
-        <div className="relative my-[22px] h-[300px] overflow-hidden rounded-[22px] shadow-[0_18px_40px_rgba(0,0,0,0.22)]">
+        <div className="mb-4 flex items-center justify-between">
+          <Pill label={cur.step} tone="accent" />
+          <button onClick={onSkip} className="text-[14px] font-medium text-soft">
+            Skip Intro
+          </button>
+        </div>
+        <div className="relative mb-6 h-[320px] overflow-hidden rounded-[28px] shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
           <Image src={cur.img} alt="" fill className="object-cover" />
         </div>
-        <div className="font-display text-[40px] leading-[1.02] tracking-[-0.5px] text-ink">{cur.title}</div>
-        <div className="mt-[14px] font-display text-[20px] leading-[1.4] text-[#3B352D]">{cur.body}</div>
+        <h2 className="text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{cur.title}</h2>
+        <p className="mt-2 text-[16px] leading-[1.45] text-soft">{cur.body}</p>
       </div>
       <div>
-        <div className="mb-[22px] flex justify-center gap-[6px]">
+        <div className="mb-5 flex justify-center gap-[6px]">
           {introData.map((_, i) => (
             <div
               key={i}
-              className="h-[6px] rounded-full transition-all"
-              style={{ width: i === idx ? 20 : 6, backgroundColor: i === idx ? '#14110E' : 'rgba(20,17,14,0.2)' }}
+              className="h-[7px] rounded-full transition-all"
+              style={{ width: i === idx ? 22 : 7, backgroundColor: i === idx ? '#0A84FF' : 'rgba(0,0,0,0.12)' }}
             />
           ))}
         </div>
-        <PrimaryButton label={idx === 2 ? 'CONTINUE' : 'NEXT →'} onClick={onNext} />
-        <button onClick={onSkip} className="mt-[14px] block w-full text-center font-ui text-[9px] tracking-[1px] text-soft">
-          SKIP INTRO
-        </button>
+        <PrimaryButton label={idx === 2 ? 'Continue' : 'Next'} onClick={onNext} />
       </div>
+    </div>
+  );
+}
+
+function SegmentedControl<T extends string>({ value, options, onChange }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void }) {
+  const idx = options.findIndex((o) => o.value === value);
+  return (
+    <div className="relative flex rounded-[14px] bg-fill p-1">
+      <div
+        className="absolute top-1 bottom-1 rounded-[10px] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.15)] transition-transform duration-300"
+        style={{ width: `calc(${100 / options.length}% - 4px)`, transform: `translateX(calc(${idx * 100}% + ${idx * 4}px))` }}
+      />
+      {options.map((o) => (
+        <button
+          key={o.value}
+          onClick={() => onChange(o.value)}
+          className={`relative z-10 flex-1 py-[9px] text-center text-[14px] font-semibold transition-colors ${value === o.value ? 'text-ink' : 'text-soft'}`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function FormField({ label, value, onChange, placeholder, inputMode }: { label: string; value: string; onChange: (v: string) => void; placeholder: string; inputMode?: 'numeric' | 'text' }) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-[13px] font-medium text-soft">{label}</label>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        inputMode={inputMode}
+        className="w-full rounded-[14px] bg-fill px-4 py-[13px] text-[17px] text-ink outline-none placeholder:text-soft/70 focus:ring-2 focus:ring-accent/40"
+      />
     </div>
   );
 }
@@ -191,104 +225,70 @@ function StatsForm(props: {
 }) {
   const { name, setName, sex, setSex, age, setAge, height, setHeight, weight, setWeight, ready, onNext } = props;
   return (
-    <div className="min-h-dvh px-[34px] pt-[calc(env(safe-area-inset-top)+60px)] pb-[46px]">
-      <div className="font-ui text-[11px] tracking-[3px] text-soft">STEP 04 · YOUR BASELINE</div>
-      <div className="mt-[6px] mb-7 font-display text-[40px] leading-[1.02] tracking-[-0.5px] text-ink">Tell us about you</div>
+    <div className="min-h-dvh px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
+      <Pill label="Step 4 · Your Baseline" tone="accent" className="mb-4" />
+      <h2 className="mb-6 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">Tell us about you</h2>
 
-      <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">NAME</label>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Your name"
-        className="mb-[26px] w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
-      />
+      <div className="space-y-5">
+        <FormField label="Name" value={name} onChange={setName} placeholder="Your name" />
 
-      <label className="mb-[10px] block font-ui text-[10px] tracking-[1.5px] text-soft">SEX (FOR ANATOMY MODEL)</label>
-      <div className="mb-[26px] flex gap-2">
-        {(['M', 'F'] as Sex[]).map((v) => (
-          <button
-            key={v}
-            onClick={() => setSex(v)}
-            className={`flex-1 rounded-[14px] border border-border-strong py-[13px] text-center font-ui text-[11px] tracking-[1px] ${
-              sex === v ? 'bg-ink text-paper' : 'bg-transparent text-ink'
-            }`}
-          >
-            {v === 'M' ? 'MALE' : 'FEMALE'}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex gap-[14px]">
-        <div className="flex-1">
-          <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">AGE</label>
-          <input
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            placeholder="24"
-            inputMode="numeric"
-            className="w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
+        <div>
+          <label className="mb-1.5 block text-[13px] font-medium text-soft">Sex (for anatomy model)</label>
+          <SegmentedControl
+            value={sex}
+            onChange={setSex}
+            options={[
+              { value: 'M', label: 'Male' },
+              { value: 'F', label: 'Female' },
+            ]}
           />
         </div>
-        <div className="flex-1">
-          <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">HEIGHT · CM</label>
-          <input
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            placeholder="178"
-            inputMode="numeric"
-            className="w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
-          />
-        </div>
-        <div className="flex-1">
-          <label className="mb-2 block font-ui text-[10px] tracking-[1.5px] text-soft">WEIGHT · KG</label>
-          <input
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            placeholder="72"
-            inputMode="numeric"
-            className="w-full border-0 border-b border-[rgba(20,17,14,0.25)] bg-transparent py-[10px] font-ui text-[18px] text-ink outline-none placeholder:text-soft"
-          />
+
+        <div className="flex gap-3">
+          <FormField label="Age" value={age} onChange={setAge} placeholder="24" inputMode="numeric" />
+          <FormField label="Height, cm" value={height} onChange={setHeight} placeholder="178" inputMode="numeric" />
+          <FormField label="Weight, kg" value={weight} onChange={setWeight} placeholder="72" inputMode="numeric" />
         </div>
       </div>
 
-      <div className="mt-10">{ready ? <PrimaryButton label="CALCULATE →" onClick={onNext} /> : <OutlineButton label="CALCULATE →" onClick={onNext} />}</div>
+      <div className="mt-10">{ready ? <PrimaryButton label="Calculate" onClick={onNext} /> : <OutlineButton label="Calculate" onClick={onNext} />}</div>
     </div>
   );
 }
 
 function ResultStep({ bmi, age, height, weight, onFinish }: { bmi: number; age: number; height: number; weight: number; onFinish: () => void }) {
   return (
-    <div className="flex min-h-dvh flex-col justify-between px-[34px] pt-[calc(env(safe-area-inset-top)+50px)] pb-[46px]">
+    <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
       <div>
-        <div className="font-ui text-[11px] tracking-[3px] text-soft">STEP 05 · YOUR MODEL</div>
-        <div className="mt-[6px] mb-5 font-display text-[38px] leading-[1.02] tracking-[-0.5px] text-ink">Baseline captured</div>
-        <div className="flex items-center gap-[18px]">
-          <div className="relative h-[240px] w-[150px] shrink-0 overflow-hidden rounded-2xl">
+        <Pill label="Step 5 · Your Model" tone="accent" className="mb-4" />
+        <h2 className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">Baseline captured</h2>
+        <div className="flex items-center gap-4 rounded-[24px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+          <div className="relative h-[190px] w-[120px] shrink-0 overflow-hidden rounded-[16px]">
             <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
           </div>
           <div className="flex-1">
-            <div className="font-ui text-[10px] tracking-[1.5px] text-soft">BODY MASS INDEX</div>
-            <div className="mt-[6px] font-display text-[64px] leading-[0.85] text-ink">{bmi ? bmi.toFixed(1) : '—'}</div>
-            <Pill label={bmiCategory(bmi)} className="mt-2" />
-            <div className="mt-4 font-ui text-[10px] leading-[1.9] text-soft">
-              <StatRow label="AGE" value={`${age} YRS`} />
-              <StatRow label="HEIGHT" value={`${height} CM`} />
-              <StatRow label="WEIGHT" value={`${weight} KG`} last />
+            <div className="text-[13px] font-medium text-soft">Body Mass Index</div>
+            <div className="mt-1 text-[48px] leading-[0.9] font-bold text-ink">{bmi ? bmi.toFixed(1) : '—'}</div>
+            <Pill label={bmiCategory(bmi)} tone={bmiCategory(bmi) === 'HEALTHY RANGE' ? 'success' : 'ink'} className="mt-2" />
+            <div className="mt-3 space-y-1 text-[13px] text-soft">
+              <StatRow label="Age" value={`${age} yrs`} />
+              <StatRow label="Height" value={`${height} cm`} />
+              <StatRow label="Weight" value={`${weight} kg`} />
             </div>
           </div>
         </div>
-        <div className="mt-6 font-display text-[19px] leading-[1.4] text-[#3B352D]">{bmiAdvice(bmi)}</div>
+        <p className="mt-5 text-[16px] leading-[1.45] text-soft">{bmiAdvice(bmi)}</p>
       </div>
-      <PrimaryButton label="ENTER ASMETRY →" onClick={onFinish} />
+      <PrimaryButton label="Enter Asmetry" onClick={onFinish} />
     </div>
   );
 }
 
-function StatRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
+function StatRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className={`flex justify-between py-[3px] ${!last ? 'border-b border-border-soft' : ''}`}>
+    <div className="flex justify-between">
       <span>{label}</span>
-      <span>{value}</span>
+      <span className="font-medium text-ink">{value}</span>
     </div>
   );
 }

@@ -52,122 +52,117 @@ export default function ProfilePage() {
 
   return (
     <Screen>
-      <div className="font-ui text-[11px] tracking-[3px] text-soft">MODULE 04</div>
-      <div className="mt-1 mb-6 font-display text-[34px] text-ink">Profile</div>
+      <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">Profile</div>
 
       <div className="mb-6 flex flex-col items-center text-center">
-        <div className="relative mb-[14px] h-[110px] w-[110px] overflow-hidden rounded-full border border-border bg-placeholder">
+        <div className="relative mb-3.5 h-[104px] w-[104px] overflow-hidden rounded-full bg-fill shadow-[0_1px_3px_rgba(0,0,0,0.1)]">
           {profilePic ? (
             <Image src={profilePic} alt="" fill className="object-cover" unoptimized />
           ) : (
-            <span className="flex h-full items-center justify-center font-ui text-[9px] tracking-[1px] text-soft">NO PHOTO</span>
+            <span className="flex h-full items-center justify-center text-[13px] font-medium text-soft">No photo</span>
           )}
         </div>
-        <div className="font-display text-[28px] text-ink">{profile.name || 'You'}</div>
-        <div className="mt-[2px] font-ui text-[9px] tracking-[2px] text-soft">MEMBER · {profile.since}</div>
-        <div className="mt-4 flex gap-[10px]">
-          <button onClick={() => fileRef.current?.click()} className="rounded-full bg-ink px-4 py-2 font-ui text-[10px] tracking-[1px] text-paper">
-            SET PHOTO
+        <div className="text-[22px] font-bold text-ink">{profile.name || 'You'}</div>
+        <div className="mt-0.5 text-[13px] text-soft">Member since {profile.since}</div>
+        <div className="mt-4 flex gap-2.5">
+          <button onClick={() => fileRef.current?.click()} className="press rounded-full bg-ink px-4 py-2 text-[13px] font-semibold text-white">
+            Set Photo
           </button>
-          <button onClick={() => setProfilePic(null)} className="rounded-full border border-border-strong px-4 py-2 font-ui text-[10px] tracking-[1px] text-ink">
-            DELETE
+          <button onClick={() => setProfilePic(null)} className="press rounded-full bg-fill px-4 py-2 text-[13px] font-semibold text-ink">
+            Delete
           </button>
         </div>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleSetPhoto} />
       </div>
 
-      <div className="mb-6 flex items-center gap-4 rounded-[22px] border border-border bg-card p-[18px]">
-        <div className="relative h-[190px] w-[110px] shrink-0 overflow-hidden rounded-2xl">
+      <div className="mb-6 flex items-center gap-4 rounded-[24px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+        <div className="relative h-[180px] w-[104px] shrink-0 overflow-hidden rounded-[18px]">
           <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
         </div>
         <div className="flex-1">
-          <div className="font-ui text-[9px] tracking-[1.5px] text-soft">YOUR ANATOMY MODEL</div>
-          <div className="mt-[6px] flex items-baseline gap-[6px]">
-            <span className="font-display text-[44px] leading-[0.85] text-ink">{bmi ? bmi.toFixed(1) : '—'}</span>
-            <span className="font-ui text-[9px] text-soft">BMI</span>
+          <div className="text-[13px] font-medium text-soft">Your Anatomy Model</div>
+          <div className="mt-1 flex items-baseline gap-1.5">
+            <span className="text-[38px] leading-[0.85] font-bold text-ink">{bmi ? bmi.toFixed(1) : '—'}</span>
+            <span className="text-[12px] font-medium text-soft">BMI</span>
           </div>
-          <Pill label={bmiCategory(bmi)} className="mt-2" />
-          <div className="mt-3 font-ui text-[9.5px] leading-[1.8] text-soft">
+          <Pill label={bmiCategory(bmi)} tone={bmiCategory(bmi) === 'HEALTHY RANGE' ? 'success' : 'ink'} className="mt-2" />
+          <div className="mt-3 space-y-0.5 text-[13px] text-soft">
             <div className="flex justify-between">
-              <span>AGE</span>
-              <span>{profile.age} YRS</span>
+              <span>Age</span>
+              <span className="font-medium text-ink">{profile.age} yrs</span>
             </div>
             <div className="flex justify-between">
-              <span>HEIGHT</span>
-              <span>{profile.height} CM</span>
+              <span>Height</span>
+              <span className="font-medium text-ink">{profile.height} cm</span>
             </div>
             <div className="flex justify-between">
-              <span>WEIGHT</span>
-              <span>{profile.weight} KG</span>
+              <span>Weight</span>
+              <span className="font-medium text-ink">{profile.weight} kg</span>
             </div>
           </div>
-          <button onClick={() => router.push('/edit-stats')} className="mt-3 font-ui text-[9px] tracking-[1px] text-ink underline">
-            EDIT STATS
+          <button onClick={() => router.push('/edit-stats')} className="mt-3 text-[13px] font-semibold text-accent">
+            Edit Stats
           </button>
         </div>
       </div>
 
-      <div className="mb-[26px] flex gap-2">
-        <StatTile value={String(scans.length)} label="SCANS" />
-        <StatTile value={String(started.length)} label="ACTIVE" />
-        <StatTile value={String(daysDone)} label="DAYS DONE" />
+      <div className="mb-7 flex gap-2.5">
+        <StatTile value={String(scans.length)} label="Scans" />
+        <StatTile value={String(started.length)} label="Active" />
+        <StatTile value={String(daysDone)} label="Days Done" />
       </div>
 
-      <div className="mb-1 font-ui text-[10px] tracking-[2px] text-ink">SETTINGS</div>
-      {SETTINGS_ROWS.map((row) => (
-        <button
-          key={row.id}
-          onClick={() => {
-            toggleSetting(row.id);
-            if (row.id === 'notifications' && !settings.notifications) void requestNotificationPermission();
-          }}
-          className="flex w-full items-center justify-between border-t border-border py-[15px] text-left"
-        >
-          <span className="font-display text-[19px] text-ink">{row.label}</span>
-          <span className={`relative h-[26px] w-11 rounded-full transition-colors ${settings[row.id] ? 'bg-accent' : 'bg-[rgba(20,17,14,0.18)]'}`}>
-            <span
-              className="absolute top-[3px] h-5 w-5 rounded-full bg-paper transition-all"
-              style={{ left: settings[row.id] ? 21 : 3 }}
-            />
-          </span>
-        </button>
-      ))}
+      <div className="mb-1 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">Settings</div>
+      <div className="rounded-[20px] bg-card px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+        {SETTINGS_ROWS.map((row, i) => (
+          <button
+            key={row.id}
+            onClick={() => {
+              toggleSetting(row.id);
+              if (row.id === 'notifications' && !settings.notifications) void requestNotificationPermission();
+            }}
+            className={`flex w-full items-center justify-between py-3.5 text-left ${i > 0 ? 'border-t border-border' : ''}`}
+          >
+            <span className="text-[16px] font-medium text-ink">{row.label}</span>
+            <span className={`relative h-[26px] w-11 rounded-full transition-colors ${settings[row.id] ? 'bg-success' : 'bg-fill-strong'}`}>
+              <span className="absolute top-[3px] h-5 w-5 rounded-full bg-white shadow-sm transition-all" style={{ left: settings[row.id] ? 21 : 3 }} />
+            </span>
+          </button>
+        ))}
+      </div>
 
-      <div className="mt-[22px] mb-[10px] font-ui text-[10px] tracking-[2px] text-ink">DANGER ZONE</div>
+      <div className="mt-7 mb-2.5 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">Danger Zone</div>
       {!confirmReset ? (
-        <button
-          onClick={() => setConfirmReset(true)}
-          className="flex w-full items-center justify-between rounded-2xl border border-border-strong p-4 px-[18px] text-left"
-        >
+        <button onClick={() => setConfirmReset(true)} className="press flex w-full items-center justify-between rounded-[20px] bg-card p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
           <div>
-            <div className="font-display text-[20px] text-ink">Start Fresh</div>
-            <div className="mt-[2px] font-ui text-[9px] text-soft">Erase everything and begin from zero</div>
+            <div className="text-[17px] font-semibold text-negative">Start Fresh</div>
+            <div className="mt-0.5 text-[13px] text-soft">Erase everything and begin from zero</div>
           </div>
           <span className="text-[18px]">🗑</span>
         </button>
       ) : (
-        <div className="rounded-2xl border border-ink p-[18px]">
-          <div className="font-display text-[21px] text-ink">Start completely over?</div>
-          <p className="mt-[6px] font-ui text-[11px] leading-[1.6] text-soft">
+        <div className="rounded-[20px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+          <div className="text-[19px] font-bold text-ink">Start completely over?</div>
+          <p className="mt-1.5 text-[14px] leading-[1.5] text-soft">
             This permanently erases your profile, photo, scan history, and every active program. This cannot be undone.
           </p>
-          <div className="mt-4 flex gap-[10px]">
-            <OutlineButton label="KEEP MY DATA" onClick={() => setConfirmReset(false)} className="!py-[14px]" />
-            <PrimaryButton label="ERASE EVERYTHING" onClick={handleResetApp} className="!py-[14px]" />
+          <div className="mt-4 flex gap-2.5">
+            <OutlineButton label="Keep My Data" onClick={() => setConfirmReset(false)} className="!py-3.5" />
+            <PrimaryButton label="Erase Everything" onClick={handleResetApp} className="!bg-negative !py-3.5" />
           </div>
         </div>
       )}
 
-      <p className="mt-4 text-center font-ui text-[9px] tracking-[1px] text-[#C3BDB2]">asmetry.io v2.0 · DATA STAYS ON DEVICE</p>
+      <p className="mt-5 text-center text-[12px] text-soft">asmetry.io · Data stays on this device</p>
     </Screen>
   );
 }
 
 function StatTile({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex-1 rounded-2xl border border-border py-4 text-center">
-      <div className="font-display text-[30px] text-ink">{value}</div>
-      <div className="font-ui text-[8px] tracking-[1px] text-soft">{label}</div>
+    <div className="flex-1 rounded-[18px] bg-fill py-4 text-center">
+      <div className="text-[24px] font-bold text-ink">{value}</div>
+      <div className="text-[11px] font-medium text-soft">{label}</div>
     </div>
   );
 }

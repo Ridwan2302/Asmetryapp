@@ -6,7 +6,7 @@ interface ProgressBarProps {
   className?: string;
 }
 
-export function ProgressBar({ pct, height = 5, trackClassName = 'bg-border-soft', fillClassName = 'bg-accent', className = '' }: ProgressBarProps) {
+export function ProgressBar({ pct, height = 6, trackClassName = 'bg-fill', fillClassName = 'bg-accent', className = '' }: ProgressBarProps) {
   const clamped = Math.max(0, Math.min(100, pct));
   return (
     <div className={`overflow-hidden rounded-full ${trackClassName} ${className}`} style={{ height }}>

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useAppStore } from '@/state/store';
+import { InstallPrompt } from './InstallPrompt';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // `hasHydrated` defaults to false in the store's initial state, so the server render and
@@ -15,8 +16,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="mx-auto min-h-dvh w-full max-w-[480px] bg-paper text-ink shadow-[0_0_60px_rgba(0,0,0,0.35)]">
-      {hasHydrated ? children : null}
+    <div className="mx-auto min-h-dvh w-full max-w-[480px] bg-paper text-ink shadow-[0_0_80px_rgba(0,0,0,0.5)]">
+      {hasHydrated ? (
+        <>
+          <InstallPrompt />
+          {children}
+        </>
+      ) : null}
     </div>
   );
 }

@@ -76,7 +76,7 @@ export function signedDelta(delta: number): string {
 }
 
 export function deltaColorClass(delta: number): string {
-  if (delta > 0) return 'text-ink';
+  if (delta > 0) return 'text-success';
   if (delta < 0) return 'text-negative';
   return 'text-soft';
 }

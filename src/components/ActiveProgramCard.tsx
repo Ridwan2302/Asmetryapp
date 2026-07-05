@@ -48,77 +48,95 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   }
 
   return (
-    <div className="mb-3 rounded-[20px] border border-border bg-card p-[18px]">
-      <button className="flex w-full items-start justify-between text-left" onClick={() => toggleExpanded(started.id)}>
+    <div className="mb-3 rounded-[22px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+      <button className="press flex w-full items-start justify-between text-left" onClick={() => toggleExpanded(started.id)}>
         <div className="flex-1">
-          <div className="font-display text-[22px] leading-[1.05] text-ink">{program.name}</div>
-          <div className="mt-[3px] font-ui text-[9px] tracking-[1px] text-soft">
-            WEEK {week} · {wk.focus}
+          <div className="text-[19px] font-bold tracking-[-0.2px] text-ink">{program.name}</div>
+          <div className="mt-0.5 text-[13px] text-soft">
+            Week {week} · {wk.focus}
           </div>
         </div>
-        <div className="pl-[10px] text-right">
-          <span className="font-display text-[24px] text-ink">{started.done}</span>
-          <span className="font-ui text-[10px] text-soft">/28</span>
-          <div className="mt-[2px] font-ui text-[14px] text-soft">{started.expanded ? '▾' : '▸'}</div>
+        <div className="flex items-center gap-2 pl-2.5">
+          <span className="text-[15px] font-semibold text-ink">
+            {started.done}
+            <span className="text-soft">/28</span>
+          </span>
+          <ChevronIcon expanded={!!started.expanded} />
         </div>
       </button>
 
-      <div className="mt-[10px] flex items-center gap-2">
-        <span className="w-[52px] font-ui text-[8px] tracking-[1px] text-soft">OVERALL</span>
+      <div className="mt-3 flex items-center gap-2">
+        <span className="w-14 text-[11px] font-medium text-soft">Overall</span>
         <ProgressBar pct={overallPct} className="flex-1" />
       </div>
       <div className="mt-2 flex items-center gap-2">
-        <span className="w-[52px] font-ui text-[8px] tracking-[1px] text-soft">TODAY</span>
+        <span className="w-14 text-[11px] font-medium text-soft">Today</span>
         <ProgressBar pct={todayPct} fillClassName={allDone ? 'bg-success' : 'bg-accent'} className="flex-1" />
-        <span className={`w-[34px] text-right font-ui text-[9px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
+        <span className={`w-10 text-right text-[12px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
           {doneCount}/{tasks.length}
         </span>
       </div>
 
       {started.expanded && (
         <div className="mt-4">
-          <div className="mb-2 font-ui text-[9px] tracking-[1.5px] text-soft">TODAY · DAY {dayNum}</div>
+          <div className="mb-1.5 text-[12px] font-semibold tracking-[0.3px] text-soft uppercase">Today · Day {dayNum}</div>
           {tasks.map((text, i) => {
             const checked = !!started.checks[i];
             return (
-              <button key={i} className="flex w-full items-start gap-3 py-[9px] text-left" onClick={() => handleToggleTask(i)}>
+              <button key={i} className="press flex w-full items-start gap-3 py-[9px] text-left" onClick={() => handleToggleTask(i)}>
                 <span
-                  className={`mt-[1px] flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-[1.5px] text-[12px] text-paper ${
-                    checked ? 'border-accent bg-accent' : 'border-[rgba(20,17,14,0.3)] bg-transparent'
+                  className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
+                    checked ? 'bg-accent' : 'bg-fill-strong'
                   }`}
                 >
                   {checked && '✓'}
                 </span>
-                <span className={`font-display text-[17px] leading-[1.3] ${checked ? 'text-soft line-through' : 'text-ink'}`}>{text}</span>
+                <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft line-through' : 'text-ink'}`}>{text}</span>
               </button>
             );
           })}
 
-          <div className="mt-[14px] flex items-center justify-between border-t border-border-soft pt-[14px]">
+          <div className="mt-3.5 flex items-center justify-between border-t border-border pt-3.5">
             <div className="flex items-center gap-2">
-              <span className="font-ui text-[9px] tracking-[1px] text-soft">REMIND</span>
+              <span className="text-[13px] font-medium text-soft">Remind</span>
               <input
                 type="time"
                 value={started.reminder}
                 onChange={(e) => handleReminderChange(e.target.value)}
-                className="rounded-[10px] border border-border-strong bg-transparent px-2 py-[5px] font-ui text-[12px] text-ink outline-none"
+                className="rounded-[10px] bg-fill px-2.5 py-[6px] text-[13px] font-medium text-ink outline-none"
               />
             </div>
             <button
               onClick={handleLogDay}
               disabled={!allDone}
-              className={`rounded-full border border-border-strong px-4 py-[9px] font-ui text-[10px] tracking-[1px] ${
-                allDone ? 'bg-accent text-paper' : 'bg-transparent text-soft'
-              }`}
+              className={`press rounded-full px-4 py-[9px] text-[13px] font-semibold ${allDone ? 'bg-accent text-white' : 'bg-fill text-soft'}`}
             >
-              {started.done >= 28 ? 'COMPLETE' : allDone ? 'LOG DAY ✓' : 'FINISH TASKS'}
+              {started.done >= 28 ? 'Complete' : allDone ? 'Log Day ✓' : 'Finish Tasks'}
             </button>
           </div>
-          <button onClick={handleStop} className="mt-3 block w-full py-[6px] text-center font-ui text-[9px] tracking-[1.5px] text-soft">
-            ■ STOP PROGRAM
+          <button onClick={handleStop} className="mt-3 block w-full py-1.5 text-center text-[13px] font-medium text-negative">
+            Stop Program
           </button>
         </div>
       )}
     </div>
+  );
+}
+
+function ChevronIcon({ expanded }: { expanded: boolean }) {
+  return (
+    <svg
+      width={14}
+      height={14}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#8E8E93"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`transition-transform ${expanded ? 'rotate-90' : ''}`}
+    >
+      <path d="M9 6l6 6-6 6" />
+    </svg>
   );
 }

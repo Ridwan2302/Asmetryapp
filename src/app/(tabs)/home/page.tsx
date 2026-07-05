@@ -4,9 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef } from 'react';
 import { ActiveProgramCard } from '@/components/ActiveProgramCard';
-import { DotGrid } from '@/components/DotGrid';
 import { Pill } from '@/components/Pill';
-import { ProgressBar } from '@/components/ProgressBar';
+import { RingProgress } from '@/components/RingProgress';
 import { Screen } from '@/components/Screen';
 import { deltaVsPrior, gradeOf, greeting } from '@/lib/calc';
 import { useAppStore } from '@/state/store';
@@ -36,69 +35,65 @@ export default function HomePage() {
 
   return (
     <Screen>
-      <div className="mb-[26px] flex items-start justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <div className="font-ui text-[11px] tracking-[3px] text-soft">{greeting()}</div>
-          <div className="mt-[6px] font-display text-[34px] leading-none text-ink">{profile.name || 'You'}</div>
+          <div className="text-[13px] font-medium text-soft">{greeting()}</div>
+          <div className="mt-0.5 text-[28px] font-bold tracking-[-0.4px] text-ink">{profile.name || 'You'}</div>
         </div>
         <button
           onClick={() => fileRef.current?.click()}
-          className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-full border border-border bg-placeholder"
+          className="press relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-fill shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
         >
           {profilePic ? (
             <Image src={profilePic} alt="" fill className="object-cover" unoptimized />
           ) : (
-            <span className="flex h-full items-center justify-center text-center font-ui text-[8px] leading-[1.3] tracking-[1px] text-soft">
-              SET
-              <br />
-              PHOTO
-            </span>
+            <span className="flex h-full items-center justify-center text-[10px] font-medium text-soft">Add</span>
           )}
         </button>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePickAvatar} />
       </div>
 
-      <div className="relative overflow-hidden rounded-[26px] bg-ink px-7 pt-[30px] pb-[26px]">
-        <DotGrid />
-        <div className="relative">
-          <div className="flex items-center justify-between">
-            <span className="font-ui text-[10px] tracking-[2.5px] text-[rgba(244,242,237,0.6)]">FACIAL HARMONY INDEX</span>
-            <Pill label={overall != null ? gradeOf(overall) : 'UNSCANNED'} tone="paper" />
-          </div>
-          <div className="mt-[14px] flex items-baseline gap-[6px]">
-            <span className="font-display text-[96px] leading-[0.85] text-paper">{overall ?? '—'}</span>
-            {overall != null && <span className="font-display text-[30px] text-[rgba(244,242,237,0.5)]">/100</span>}
-          </div>
-          <ProgressBar pct={overall ?? 0} height={4} trackClassName="bg-[rgba(244,242,237,0.16)]" fillClassName="bg-paper" className="my-[22px]" />
-          <div className="flex justify-between font-ui text-[10px] tracking-[1px] text-[rgba(244,242,237,0.5)]">
-            <span>{overall != null ? deltaVsPrior(delta) : 'TAKE YOUR FIRST SCAN'}</span>
-            {latest && <span>LAST SCAN {latest.date}</span>}
+      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#1c1c1e] to-[#0a0a0c] px-6 py-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+        <div className="mb-5 flex items-center justify-between">
+          <span className="text-[13px] font-semibold text-white/60">Facial Harmony Index</span>
+          <Pill label={overall != null ? gradeOf(overall) : 'Not Scanned'} tone="paper" />
+        </div>
+        <div className="flex items-center gap-6">
+          <RingProgress pct={overall ?? 0} size={128} strokeWidth={11} fillColor="#0A84FF">
+            <div className="text-center">
+              <div className="text-[36px] leading-none font-bold text-white">{overall != null ? overall : '00'}</div>
+              <div className="text-[10px] font-medium text-white/45">/ 100</div>
+            </div>
+          </RingProgress>
+          <div className="flex-1">
+            <div className="text-[15px] font-semibold text-white">{overall != null ? deltaVsPrior(delta) : 'Take your first scan'}</div>
+            <div className="mt-1 text-[13px] text-white/50">{latest ? `Last scan ${latest.date}` : 'Your score will appear here'}</div>
           </div>
         </div>
       </div>
 
       <Link
         href="/scan"
-        className="mt-[14px] flex items-center justify-between rounded-[20px] border border-border bg-paper px-[22px] py-[18px]"
+        className="press mt-3 flex items-center justify-between rounded-[20px] bg-card p-4 px-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
       >
         <div>
-          <div className="font-display text-[22px] text-ink">New Analysis</div>
-          <div className="mt-[2px] font-ui text-[10px] tracking-[1px] text-soft">SCAN · 90 SECONDS</div>
+          <div className="text-[17px] font-semibold text-ink">New Analysis</div>
+          <div className="mt-0.5 text-[13px] text-soft">Scan · 90 seconds</div>
         </div>
-        <div className="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-accent text-[18px] text-paper">→</div>
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-[18px] text-white">→</div>
       </Link>
 
-      <div className="mt-[34px] mb-[14px] flex items-baseline justify-between">
-        <span className="font-ui text-[11px] tracking-[2px] text-ink">ACTIVE PROGRAMS · TODAY</span>
-        <Link href="/programs" className="border-b border-[rgba(20,17,14,0.2)] font-ui text-[10px] tracking-[1px] text-soft">
-          LIBRARY
+      <div className="mt-8 mb-3 flex items-baseline justify-between">
+        <span className="text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">Active Programs · Today</span>
+        <Link href="/programs" className="text-[13px] font-semibold text-accent">
+          Library
         </Link>
       </div>
 
       {started.length === 0 ? (
-        <Link href="/programs" className="block rounded-[20px] border border-dashed border-border-strong p-[30px] text-center">
-          <div className="font-display text-[20px] text-[#3B352D]">No active programs yet</div>
-          <div className="mt-[6px] font-ui text-[10px] tracking-[1px] text-soft">BROWSE THE LIBRARY →</div>
+        <Link href="/programs" className="press block rounded-[20px] bg-fill p-8 text-center">
+          <div className="text-[17px] font-semibold text-ink">No active programs yet</div>
+          <div className="mt-1 text-[13px] font-medium text-accent">Browse the library →</div>
         </Link>
       ) : (
         started.map((s) => <ActiveProgramCard key={s.id} started={s} />)

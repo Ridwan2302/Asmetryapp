@@ -10,7 +10,12 @@ import { band, dateStr, gradeOf, noteFor, summaryFor } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { useAppStore } from '@/state/store';
 
-const STAGES = ['DETECTING LANDMARKS', 'MAPPING SYMMETRY AXIS', 'MEASURING PROPORTIONS', 'SCORING FEATURES', 'COMPILING PROTOCOL'];
+const STAGES = ['Detecting landmarks', 'Mapping symmetry axis', 'Measuring proportions', 'Scoring features', 'Compiling protocol'];
+
+/** The real analysis usually finishes in well under a second — that reads as fake/broken, so we
+ * hold the scanning UI open for at least this long to make the scan feel substantial. */
+const MIN_SCAN_MS = 6000;
+const MIN_ERROR_MS = 1500;
 
 type Phase = 'idle' | 'camera' | 'scanning' | 'result' | 'error';
 
@@ -111,21 +116,27 @@ export default function ScanPage() {
     setProgress(0);
     setStageIdx(0);
 
-    let p = 0;
+    const start = Date.now();
     progressTimer.current = setInterval(() => {
-      p = Math.min(92, p + 4 + Math.floor(Math.random() * 5));
-      setProgress(p);
-      setStageIdx(Math.min(STAGES.length - 1, Math.floor(p / 20)));
-    }, 160);
+      const elapsed = Date.now() - start;
+      const pct = Math.min(97, Math.round((elapsed / MIN_SCAN_MS) * 100));
+      setProgress(pct);
+      setStageIdx(Math.min(STAGES.length - 1, Math.floor((elapsed / MIN_SCAN_MS) * STAGES.length)));
+    }, 80);
 
     analyzeFace(canvas, canvas.width, canvas.height)
-      .then((res) => {
+      .then(async (res) => {
+        const elapsed = Date.now() - start;
+        if (elapsed < MIN_SCAN_MS) await sleep(MIN_SCAN_MS - elapsed);
         if (progressTimer.current) clearInterval(progressTimer.current);
         setProgress(100);
+        await sleep(250);
         setResult(res);
         setPhase('result');
       })
-      .catch((err) => {
+      .catch(async (err) => {
+        const elapsed = Date.now() - start;
+        if (elapsed < MIN_ERROR_MS) await sleep(MIN_ERROR_MS - elapsed);
         if (progressTimer.current) clearInterval(progressTimer.current);
         setErrorMsg(
           err instanceof NoFaceDetectedError
@@ -142,29 +153,24 @@ export default function ScanPage() {
 
   return (
     <Screen>
-      <div className="font-ui text-[11px] tracking-[3px] text-soft">MODULE 01</div>
-      <div className="mt-1 mb-[22px] font-display text-[34px] text-ink">Facial Scan</div>
+      <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">Facial Scan</div>
 
-      <div className="relative h-[400px] w-full overflow-hidden rounded-[24px] bg-ink">
+      <div className="relative h-[420px] w-full overflow-hidden rounded-[28px] bg-black shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.12)]">
         {phase === 'camera' && !cameraError && (
           <video ref={videoRef} muted playsInline className="absolute inset-0 h-full w-full object-cover [transform:scaleX(-1)]" />
         )}
 
         {(phase === 'idle' || (phase === 'camera' && cameraError)) && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[14px]">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
             {!cameraError ? (
               <>
-                <div className="h-[150px] w-[120px] rounded-[70px_70px_60px_60px] border border-[rgba(244,242,237,0.3)]" />
-                <div className="text-center font-ui text-[10px] tracking-[2px] text-[rgba(244,242,237,0.6)]">
-                  POSITION FACE
-                  <br />
-                  WITHIN THE OUTLINE
-                </div>
+                <div className="h-[160px] w-[128px] rounded-[74px_74px_64px_64px] border-2 border-dashed border-white/25" />
+                <div className="text-center text-[14px] font-medium text-white/50">Position your face within the outline</div>
               </>
             ) : (
               <>
-                <div className="font-ui text-[10px] tracking-[1px] text-[rgba(244,242,237,0.7)]">CAMERA UNAVAILABLE</div>
-                <div className="font-display text-[20px] text-paper">Upload a photo instead</div>
+                <div className="text-[13px] font-medium text-white/50">Camera unavailable</div>
+                <div className="text-[20px] font-bold text-white">Upload a photo instead</div>
               </>
             )}
           </div>
@@ -174,60 +180,66 @@ export default function ScanPage() {
           <div className="absolute inset-0">
             {captureUrl && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={captureUrl} alt="" className="absolute inset-0 h-full w-full object-cover [transform:scaleX(-1)]" />
+              <img src={captureUrl} alt="" className="absolute inset-0 h-full w-full object-cover [transform:scaleX(-1)] brightness-[0.85]" />
             )}
-            <div className="absolute top-5 right-[18px] left-[18px] h-[2px] animate-[scanline_1.6s_ease-in-out_infinite_alternate] bg-gradient-to-r from-transparent via-paper to-transparent shadow-[0_0_14px_#F4F2ED]" />
+            <div
+              className="pointer-events-none absolute inset-0 animate-[scan-mesh-pulse_2.2s_ease-in-out_infinite]"
+              style={{ backgroundImage: 'linear-gradient(rgba(10,132,255,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(10,132,255,0.16) 1px, transparent 1px)', backgroundSize: '18px 18px' }}
+            />
+            <div className="pointer-events-none absolute top-0 right-0 left-0 h-[110px] animate-[scanline_2.4s_linear_infinite] bg-gradient-to-b from-transparent via-[#0A84FF] to-transparent opacity-90 shadow-[0_0_24px_6px_rgba(10,132,255,0.6)]" />
             <div className="absolute right-5 bottom-5 left-5">
-              <div className="flex justify-between font-ui text-[10px] tracking-[1px] text-paper">
-                <span>ANALYZING</span>
-                <span>{progress}%</span>
+              <div className="mb-2 h-1 overflow-hidden rounded-full bg-white/15">
+                <div className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-150" style={{ width: `${progress}%` }} />
               </div>
-              <div className="mt-[6px] font-ui text-[10px] text-[rgba(244,242,237,0.7)]">{STAGES[stageIdx]}_</div>
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-semibold text-white">{STAGES[stageIdx]}…</span>
+                <span className="text-[13px] font-bold text-white">{progress}%</span>
+              </div>
             </div>
           </div>
         )}
 
         {phase === 'error' && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[10px] px-[30px] text-center">
-            <div className="font-ui text-[10px] tracking-[1px] text-[rgba(244,242,237,0.7)]">ANALYSIS FAILED</div>
-            <div className="font-display text-[20px] text-paper">{errorMsg}</div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-8 text-center">
+            <div className="text-[13px] font-medium text-white/50">Analysis failed</div>
+            <div className="text-[18px] font-semibold text-white">{errorMsg}</div>
           </div>
         )}
 
-        <Corner className="top-[18px] left-[18px] border-t-[1.5px] border-l-[1.5px]" />
-        <Corner className="top-[18px] right-[18px] border-t-[1.5px] border-r-[1.5px]" />
-        <Corner className="bottom-[18px] left-[18px] border-b-[1.5px] border-l-[1.5px]" />
-        <Corner className="right-[18px] bottom-[18px] border-r-[1.5px] border-b-[1.5px]" />
+        <Corner className="top-4 left-4 border-t-2 border-l-2" />
+        <Corner className="top-4 right-4 border-t-2 border-r-2" />
+        <Corner className="bottom-4 left-4 border-b-2 border-l-2" />
+        <Corner className="right-4 bottom-4 border-r-2 border-b-2" />
       </div>
 
       {(phase === 'idle' || phase === 'error') && (
         <>
-          <div className="mt-5 flex flex-col gap-[10px]">
-            <PrimaryButton label="BEGIN LIVE SCAN" onClick={handleBeginLiveScan} />
-            <OutlineButton label="UPLOAD PHOTO" onClick={handleUploadPhoto} />
+          <div className="mt-5 flex flex-col gap-2.5">
+            <PrimaryButton label="Begin Live Scan" onClick={handleBeginLiveScan} />
+            <OutlineButton label="Upload Photo" onClick={handleUploadPhoto} />
           </div>
-          <div className="mt-5">
-            <Requirement label="NEUTRAL EXPRESSION" value="REQUIRED" />
-            <Requirement label="EVEN FRONTAL LIGHT" value="REQUIRED" />
-            <Requirement label="HAIR OFF FOREHEAD" value="ADVISED" last />
+          <div className="mt-6 space-y-0.5">
+            <Requirement label="Neutral expression" value="Required" />
+            <Requirement label="Even frontal light" value="Required" />
+            <Requirement label="Hair off forehead" value="Advised" last />
           </div>
         </>
       )}
 
       {phase === 'camera' && !cameraError && (
-        <div className="mt-5 flex items-center justify-center gap-6">
-          <button onClick={resetToIdle} className="font-ui text-[10px] tracking-[1px] text-soft">
-            CANCEL
+        <div className="mt-6 flex items-center justify-center gap-8">
+          <button onClick={resetToIdle} className="text-[15px] font-medium text-soft">
+            Cancel
           </button>
-          <button onClick={handleCapture} className="flex h-[70px] w-[70px] items-center justify-center rounded-full border-2 border-ink">
-            <div className="h-[56px] w-[56px] rounded-full bg-ink" />
+          <button onClick={handleCapture} className="press flex h-[76px] w-[76px] items-center justify-center rounded-full border-[3px] border-ink">
+            <div className="h-[60px] w-[60px] rounded-full bg-ink" />
           </button>
           <span className="w-[52px]" />
         </div>
       )}
       {phase === 'camera' && cameraError && (
         <div className="mt-5">
-          <OutlineButton label="UPLOAD PHOTO" onClick={handleUploadPhoto} />
+          <OutlineButton label="Upload Photo" onClick={handleUploadPhoto} />
         </div>
       )}
 
@@ -237,15 +249,19 @@ export default function ScanPage() {
   );
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function Corner({ className }: { className: string }) {
-  return <div className={`absolute h-[26px] w-[26px] border-paper ${className}`} />;
+  return <div className={`absolute h-6 w-6 border-white/70 ${className}`} />;
 }
 
 function Requirement({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
-    <div className={`flex justify-between py-1 ${!last ? 'border-b border-border-soft' : ''}`}>
-      <span className="font-ui text-[10px] tracking-[0.5px] text-soft">{label}</span>
-      <span className="font-ui text-[10px] tracking-[0.5px] text-soft">{value}</span>
+    <div className={`flex justify-between py-2 ${!last ? 'border-b border-border' : ''}`}>
+      <span className="text-[14px] text-soft">{label}</span>
+      <span className="text-[14px] font-medium text-ink">{value}</span>
     </div>
   );
 }
@@ -282,68 +298,66 @@ function ResultView({ captureUrl, result, onDone }: { captureUrl: string | null;
 
   return (
     <Screen>
-      <div className="font-ui text-[11px] tracking-[3px] text-soft">ANALYSIS COMPLETE · {dateStr()}</div>
-      <div className="my-[6px] mb-[22px] flex items-end justify-between">
-        <div className="font-display text-[34px] leading-none text-ink">Your Results</div>
+      <div className="text-[13px] font-medium text-soft">Analysis complete · {dateStr()}</div>
+      <div className="mt-1 mb-6 flex items-end justify-between">
+        <div className="text-[28px] font-bold tracking-[-0.4px] text-ink">Your Results</div>
         <div className="text-right">
-          <div className="font-display text-[54px] leading-[0.8] text-ink">{result.overall}</div>
-          <div className="font-ui text-[9px] tracking-[1px] text-soft">{gradeOf(result.overall)}</div>
+          <div className="text-[44px] leading-[0.85] font-bold text-ink">{result.overall}</div>
+          <div className="text-[12px] font-medium text-soft">{gradeOf(result.overall)}</div>
         </div>
       </div>
 
-      <div className="mb-6 flex gap-3">
+      <div className="mb-6 flex gap-3 rounded-[20px] bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         {captureUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={captureUrl} alt="" className="h-[120px] w-[96px] rounded-[14px] border border-border object-cover [transform:scaleX(-1)]" />
+          <img src={captureUrl} alt="" className="h-[110px] w-[88px] rounded-[14px] object-cover [transform:scaleX(-1)]" />
         )}
-        <div className="flex-1 font-display text-[19px] leading-[1.35] text-[#3B352D]">{summaryFor(result.overall)}</div>
+        <div className="flex-1 text-[15px] leading-[1.4] font-medium text-ink self-center">{summaryFor(result.overall)}</div>
       </div>
 
       {METRIC_CONFIG.map((m) => {
         const value = result.metrics[m.key];
         return (
-          <div key={m.key} className="border-t border-border py-[14px]">
+          <div key={m.key} className="border-t border-border py-3.5">
             <div className="flex items-baseline justify-between">
-              <span className="font-ui text-[11px] tracking-[1.5px] text-ink">{m.label}</span>
+              <span className="text-[15px] font-semibold text-ink">{m.label}</span>
               <span>
-                <span className="font-display text-[26px] text-ink">{value}</span>
-                <span className="font-ui text-[10px] text-soft"> {band(value)}</span>
+                <span className="text-[20px] font-bold text-ink">{value}</span>
+                <span className="text-[12px] font-medium text-soft"> {band(value)}</span>
               </span>
             </div>
-            <div className="my-[8px] h-[2px] bg-border-soft">
-              <div className="h-full bg-accent" style={{ width: `${value}%` }} />
+            <div className="my-2 h-1.5 rounded-full bg-fill">
+              <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
             </div>
-            <div className="font-ui text-[9.5px] leading-[1.5] text-soft">{noteFor(value, m.notes)}</div>
+            <div className="text-[13px] leading-[1.4] text-soft">{noteFor(value, m.notes)}</div>
           </div>
         );
       })}
 
-      <div className="mt-[26px] mb-3 font-ui text-[11px] tracking-[2px] text-ink">RECOMMENDED PROGRAMS</div>
+      <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">Recommended Programs</div>
       {picks.map((m) => {
         const program = getProgram(m.programId);
         if (!program) return null;
         const isActive = started.some((s) => s.id === m.programId);
         return (
-          <div key={m.programId} className="mb-[10px] flex items-center justify-between rounded-2xl border border-border bg-card p-[14px] px-4">
+          <div key={m.programId} className="mb-2.5 flex items-center justify-between rounded-2xl bg-card p-3.5 px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
             <div>
-              <div className="font-display text-[20px] text-ink">{program.name}</div>
-              <div className="mt-[2px] font-ui text-[9px] tracking-[1px] text-soft">
+              <div className="text-[17px] font-semibold text-ink">{program.name}</div>
+              <div className="mt-0.5 text-[13px] text-soft">
                 {m.label} · {result.metrics[m.key]}
               </div>
             </div>
             <button
               onClick={() => toggleProgram(m.programId)}
-              className={`rounded-full border border-border-strong px-[14px] py-[7px] font-ui text-[10px] tracking-[1px] ${
-                isActive ? 'bg-accent text-paper' : 'bg-transparent text-accent'
-              }`}
+              className={`press rounded-full px-4 py-2 text-[13px] font-semibold ${isActive ? 'bg-accent text-white' : 'bg-accent/10 text-accent'}`}
             >
-              {isActive ? 'ADDED' : 'ADD'}
+              {isActive ? 'Added' : 'Add'}
             </button>
           </div>
         );
       })}
 
-      <PrimaryButton label="SAVE TO PROGRESS →" onClick={handleSave} className="mt-4" />
+      <PrimaryButton label="Save to Progress" onClick={handleSave} className="mt-4" />
     </Screen>
   );
 }

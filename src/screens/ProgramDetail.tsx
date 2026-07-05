@@ -30,14 +30,17 @@ export function ProgramDetail({ id }: { id: string }) {
 
   return (
     <Screen withTabBarSpacing={false}>
-      <button onClick={() => router.back()} className="mb-4 font-ui text-[11px] tracking-[1px] text-soft">
-        ← PROGRAMS
+      <button onClick={() => router.back()} className="press mb-4 flex items-center gap-1 text-[15px] font-medium text-accent">
+        <svg width={10} height={16} viewBox="0 0 10 16" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M8 2 2 8l6 6" />
+        </svg>
+        Programs
       </button>
-      <div className="font-ui text-[10px] tracking-[2px] text-soft">{program.section}</div>
-      <div className="mt-1 font-display text-[38px] leading-[1.02] text-ink">{program.name}</div>
-      <div className="mt-1 mb-5 font-display text-[19px] text-[#3B352D] italic">{program.tagline}</div>
+      <div className="text-[13px] font-semibold text-soft">{program.section}</div>
+      <div className="mt-1 text-[32px] leading-[1.05] font-bold tracking-[-0.4px] text-ink">{program.name}</div>
+      <div className="mt-1 mb-5 text-[16px] text-soft">{program.tagline}</div>
 
-      <div className="relative mb-5 flex h-[230px] items-center justify-center overflow-hidden rounded-[22px] border border-border-strong bg-card">
+      <div className="relative mb-5 flex h-[240px] items-center justify-center overflow-hidden rounded-[24px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         {program.img ? (
           <Image src={program.img} alt="" fill className="object-cover" />
         ) : (
@@ -45,40 +48,37 @@ export function ProgramDetail({ id }: { id: string }) {
             <AnatomyPlate plate={program.plate} sex={sex} />
           </div>
         )}
-        <div className="absolute bottom-[10px] left-[14px] rounded-md bg-[rgba(244,242,237,0.7)] px-[6px] py-[2px]">
-          <span className="font-ui text-[8px] tracking-[1px] text-soft">TARGET · {program.anatomy}</span>
+        <div className="absolute bottom-3 left-3.5 rounded-full bg-white/85 px-2.5 py-1 backdrop-blur">
+          <span className="text-[11px] font-semibold text-ink">Target · {program.anatomy}</span>
         </div>
       </div>
 
-      <div className="mb-[22px] flex gap-2">
-        <StatTile value="28" label="DAYS" />
-        <StatTile value={String(program.mins)} label="MIN / DAY" />
-        <StatTile value={program.level} label="LEVEL" small />
+      <div className="mb-6 flex gap-2.5">
+        <StatTile value="28" label="Days" />
+        <StatTile value={String(program.mins)} label="Min / day" />
+        <StatTile value={program.level.charAt(0) + program.level.slice(1).toLowerCase()} label="Level" small />
       </div>
 
-      <p className="mb-6 font-display text-[19px] leading-[1.4] text-[#3B352D]">{program.overview}</p>
+      <p className="mb-6 text-[16px] leading-[1.45] text-soft">{program.overview}</p>
 
-      <div className="mb-3 font-ui text-[10px] tracking-[2px] text-ink">THE 4-WEEK PROTOCOL</div>
+      <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">The 4-week protocol</div>
       {program.weeks.map((w) => {
         const open = openWeek === w.n;
         return (
-          <div key={w.n} className="mb-[10px] overflow-hidden rounded-2xl border border-border bg-card">
-            <button
-              className="flex w-full items-center justify-between p-[15px] px-4 text-left"
-              onClick={() => setOpenWeek(open ? 0 : w.n)}
-            >
+          <div key={w.n} className="mb-2.5 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+            <button className="press flex w-full items-center justify-between p-4 text-left" onClick={() => setOpenWeek(open ? 0 : w.n)}>
               <div>
-                <div className="font-ui text-[9px] tracking-[1.5px] text-soft">WEEK {w.n}</div>
-                <div className="mt-[2px] font-display text-[20px] text-ink">{w.focus}</div>
+                <div className="text-[12px] font-semibold text-soft">Week {w.n}</div>
+                <div className="mt-0.5 text-[18px] font-bold text-ink">{w.focus}</div>
               </div>
-              <span className="font-ui text-[14px] text-soft">{open ? '▾' : '▸'}</span>
+              <ChevronDown open={open} />
             </button>
             {open && (
-              <div className="px-4 pb-[14px]">
+              <div className="px-4 pb-3.5">
                 {w.tasks.map((task, i) => (
-                  <div key={i} className="flex gap-3 border-t border-border-soft py-2">
+                  <div key={i} className="flex gap-3 border-t border-border py-2.5">
                     <span className="mt-[9px] h-[5px] w-[5px] shrink-0 rounded-full bg-accent" />
-                    <span className="font-display text-[17px] leading-[1.35] text-ink">{task}</span>
+                    <span className="text-[16px] leading-[1.35] font-medium text-ink">{task}</span>
                   </div>
                 ))}
               </div>
@@ -87,16 +87,16 @@ export function ProgramDetail({ id }: { id: string }) {
         );
       })}
 
-      <div className="mt-[22px]">
+      <div className="mt-6">
         {isActive ? (
-          <OutlineButton label="STOP PROGRAM" onClick={() => toggleProgram(program.id)} />
+          <OutlineButton label="Stop Program" onClick={() => toggleProgram(program.id)} />
         ) : (
-          <PrimaryButton label="START PROGRAM" onClick={() => toggleProgram(program.id)} />
+          <PrimaryButton label="Start Program" onClick={() => toggleProgram(program.id)} />
         )}
       </div>
       {isActive && (
-        <Link href="/home" className="mt-[10px] block text-center font-ui text-[10px] tracking-[1px] text-soft underline">
-          GO TO TODAY&apos;S CHECKLIST →
+        <Link href="/home" className="mt-3 block text-center text-[14px] font-semibold text-accent">
+          Go to today&apos;s checklist →
         </Link>
       )}
     </Screen>
@@ -105,9 +105,27 @@ export function ProgramDetail({ id }: { id: string }) {
 
 function StatTile({ value, label, small }: { value: string; label: string; small?: boolean }) {
   return (
-    <div className="flex-1 rounded-[14px] border border-border p-3 text-center">
-      <div className={`font-display text-ink ${small ? 'pt-2 text-[15px]' : 'text-[26px]'}`}>{value}</div>
-      <div className="font-ui text-[8px] tracking-[1px] text-soft">{label}</div>
+    <div className="flex-1 rounded-[16px] bg-fill p-3 text-center">
+      <div className={`font-bold text-ink ${small ? 'pt-1.5 text-[15px]' : 'text-[22px]'}`}>{value}</div>
+      <div className="text-[11px] font-medium text-soft">{label}</div>
     </div>
+  );
+}
+
+function ChevronDown({ open }: { open: boolean }) {
+  return (
+    <svg
+      width={14}
+      height={14}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#8E8E93"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
+    >
+      <path d="M6 9l6 6 6-6" />
+    </svg>
   );
 }
