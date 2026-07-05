@@ -35,7 +35,6 @@ Browsers have no equivalent of a mobile OS's "fire a local notification even whe
 ## Known deviations from the design reference (intentional)
 
 - **Seed data removed.** The prototype ships with 3 fake sample scans and 2 pre-started programs for a non-empty first look. This build ships empty (`scans: []`, `started: []`) with real empty states for Home/Progress instead — matching "data stays on device" and not fabricating a user's history.
-- **`public/images/onboarding/welcome-hero.png` is a placeholder.** The design asset bundle didn't include a `welcome-hero.png` (used for the welcome hero and 3rd intro slide); it's currently a copy of `intro-scan.png`. Swap in the real asset before shipping.
 - **Hormonal Optimization Diet has a hero image** even though the original `programs.js` didn't reference one — a `hormonal.png` was included in the asset bundle but never wired in. Sleep and Hydration still have no photo and fall back to the code-drawn SVG plates, same as the reference.
 - **Gotham not included.** Montserrat is used everywhere per the handoff's own fallback instruction; swap in licensed Gotham if/when available.
 
