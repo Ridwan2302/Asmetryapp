@@ -75,8 +75,8 @@ export function signedDelta(delta: number): string {
   return (delta >= 0 ? '+' : '') + delta;
 }
 
-/** Monochrome UI: direction is conveyed by the +/- sign in the text itself, not by color —
- * this just dims true-zero deltas relative to a real (positive or negative) change. */
 export function deltaColorClass(delta: number): string {
-  return delta === 0 ? 'text-soft' : 'text-ink';
+  if (delta > 0) return 'text-success';
+  if (delta < 0) return 'text-negative';
+  return 'text-soft';
 }

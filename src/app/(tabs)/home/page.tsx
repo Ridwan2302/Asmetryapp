@@ -59,7 +59,7 @@ export default function HomePage() {
           <Pill label={overall != null ? gradeOf(overall) : 'Not Scanned'} tone="paper" />
         </div>
         <div className="flex items-center gap-6">
-          <RingProgress pct={overall ?? 0} size={128} strokeWidth={11} fillColor="#FFFFFF">
+          <RingProgress pct={overall ?? 0} size={128} strokeWidth={11} fillColor="#0A84FF">
             <div className="text-center">
               <div className="text-[36px] leading-none font-bold text-white">{overall != null ? overall : '00'}</div>
               <div className="text-[10px] font-medium text-white/45">/ 100</div>
@@ -85,7 +85,7 @@ export default function HomePage() {
 
       <div className="mt-8 mb-3 flex items-baseline justify-between">
         <span className="text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">Active Programs · Today</span>
-        <Link href="/programs" className="text-[13px] font-semibold text-accent underline underline-offset-2">
+        <Link href="/programs" className="text-[13px] font-semibold text-accent">
           Library
         </Link>
       </div>

@@ -90,7 +90,7 @@ export function TabBar() {
       >
         {TABS.map((tab) => {
           const active = pathname === tab.href || pathname.startsWith(tab.href + '/');
-          const color = active ? '#1D1D1F' : '#8E8E93';
+          const color = active ? '#0A84FF' : '#8E8E93';
           return (
             <Link key={tab.href} href={tab.href} className="press flex flex-1 flex-col items-center gap-0.5 py-1">
               {tab.icon(active, color)}

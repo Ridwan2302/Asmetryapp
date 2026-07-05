@@ -2,7 +2,7 @@
 
 A Next.js (App Router, TypeScript, Tailwind v4) web app implementation of the Asmetry facial-analysis / looksmaxing app. Deploys to Vercel with zero config. Installable as a PWA (Add to Home Screen) — a banner prompts this from the first screen.
 
-Visual design is a native-iOS-style system, strictly black/white/grayscale (no hue anywhere — direction/positivity is conveyed with `+`/`-`/▲▼ signs and weight, not color): the `-apple-system`/San Francisco font stack, a light neutral background with elevated white cards, a solid black button system with spring-press feedback, a circular ring score (Activity-ring style) on Home, and an iOS-style blurred tab bar with outline→filled icon states.
+Visual design is a native-iOS-style system: the `-apple-system`/San Francisco font stack, a light neutral background with elevated white cards, a solid black/blue button system with spring-press feedback, a circular ring score (Activity-ring style) on Home, and an iOS-style blurred tab bar with outline→filled icon states.
 
 ## Running it
 

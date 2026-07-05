@@ -184,12 +184,12 @@ export default function ScanPage() {
             )}
             <div
               className="pointer-events-none absolute inset-0 animate-[scan-mesh-pulse_2.2s_ease-in-out_infinite]"
-              style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px)', backgroundSize: '18px 18px' }}
+              style={{ backgroundImage: 'linear-gradient(rgba(10,132,255,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(10,132,255,0.16) 1px, transparent 1px)', backgroundSize: '18px 18px' }}
             />
-            <div className="pointer-events-none absolute top-0 right-0 left-0 h-[110px] animate-[scanline_2.4s_linear_infinite] bg-gradient-to-b from-transparent via-white to-transparent opacity-90 shadow-[0_0_24px_6px_rgba(255,255,255,0.55)]" />
+            <div className="pointer-events-none absolute top-0 right-0 left-0 h-[110px] animate-[scanline_2.4s_linear_infinite] bg-gradient-to-b from-transparent via-[#0A84FF] to-transparent opacity-90 shadow-[0_0_24px_6px_rgba(10,132,255,0.6)]" />
             <div className="absolute right-5 bottom-5 left-5">
               <div className="mb-2 h-1 overflow-hidden rounded-full bg-white/15">
-                <div className="h-full rounded-full bg-white transition-[width] duration-150" style={{ width: `${progress}%` }} />
+                <div className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-150" style={{ width: `${progress}%` }} />
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[13px] font-semibold text-white">{STAGES[stageIdx]}…</span>
@@ -244,8 +244,7 @@ export default function ScanPage() {
       )}
 
       <canvas ref={canvasRef} className="hidden" />
-      {/* No `capture` attribute: this should open the photo gallery/library, not jump straight to the camera. */}
-      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelected} />
+      <input ref={fileRef} type="file" accept="image/*" capture="user" className="hidden" onChange={handleFileSelected} />
     </Screen>
   );
 }
