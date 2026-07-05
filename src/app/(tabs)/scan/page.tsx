@@ -244,7 +244,8 @@ export default function ScanPage() {
       )}
 
       <canvas ref={canvasRef} className="hidden" />
-      <input ref={fileRef} type="file" accept="image/*" capture="user" className="hidden" onChange={handleFileSelected} />
+      {/* No `capture` attribute: this should open the photo gallery/library, not jump straight to the camera. */}
+      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelected} />
     </Screen>
   );
 }
