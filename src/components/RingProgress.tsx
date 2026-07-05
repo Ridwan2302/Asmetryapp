@@ -8,7 +8,7 @@ interface RingProgressProps {
 }
 
 /** Apple Activity-ring style circular progress indicator. */
-export function RingProgress({ pct, size = 168, strokeWidth = 14, trackColor = 'rgba(255,255,255,0.14)', fillColor = '#0A84FF', children }: RingProgressProps) {
+export function RingProgress({ pct, size = 168, strokeWidth = 14, trackColor = 'rgba(255,255,255,0.14)', fillColor = '#FFFFFF', children }: RingProgressProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const clamped = Math.max(0, Math.min(100, pct));

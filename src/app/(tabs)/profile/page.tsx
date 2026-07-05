@@ -100,7 +100,7 @@ export default function ProfilePage() {
               <span className="font-medium text-ink">{profile.weight} kg</span>
             </div>
           </div>
-          <button onClick={() => router.push('/edit-stats')} className="mt-3 text-[13px] font-semibold text-accent">
+          <button onClick={() => router.push('/edit-stats')} className="mt-3 text-[13px] font-semibold text-accent underline underline-offset-2">
             Edit Stats
           </button>
         </div>

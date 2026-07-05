@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  /* Apple-style light palette */
+  /* Apple-style light palette — strictly black/white/gray, no hue */
   --color-paper: #f5f5f7;
   --color-ink: #1d1d1f;
   --color-soft: #86868b;
   --color-card: #ffffff;
-  --color-accent: #0a84ff;
-  --color-success: #30d158;
-  --color-negative: #ff453a;
+  --color-accent: #000000;
+  --color-success: #1d1d1f;
+  --color-negative: #1d1d1f;
   --color-border: rgba(0, 0, 0, 0.06);
   --color-border-strong: rgba(0, 0, 0, 0.1);
   --color-border-soft: rgba(0, 0, 0, 0.05);

@@ -95,7 +95,7 @@ export function ProgramDetail({ id }: { id: string }) {
         )}
       </div>
       {isActive && (
-        <Link href="/home" className="mt-3 block text-center text-[14px] font-semibold text-accent">
+        <Link href="/home" className="mt-3 block text-center text-[14px] font-semibold text-accent underline underline-offset-2">
           Go to today&apos;s checklist →
         </Link>
       )}

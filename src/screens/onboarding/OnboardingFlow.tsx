@@ -163,7 +163,7 @@ function Intro({ idx, onNext, onSkip }: { idx: number; onNext: () => void; onSki
             <div
               key={i}
               className="h-[7px] rounded-full transition-all"
-              style={{ width: i === idx ? 22 : 7, backgroundColor: i === idx ? '#0A84FF' : 'rgba(0,0,0,0.12)' }}
+              style={{ width: i === idx ? 22 : 7, backgroundColor: i === idx ? '#1D1D1F' : 'rgba(0,0,0,0.12)' }}
             />
           ))}
         </div>
