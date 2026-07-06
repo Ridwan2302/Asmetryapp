@@ -409,7 +409,7 @@ const fr: Record<keyof typeof en, string> = {
   today_day: 'Aujourd’hui · Jour',
   remind: 'Rappel',
   log_day: 'Jour validé ✓',
-  finish_tasks: 'Terminer les tâches',
+  finish_tasks: 'Terminer',
   complete: 'Terminé',
   demo: 'Démo',
 
