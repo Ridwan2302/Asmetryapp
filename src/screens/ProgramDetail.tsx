@@ -46,7 +46,7 @@ export function ProgramDetail({ id }: { id: string }) {
 
       <div className="relative mb-5 flex h-[240px] items-center justify-center overflow-hidden rounded-[24px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         {program.img ? (
-          <Image src={program.img} alt="" fill className="object-cover" />
+          <Image src={program.img} alt="" fill sizes="(min-width: 480px) 480px, 100vw" className="object-cover" />
         ) : (
           <div className="h-[84%] w-[80%]">
             <AnatomyPlate plate={program.plate} sex={sex} />
