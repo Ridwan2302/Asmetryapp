@@ -7,6 +7,7 @@ import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Pill } from '@/components/Pill';
 import { Screen } from '@/components/Screen';
+import { TrashIcon } from '@/components/TrashIcon';
 import { bmiOf } from '@/lib/calc';
 import { TranslationKey, useT } from '@/lib/i18n';
 import { requestNotificationPermission } from '@/lib/notifications';
@@ -150,7 +151,9 @@ export default function ProfilePage() {
             <div className="text-[17px] font-semibold text-negative">{t('start_fresh')}</div>
             <div className="mt-0.5 text-[13px] text-soft">{t('start_fresh_desc')}</div>
           </div>
-          <span className="text-[18px]">🗑</span>
+          <span className="text-negative">
+            <TrashIcon size={18} />
+          </span>
         </button>
       ) : (
         <div className="rounded-[20px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">

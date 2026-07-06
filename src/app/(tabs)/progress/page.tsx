@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Screen } from '@/components/Screen';
+import { TrashIcon } from '@/components/TrashIcon';
 import { deltaColorClass, signedDelta } from '@/lib/calc';
 import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
@@ -130,16 +131,5 @@ export default function ProgressPage() {
         );
       })}
     </Screen>
-  );
-}
-
-function TrashIcon() {
-  return (
-    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 7h16" />
-      <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-      <path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13" />
-      <path d="M10 11v6M14 11v6" />
-    </svg>
   );
 }
