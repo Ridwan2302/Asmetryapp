@@ -179,7 +179,7 @@ const en = {
   today_day: 'Today · Day',
   remind: 'Remind',
   log_day: 'Log Day',
-  finish_tasks: 'Finish Tasks',
+  finish_tasks: 'Finish',
   complete: 'Complete',
   demo: 'Demo',
 
