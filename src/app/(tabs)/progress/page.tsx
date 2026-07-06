@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { Screen } from '@/components/Screen';
 import { deltaColorClass, signedDelta } from '@/lib/calc';
 import { useT } from '@/lib/i18n';
@@ -9,6 +10,8 @@ import { useAppStore } from '@/state/store';
 export default function ProgressPage() {
   const t = useT();
   const scans = useAppStore((s) => s.scans);
+  const deleteScan = useAppStore((s) => s.deleteScan);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   if (scans.length === 0) {
     return (
@@ -75,27 +78,68 @@ export default function ProgressPage() {
         const older = scanArchive[i + 1];
         const delta = older ? s.overall - older.overall : 0;
         const note = !older ? t('baseline_note') : delta > 0 ? t('improved') : delta < 0 ? t('dipped') : t('held');
+        const confirming = confirmId === s.id;
         return (
           <div key={s.id} className="mb-2.5 flex items-center gap-3.5 rounded-2xl bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-            <div className="h-16 w-[52px] shrink-0 overflow-hidden rounded-[12px] bg-placeholder">
-              {s.thumb && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={s.thumb} alt="" className="h-full w-full object-cover [transform:scaleX(-1)]" />
-              )}
-            </div>
-            <div className="flex-1">
-              <div className="text-[17px] font-semibold text-ink">{s.title}</div>
-              <div className="text-[13px] text-soft">
-                {s.date} · {note}
+            {confirming ? (
+              <div className="flex flex-1 items-center justify-between py-1">
+                <span className="text-[14px] font-medium text-ink">{t('delete_scan_confirm')}</span>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setConfirmId(null)} className="press rounded-full bg-fill px-3.5 py-[7px] text-[13px] font-semibold text-ink">
+                    {t('cancel')}
+                  </button>
+                  <button
+                    onClick={() => {
+                      deleteScan(s.id);
+                      setConfirmId(null);
+                    }}
+                    className="press rounded-full bg-negative px-3.5 py-[7px] text-[13px] font-semibold text-white"
+                  >
+                    {t('delete')}
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-[22px] leading-[1] font-bold text-ink">{s.overall}</div>
-              <div className={`text-[12px] font-semibold ${older ? deltaColorClass(delta) : 'text-soft'}`}>{older ? signedDelta(delta) : t('base')}</div>
-            </div>
+            ) : (
+              <>
+                <div className="h-16 w-[52px] shrink-0 overflow-hidden rounded-[12px] bg-placeholder">
+                  {s.thumb && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={s.thumb} alt="" className="h-full w-full object-cover [transform:scaleX(-1)]" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="text-[17px] font-semibold text-ink">{s.title}</div>
+                  <div className="text-[13px] text-soft">
+                    {s.date} · {note}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[22px] leading-[1] font-bold text-ink">{s.overall}</div>
+                  <div className={`text-[12px] font-semibold ${older ? deltaColorClass(delta) : 'text-soft'}`}>{older ? signedDelta(delta) : t('base')}</div>
+                </div>
+                <button
+                  onClick={() => setConfirmId(s.id)}
+                  aria-label={t('delete')}
+                  className="press flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-soft"
+                >
+                  <TrashIcon />
+                </button>
+              </>
+            )}
           </div>
         );
       })}
     </Screen>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 7h16" />
+      <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      <path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13" />
+      <path d="M10 11v6M14 11v6" />
+    </svg>
   );
 }

@@ -28,6 +28,7 @@ interface AppState {
   markReminderFired: (id: string, key: string) => void;
 
   addScan: (entry: ScanEntry) => void;
+  deleteScan: (id: string) => void;
   toggleSetting: (id: keyof Settings) => void;
   resetApp: () => void;
 }
@@ -107,6 +108,8 @@ export const useAppStore = create<AppState>()(
         })),
 
       addScan: (entry) => set((state) => ({ scans: [...state.scans, entry] })),
+
+      deleteScan: (id) => set((state) => ({ scans: state.scans.filter((s) => s.id !== id) })),
 
       toggleSetting: (id) =>
         set((state) => ({ settings: { ...state.settings, [id]: !state.settings[id] } })),

@@ -196,6 +196,7 @@ const en = {
   dipped: 'Dipped',
   held: 'Held',
   base: 'Base',
+  delete_scan_confirm: 'Delete this scan?',
 
   install_title: 'Get the Asmetry app',
   install_ios_hint: 'Tap Share, then "Add to Home Screen"',
@@ -425,6 +426,7 @@ const fr: Record<keyof typeof en, string> = {
   dipped: 'Baissé',
   held: 'Stable',
   base: 'Base',
+  delete_scan_confirm: 'Supprimer ce scan ?',
 
   install_title: 'Obtenez l’app Asmetry',
   install_ios_hint: 'Appuyez sur Partager, puis « Sur l’écran d’accueil »',
