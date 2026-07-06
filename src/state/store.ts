@@ -74,7 +74,7 @@ export const useAppStore = create<AppState>()(
           return {
             started: [
               ...state.started,
-              { id, done: 0, checks: {}, reminder: '08:00', expanded: state.started.length === 0 },
+              { id, done: 0, checks: {}, reminder: '08:00', expanded: false },
             ],
           };
         }),
