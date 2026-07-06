@@ -82,7 +82,9 @@ export default function HomePage() {
           <div className="text-[17px] font-semibold text-ink">{t('new_analysis')}</div>
           <div className="mt-0.5 text-[13px] text-soft">{t('scan_90s')}</div>
         </div>
-        <div className="flex h-10 w-16 items-center justify-center rounded-full bg-accent text-[18px] text-white">→</div>
+        <div className="flex h-10 w-16 items-center justify-center rounded-full bg-accent">
+          <div className="h-[26px] w-[20px] rounded-[11px_11px_9px_9px] border-[1.5px] border-dashed border-white/70" />
+        </div>
       </Link>
 
       <div className="mt-8 mb-3 flex items-baseline justify-between">
