@@ -5,6 +5,7 @@ import { Screen } from '@/components/Screen';
 import { deltaColorClass, signedDelta } from '@/lib/calc';
 import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
+import type { ScanEntry } from '@/state/types';
 
 export default function ProgressPage() {
   const t = useT();
@@ -56,18 +57,7 @@ export default function ProgressPage() {
             {signedDelta(trendDeltaNum)} {t('since_baseline')}
           </span>
         </div>
-        <div className="flex h-[130px] items-end gap-2.5">
-          {recent.map((s, i) => (
-            <div key={s.id} className="flex h-full flex-1 flex-col items-center justify-end gap-2">
-              <span className="text-[15px] font-bold text-ink">{s.overall}</span>
-              <div
-                className={`w-full rounded-t-[6px] ${i === recent.length - 1 ? 'bg-accent' : 'bg-fill-strong'}`}
-                style={{ height: Math.round(((s.overall - minS) / span) * 70 + 20) }}
-              />
-              <span className="text-[11px] font-medium text-soft">{s.date}</span>
-            </div>
-          ))}
-        </div>
+        <TrendChart points={recent} minS={minS} span={span} />
       </div>
 
       <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('every_scan')}</div>
@@ -97,5 +87,51 @@ export default function ProgressPage() {
         );
       })}
     </Screen>
+  );
+}
+
+/** Line chart: SVG for the stroke/fill (fine to stretch non-uniformly), plain HTML dots on top
+ * (kept off the SVG's own coordinate system so they stay perfectly round at any width). */
+function TrendChart({ points, minS, span }: { points: ScanEntry[]; minS: number; span: number }) {
+  const n = points.length;
+  const coords = points.map((p, i) => ({
+    x: n > 1 ? (i / (n - 1)) * 100 : 50,
+    y: 110 - ((p.overall - minS) / span) * 70,
+  }));
+  const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+  const areaPath = `${linePath} L ${coords[n - 1].x} 130 L ${coords[0].x} 130 Z`;
+
+  return (
+    <div>
+      <div className="relative h-[130px] w-full">
+        <svg viewBox="0 0 100 130" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+          <defs>
+            <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0A84FF" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#0A84FF" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d={areaPath} fill="url(#trendFill)" />
+          <path d={linePath} fill="none" stroke="#0A84FF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+        </svg>
+        {coords.map((c, i) => (
+          <div
+            key={i}
+            className={`absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 ${
+              i === n - 1 ? 'border-accent bg-accent' : 'border-accent bg-white'
+            }`}
+            style={{ left: `${c.x}%`, top: `${(c.y / 130) * 100}%` }}
+          />
+        ))}
+      </div>
+      <div className="mt-2 flex">
+        {points.map((p, i) => (
+          <div key={i} className="flex flex-1 flex-col items-center gap-1">
+            <span className="text-[13px] font-bold text-ink">{p.overall}</span>
+            <span className="text-[11px] font-medium text-soft">{p.date}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
