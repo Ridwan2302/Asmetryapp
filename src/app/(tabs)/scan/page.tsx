@@ -16,7 +16,7 @@ const STAGE_KEYS: StageKey[] = ['stage_landmarks', 'stage_symmetry', 'stage_prop
 
 /** The real analysis usually finishes in well under a second — that reads as fake/broken, so we
  * hold the scanning UI open for at least this long to make the scan feel substantial. */
-const MIN_SCAN_MS = 4000;
+const MIN_SCAN_MS = 6000;
 const MIN_ERROR_MS = 1500;
 
 type Phase = 'idle' | 'camera' | 'scanning' | 'result' | 'error';
