@@ -26,6 +26,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const week = Math.min(4, Math.ceil(dayNum / 7));
   const wk = copy.weeks[week - 1] ?? copy.weeks[0];
   const tasks = wk.tasks;
+  const enTasks = (program.weeks[week - 1] ?? program.weeks[0]).tasks;
   const doneCount = tasks.reduce((acc, _, i) => acc + (started.checks[i] ? 1 : 0), 0);
   const allDone = tasks.length > 0 && doneCount === tasks.length;
   const overallPct = (started.done / 28) * 100;
@@ -101,7 +102,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
                   </span>
                   <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft line-through' : 'text-ink'}`}>{text}</span>
                 </button>
-                <DemoButton task={text} />
+                <DemoButton taskEn={enTasks[i] ?? text} />
               </div>
             );
           })}
