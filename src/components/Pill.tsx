@@ -2,8 +2,8 @@ export function Pill({ label, tone = 'ink', className = '' }: { label: string; t
   const toneClass = {
     ink: 'bg-fill text-ink',
     paper: 'bg-white/15 text-white',
-    accent: 'bg-accent/15 text-accent',
-    success: 'bg-success/15 text-success',
+    accent: 'bg-accent/20 text-[#5cb3ff]',
+    success: 'bg-success/20 text-[#4ade80]',
   }[tone];
   return <span className={`inline-block rounded-full px-3 py-[5px] text-[12px] font-semibold ${toneClass} ${className}`}>{label}</span>;
 }

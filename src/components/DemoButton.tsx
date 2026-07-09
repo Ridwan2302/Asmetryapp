@@ -18,7 +18,7 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
           e.stopPropagation();
           setOpen(true);
         }}
-        className="press shrink-0 rounded-full bg-gray-400/15 px-2 py-[3px] text-[10px] font-medium text-gray-500"
+        className="press shrink-0 rounded-full bg-fill px-2 py-[3px] text-[10px] font-medium text-soft"
       >
         {t('demo')}
       </button>
@@ -32,7 +32,7 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
           }}
         >
           <div
-            className="w-full max-w-[280px] overflow-hidden rounded-[20px] bg-[#0a0a0c] shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
+            className="w-full max-w-[280px] overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between py-2 pr-2 pl-3.5">

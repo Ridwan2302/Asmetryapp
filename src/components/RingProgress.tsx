@@ -28,7 +28,10 @@ export function RingProgress({ pct, size = 168, strokeWidth = 14, trackColor = '
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+          style={{
+            transition: 'stroke-dashoffset 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            filter: `drop-shadow(0 0 8px ${fillColor}99)`,
+          }}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">{children}</div>

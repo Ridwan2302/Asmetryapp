@@ -85,16 +85,20 @@ export function TabBar() {
   const t = useT();
 
   return (
-    <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[480px] -translate-x-1/2">
-      <div
-        className="flex items-start gap-1 border-t border-border bg-white/75 px-2 pt-2 backdrop-blur-xl"
-        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 6px)' }}
-      >
+    <div
+      className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 14px)' }}
+    >
+      <div className="flex items-center gap-0.5 rounded-full border border-white/14 bg-white/10 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_16px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
         {TABS.map((tab) => {
           const active = pathname === tab.href || pathname.startsWith(tab.href + '/');
-          const color = active ? '#0A84FF' : '#8E8E93';
+          const color = active ? '#3aa8ff' : 'rgba(235,235,245,0.55)';
           return (
-            <Link key={tab.href} href={tab.href} className="press flex flex-1 flex-col items-center gap-0.5 py-1">
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={`press flex flex-col items-center gap-0.5 rounded-full px-4 py-2 transition-colors ${active ? 'bg-white/12' : ''}`}
+            >
               {tab.icon(active, color)}
               <span className="text-[10px] font-medium" style={{ color }}>
                 {t(tab.labelKey)}

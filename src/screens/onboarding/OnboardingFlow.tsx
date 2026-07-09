@@ -134,7 +134,7 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+28px)] pb-10">
       <div className="flex items-center gap-3">
         <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-[12px] shadow-[0_2px_6px_rgba(0,0,0,0.15)]">
-          <Image src="/icons/icon-192.png" alt="Asmetry" fill className="object-cover" />
+          <Image src="/icons/icon-192.png" alt="Asmetry" fill sizes="44px" className="object-cover" />
         </div>
         <div>
           <div className="text-[19px] font-bold tracking-[-0.3px] text-ink">
@@ -146,7 +146,7 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
 
       <div className="my-6 flex flex-1 items-center">
         <div className="relative aspect-square w-full overflow-hidden rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
-          <Image src="/images/onboarding/welcome-hero.png" alt="" fill className="object-cover" priority />
+          <Image src="/images/onboarding/welcome-hero.png" alt="" fill sizes="(min-width: 480px) 480px, 100vw" className="object-cover" priority />
         </div>
       </div>
 
@@ -174,7 +174,7 @@ function Intro({ idx, onNext, onSkip, t }: { idx: number; onNext: () => void; on
           </button>
         </div>
         <div className="relative mb-6 h-[320px] overflow-hidden rounded-[28px] shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
-          <Image src={cur.img} alt="" fill className="object-cover" />
+          <Image src={cur.img} alt="" fill sizes="(min-width: 480px) 480px, 100vw" className="object-cover" />
         </div>
         <h2 className="text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{t(cur.titleKey)}</h2>
         <p className="mt-2 text-[16px] leading-[1.45] text-soft">{t(cur.bodyKey)}</p>
@@ -185,7 +185,7 @@ function Intro({ idx, onNext, onSkip, t }: { idx: number; onNext: () => void; on
             <div
               key={i}
               className="h-[7px] rounded-full transition-all"
-              style={{ width: i === idx ? 22 : 7, backgroundColor: i === idx ? '#0A84FF' : 'rgba(0,0,0,0.12)' }}
+              style={{ width: i === idx ? 22 : 7, backgroundColor: i === idx ? '#0A84FF' : 'rgba(255,255,255,0.18)' }}
             />
           ))}
         </div>
@@ -207,7 +207,7 @@ function SegmentedControl<T extends string>({ value, options, onChange }: { valu
         <button
           key={o.value}
           onClick={() => onChange(o.value)}
-          className={`relative z-10 flex-1 py-[9px] text-center text-[14px] font-semibold transition-colors ${value === o.value ? 'text-ink' : 'text-soft'}`}
+          className={`relative z-10 flex-1 py-[9px] text-center text-[14px] font-semibold transition-colors ${value === o.value ? 'text-[#1d1d1f]' : 'text-soft'}`}
         >
           {o.label}
         </button>
@@ -290,7 +290,7 @@ function ResultStep({ bmi, age, height, weight, onFinish, t }: { bmi: number; ag
         <h2 className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{t('baseline_captured')}</h2>
         <div className="flex items-center gap-4 rounded-[24px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
           <div className="relative h-[190px] w-[120px] shrink-0 overflow-hidden rounded-[16px]">
-            <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
+            <Image src="/images/body-model.png" alt="" fill sizes="120px" className="object-cover object-top" />
           </div>
           <div className="flex-1">
             <div className="text-[13px] font-medium text-soft">{t('bmi_label')}</div>
