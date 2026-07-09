@@ -18,7 +18,7 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
           e.stopPropagation();
           setOpen(true);
         }}
-        className="press shrink-0 rounded-full bg-fill px-2 py-[3px] text-[10px] font-medium text-soft"
+        className="press shrink-0 rounded-full bg-gray-400/15 px-2 py-[3px] text-[10px] font-medium text-gray-500"
       >
         {t('demo')}
       </button>

@@ -27,7 +27,7 @@ export function LanguageToggle({ className = '', size = 'md' }: { className?: st
           key={o.value}
           onClick={() => setLanguage(o.value)}
           className={`relative z-10 text-center font-semibold transition-colors ${sm ? 'w-9 py-1 text-[11px]' : 'flex-1 py-[9px] text-[14px]'} ${
-            language === o.value ? 'text-[#1d1d1f]' : 'text-soft'
+            language === o.value ? 'text-ink' : 'text-soft'
           }`}
         >
           {sm ? o.short : o.label}

@@ -87,12 +87,12 @@ export function TabBar() {
   return (
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[480px] -translate-x-1/2">
       <div
-        className="flex items-start gap-1 border-t border-border bg-card px-2 pt-2"
+        className="flex items-start gap-1 border-t border-border bg-white/75 px-2 pt-2 backdrop-blur-xl"
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 6px)' }}
       >
         {TABS.map((tab) => {
           const active = pathname === tab.href || pathname.startsWith(tab.href + '/');
-          const color = active ? '#0A84FF' : 'rgba(235,235,245,0.5)';
+          const color = active ? '#0A84FF' : '#8E8E93';
           return (
             <Link key={tab.href} href={tab.href} className="press flex flex-1 flex-col items-center gap-0.5 py-1">
               {tab.icon(active, color)}

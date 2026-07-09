@@ -353,7 +353,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
             </div>
             <button
               onClick={() => toggleProgram(m.programId)}
-              className={`press rounded-full px-4 py-2 text-[13px] font-semibold ${isActive ? 'bg-accent text-white' : 'bg-accent/18 text-[#5cb3ff]'}`}
+              className={`press rounded-full px-4 py-2 text-[13px] font-semibold ${isActive ? 'bg-accent text-white' : 'bg-accent/10 text-accent'}`}
             >
               {isActive ? t('added') : t('add')}
             </button>

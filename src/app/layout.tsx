@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "Asmetry",
   },
   icons: {
@@ -28,13 +28,13 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-  themeColor: "#000000",
+  themeColor: "#f5f5f7",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" style={{ ['--font-system' as string]: SYSTEM_FONT_STACK }}>
-      <body className="min-h-dvh bg-black">
+      <body className="min-h-dvh bg-[#0b0b0c]">
         <Providers>{children}</Providers>
       </body>
     </html>

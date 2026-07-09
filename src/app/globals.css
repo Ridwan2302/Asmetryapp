@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  /* Native dark palette: solid opaque surfaces, no translucency/blur — bold contrast over black. */
-  --color-paper: #000000;
-  --color-ink: #ffffff;
-  --color-soft: rgba(235, 235, 245, 0.6);
-  --color-card: #1c1c1e;
+  /* Apple-style light palette */
+  --color-paper: #f5f5f7;
+  --color-ink: #1d1d1f;
+  --color-soft: #86868b;
+  --color-card: #ffffff;
   --color-accent: #0a84ff;
   --color-success: #30d158;
   --color-negative: #ff453a;
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-border-strong: rgba(255, 255, 255, 0.16);
-  --color-border-soft: rgba(255, 255, 255, 0.06);
-  --color-placeholder: #2c2c2e;
-  --color-fill: rgba(255, 255, 255, 0.08);
-  --color-fill-strong: rgba(255, 255, 255, 0.14);
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-strong: rgba(0, 0, 0, 0.1);
+  --color-border-soft: rgba(0, 0, 0, 0.05);
+  --color-placeholder: #e8e8ed;
+  --color-fill: rgba(0, 0, 0, 0.045);
+  --color-fill-strong: rgba(0, 0, 0, 0.07);
 }
 
 @theme inline {

@@ -52,8 +52,8 @@ export function ProgramDetail({ id }: { id: string }) {
             <AnatomyPlate plate={program.plate} sex={sex} />
           </div>
         )}
-        <div className="absolute bottom-3 left-3.5 rounded-full bg-black/60 px-2.5 py-1">
-          <span className="text-[11px] font-semibold text-white">
+        <div className="absolute bottom-3 left-3.5 rounded-full bg-white/85 px-2.5 py-1 backdrop-blur">
+          <span className="text-[11px] font-semibold text-ink">
             {t('target_prefix')} · {copy.anatomy}
           </span>
         </div>

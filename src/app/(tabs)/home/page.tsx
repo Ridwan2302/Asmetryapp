@@ -55,13 +55,13 @@ export default function HomePage() {
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePickAvatar} />
       </div>
 
-      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0f2f52] via-[#161a24] to-[#1c1c1e] px-6 py-7 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#1c1c1e] to-[#0a0a0c] px-6 py-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
         <div className="mb-5 flex items-center justify-between">
           <span className="text-[13px] font-semibold text-white/60">{t('harmony_index')}</span>
           <Pill label={overall != null ? gradeOf(overall, t) : t('not_scanned')} tone="paper" />
         </div>
         <div className="flex items-center gap-6">
-          <RingProgress pct={overall ?? 0} size={128} strokeWidth={11}>
+          <RingProgress pct={overall ?? 0} size={128} strokeWidth={11} fillColor="#0A84FF">
             <div className="text-center">
               <div className="text-[36px] leading-none font-bold text-white">{overall != null ? overall : '00'}</div>
               <div className="text-[10px] font-medium text-white/45">/ 100</div>
