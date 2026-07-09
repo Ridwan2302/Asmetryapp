@@ -52,7 +52,7 @@ export default function ProgramsPage() {
                       toggleProgram(p.id);
                     }}
                     className={`press shrink-0 rounded-full px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap ${
-                      isActive ? 'bg-accent text-white' : 'bg-accent/10 text-accent'
+                      isActive ? 'bg-accent text-white' : 'bg-accent/18 text-[#5cb3ff]'
                     }`}
                   >
                     {isActive ? t('active') : t('start')}
