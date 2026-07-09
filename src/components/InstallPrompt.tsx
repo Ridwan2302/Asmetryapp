@@ -74,7 +74,7 @@ export function InstallPrompt() {
 
   return (
     <div className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-[calc(env(safe-area-inset-top)+10px)]">
-      <div className="w-full max-w-[456px] animate-[slide-up_0.4s_cubic-bezier(0.34,1.56,0.64,1)] rounded-[22px] border border-white/14 bg-white/10 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_16px_40px_rgba(0,0,0,0.4)] backdrop-blur-2xl">
+      <div className="w-full max-w-[456px] animate-[slide-up_0.4s_cubic-bezier(0.34,1.56,0.64,1)] rounded-[22px] border border-black/5 bg-white/95 p-3 shadow-[0_4px_10px_rgba(0,0,0,0.06),0_16px_40px_rgba(0,0,0,0.16)] backdrop-blur-xl">
         <div className="flex items-center gap-3">
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[13px] shadow-sm">
             <Image src="/icons/icon-192.png" alt="Asmetry" fill className="object-cover" />
@@ -107,7 +107,7 @@ export function InstallPrompt() {
 
 function ShareIcon() {
   return (
-    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#f5f5f7" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 3v12" />
       <path d="M8 7l4-4 4 4" />
       <path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7" />

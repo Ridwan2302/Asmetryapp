@@ -55,7 +55,7 @@ export default function HomePage() {
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePickAvatar} />
       </div>
 
-      <div className="relative overflow-hidden rounded-[28px] border border-white/14 bg-gradient-to-br from-[#3a6bff]/35 via-[#5e42ff]/22 to-[#9e42e0]/18 px-6 py-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_24px_60px_rgba(10,60,200,0.35)] backdrop-blur-2xl">
+      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#1c1c1e] to-[#0a0a0c] px-6 py-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
         <div className="mb-5 flex items-center justify-between">
           <span className="text-[13px] font-semibold text-white/60">{t('harmony_index')}</span>
           <Pill label={overall != null ? gradeOf(overall, t) : t('not_scanned')} tone="paper" />
