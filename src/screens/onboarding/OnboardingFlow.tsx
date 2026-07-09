@@ -137,8 +137,9 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
           <Image src="/icons/icon-192.png" alt="Asmetry" fill className="object-cover" />
         </div>
         <div>
-          <div className="text-[19px] font-bold tracking-[-0.3px] text-ink">
-            asmetry<span className="font-medium text-soft">.io</span>
+          <div className="text-[19px] font-bold tracking-[-0.3px]">
+            <span className="bg-gradient-to-r from-[#0a84ff] to-[#7c5cff] bg-clip-text text-transparent">asmetry</span>
+            <span className="font-medium text-soft">.io</span>
           </div>
           <div className="text-[13px] text-soft">{t('brand_tagline')}</div>
         </div>
