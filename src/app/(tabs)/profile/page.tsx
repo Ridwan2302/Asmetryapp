@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
+import { DarkModeToggle } from '@/components/DarkModeToggle';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Pill } from '@/components/Pill';
 import { Screen } from '@/components/Screen';
@@ -138,6 +139,10 @@ export default function ProfilePage() {
             </span>
           </button>
         ))}
+        <div className="flex items-center justify-between border-t border-border py-3.5">
+          <span className="text-[16px] font-medium text-ink">{t('setting_appearance')}</span>
+          <DarkModeToggle />
+        </div>
         <div className="border-t border-border py-3.5">
           <span className="mb-2 block text-[16px] font-medium text-ink">{t('setting_language')}</span>
           <LanguageToggle />
