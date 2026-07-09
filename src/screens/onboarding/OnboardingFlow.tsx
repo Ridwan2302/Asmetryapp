@@ -185,7 +185,7 @@ function Intro({ idx, onNext, onSkip, t }: { idx: number; onNext: () => void; on
             <div
               key={i}
               className="h-[7px] rounded-full transition-all"
-              style={{ width: i === idx ? 22 : 7, backgroundColor: i === idx ? '#0A84FF' : 'rgba(0,0,0,0.12)' }}
+              style={{ width: i === idx ? 22 : 7, backgroundColor: i === idx ? '#0A84FF' : 'var(--color-fill-strong)' }}
             />
           ))}
         </div>
@@ -207,7 +207,7 @@ function SegmentedControl<T extends string>({ value, options, onChange }: { valu
         <button
           key={o.value}
           onClick={() => onChange(o.value)}
-          className={`relative z-10 flex-1 py-[9px] text-center text-[14px] font-semibold transition-colors ${value === o.value ? 'text-ink' : 'text-soft'}`}
+          className={`relative z-10 flex-1 py-[9px] text-center text-[14px] font-semibold transition-colors ${value === o.value ? 'text-[#1d1d1f]' : 'text-soft'}`}
         >
           {o.label}
         </button>

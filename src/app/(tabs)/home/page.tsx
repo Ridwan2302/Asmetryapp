@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef } from 'react';
 import { ActiveProgramCard } from '@/components/ActiveProgramCard';
+import { DarkModeToggle } from '@/components/DarkModeToggle';
 import { Pill } from '@/components/Pill';
 import { RingProgress } from '@/components/RingProgress';
 import { Screen } from '@/components/Screen';
@@ -42,16 +43,19 @@ export default function HomePage() {
           <div className="text-[13px] font-medium text-soft">{greeting(t)}</div>
           <div className="mt-0.5 text-[28px] font-bold tracking-[-0.4px] text-ink">{profile.name || t('profile_name_fallback')}</div>
         </div>
-        <button
-          onClick={() => fileRef.current?.click()}
-          className="press relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-fill shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
-        >
-          {profilePic ? (
-            <Image src={profilePic} alt="" fill className="object-cover" unoptimized />
-          ) : (
-            <span className="flex h-full items-center justify-center text-[10px] font-medium text-soft">{t('avatar_add')}</span>
-          )}
-        </button>
+        <div className="flex shrink-0 items-center gap-3">
+          <DarkModeToggle />
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="press relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-fill shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+          >
+            {profilePic ? (
+              <Image src={profilePic} alt="" fill className="object-cover" unoptimized />
+            ) : (
+              <span className="flex h-full items-center justify-center text-[10px] font-medium text-soft">{t('avatar_add')}</span>
+            )}
+          </button>
+        </div>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePickAvatar} />
       </div>
 

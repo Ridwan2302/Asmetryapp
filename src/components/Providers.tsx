@@ -10,10 +10,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // them identical and avoids a hydration mismatch. `onRehydrateStorage` (in store.ts) flips
   // it to true once the persisted state has actually finished loading from localStorage.
   const hasHydrated = useAppStore((s) => s.hasHydrated);
+  const theme = useAppStore((s) => s.theme);
 
   useEffect(() => {
     useAppStore.persist.rehydrate();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#000000' : '#f5f5f7');
+  }, [theme]);
 
   return (
     <div className="mx-auto min-h-dvh w-full max-w-[480px] bg-paper text-ink shadow-[0_0_80px_rgba(0,0,0,0.5)]">

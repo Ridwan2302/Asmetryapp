@@ -72,7 +72,7 @@ export default function ProfilePage() {
           {t('member_since')} {profile.since}
         </div>
         <div className="mt-4 flex gap-2.5">
-          <button onClick={() => fileRef.current?.click()} className="press rounded-full bg-ink px-4 py-2 text-[13px] font-semibold text-white">
+          <button onClick={() => fileRef.current?.click()} className="press rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-white">
             {t('set_photo')}
           </button>
           <button onClick={() => setProfilePic(null)} className="press rounded-full bg-fill px-4 py-2 text-[13px] font-semibold text-ink">

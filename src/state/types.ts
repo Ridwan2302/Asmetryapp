@@ -1,5 +1,6 @@
 export type Sex = 'M' | 'F';
 export type Language = 'en' | 'fr';
+export type Theme = 'light' | 'dark';
 
 export interface Profile {
   name: string;

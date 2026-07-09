@@ -10,7 +10,7 @@ export function PrimaryButton({ label, className = '', ...rest }: ButtonProps) {
   return (
     <button
       {...rest}
-      className={`press w-full rounded-2xl bg-ink py-[17px] text-center text-[17px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.15),0_10px_20px_rgba(0,0,0,0.18)] disabled:opacity-35 ${className}`}
+      className={`press w-full rounded-2xl bg-ink py-[17px] text-center text-[17px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.15),0_10px_20px_rgba(0,0,0,0.18)] disabled:opacity-35 dark:bg-white dark:text-[#1d1d1f] ${className}`}
     >
       {label}
     </button>
