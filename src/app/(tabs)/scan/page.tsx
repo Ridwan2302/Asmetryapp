@@ -158,7 +158,7 @@ export default function ScanPage() {
         className="relative h-[420px] w-full overflow-hidden rounded-[28px] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.12)]"
         style={{
           background:
-            'radial-gradient(130% 90% at 50% -8%, rgba(10,132,255,0.38), transparent 60%), radial-gradient(110% 80% at 50% 112%, rgba(10,132,255,0.2), transparent 60%), #07080b',
+            'radial-gradient(140% 100% at 50% -10%, rgba(10,132,255,0.55), transparent 62%), radial-gradient(120% 90% at 50% 115%, rgba(10,132,255,0.32), transparent 62%), radial-gradient(90% 70% at 50% 50%, rgba(56,189,248,0.12), transparent 70%), #0a0d12',
         }}
       >
         {phase === 'camera' && !cameraError && (

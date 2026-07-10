@@ -56,9 +56,7 @@ export function ProgramDetail({ id }: { id: string }) {
           </svg>
         </button>
         <div className="absolute top-4 right-4 rounded-full bg-black/40 px-3 py-1.5 backdrop-blur-md">
-          <span className="text-[11px] font-semibold text-white">
-            {t('target_prefix')} · {copy.anatomy}
-          </span>
+          <span className="text-[11px] font-semibold text-white">{copy.anatomy}</span>
         </div>
         <div className="absolute inset-x-0 bottom-0 px-6 pb-5">
           <div className="text-[12px] font-semibold tracking-[0.3px] text-white/70 uppercase">{t(sectionKey(program.section))}</div>
