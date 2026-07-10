@@ -113,11 +113,8 @@ export function TabBar() {
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 transition-transform duration-300 ease-out"
-      style={{
-        paddingBottom: 'calc(env(safe-area-inset-bottom) + 18px)',
-        transform: hidden ? 'translateY(140%)' : 'translateY(0)',
-      }}
+      className={`fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 transition-opacity duration-300 ease-out ${hidden ? 'pointer-events-none opacity-0' : 'opacity-100'}`}
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 18px)' }}
     >
       <div className="relative flex items-center gap-0.5 rounded-full border border-border bg-card/80 p-1 shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl">
         <div
