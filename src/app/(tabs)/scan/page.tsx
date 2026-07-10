@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
-import { METRIC_CONFIG } from '@/data/metricConfig';
+import { METRIC_CONFIG, MetricConfig } from '@/data/metricConfig';
 import { getProgram, localizeProgram } from '@/data/programs';
 import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
@@ -281,7 +281,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
 
   const sorted = [...METRIC_CONFIG].sort((a, b) => result.metrics[a.key] - result.metrics[b.key]);
   const seenPrograms = new Set<string>();
-  const picks = [];
+  const picks: MetricConfig[] = [];
   for (const m of sorted) {
     if (!seenPrograms.has(m.programId)) {
       seenPrograms.add(m.programId);
@@ -290,7 +290,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
     if (picks.length >= 3) break;
   }
 
-  function handleSave() {
+  useEffect(() => {
     addScan({
       id: `${Date.now()}`,
       date: dateStr(),
@@ -299,8 +299,16 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
       thumb: captureUrl,
       m: result.metrics,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function handleStartProgram() {
+    const top = picks[0];
+    if (top && !started.some((s) => s.id === top.programId)) {
+      toggleProgram(top.programId);
+    }
     onDone();
-    router.push('/progress');
+    router.push('/home');
   }
 
   return (
@@ -354,7 +362,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
         );
       })}
 
-      <PrimaryButton label={t('save_to_progress')} onClick={handleSave} className="mt-4" />
+      <PrimaryButton label={t('start_program')} onClick={handleStartProgram} className="mt-4" />
     </Screen>
   );
 }
