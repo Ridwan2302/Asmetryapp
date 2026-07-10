@@ -92,18 +92,10 @@ button {
   opacity: 0.9;
 }
 
-/* Soft colorful gradient-mesh page background instead of the flat gray — the "modern" look
- * referenced (soft blurred color blobs behind everything). Unlayered so it overrides Tailwind's
- * own (layered) .bg-paper utility, turning every existing `bg-paper` usage into the mesh with no
- * per-file changes. Dark mode gets its own near-black-to-teal mesh, scoped via the `.dark` class. */
+/* Unlayered so it overrides Tailwind's own (layered) .bg-paper utility with no per-file changes.
+ * Dark mode keeps its near-black-to-teal mesh, scoped via the `.dark` class. */
 .bg-paper {
-  background-color: #f7f8f7;
-  background-image:
-    radial-gradient(60% 45% at 10% 6%, rgba(52, 211, 153, 0.24), transparent 65%),
-    radial-gradient(55% 42% at 94% 14%, rgba(56, 189, 248, 0.22), transparent 62%),
-    radial-gradient(60% 48% at 28% 96%, rgba(251, 191, 172, 0.24), transparent 65%),
-    radial-gradient(50% 40% at 88% 92%, rgba(167, 139, 250, 0.18), transparent 60%);
-  background-repeat: no-repeat;
+  background-color: #ffffff;
 }
 
 .dark .bg-paper {
