@@ -89,7 +89,7 @@ const en = {
   last_scan_prefix: 'Last scan',
   new_analysis: 'New Analysis',
   scan_90s: 'Scan · 90 seconds',
-  active_programs_today: 'Active Programs · Today',
+  active_programs_today: 'Active Programs',
   library: 'Library',
   start_a_program: 'Start a program',
 
@@ -322,7 +322,7 @@ const fr: Record<keyof typeof en, string> = {
   last_scan_prefix: 'Dernier scan',
   new_analysis: 'Nouvelle analyse',
   scan_90s: 'Scan · 90 secondes',
-  active_programs_today: 'Programmes actifs · Aujourd’hui',
+  active_programs_today: 'Programmes actifs',
   library: 'Bibliothèque',
   start_a_program: 'Démarrer un programme',
 
