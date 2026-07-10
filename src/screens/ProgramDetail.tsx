@@ -34,28 +34,35 @@ export function ProgramDetail({ id }: { id: string }) {
 
   return (
     <Screen withTabBarSpacing={false}>
-      <button onClick={() => router.back()} className="press mb-4 flex items-center gap-1 text-[15px] font-medium text-accent">
-        <svg width={10} height={16} viewBox="0 0 10 16" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M8 2 2 8l6 6" />
-        </svg>
-        {t('programs_back')}
-      </button>
-      <div className="text-[13px] font-semibold text-soft">{t(sectionKey(program.section))}</div>
-      <div className="mt-1 text-[32px] leading-[1.05] font-bold tracking-[-0.4px] text-ink">{copy.name}</div>
-      <div className="mt-1 mb-5 text-[16px] text-soft">{copy.tagline}</div>
-
-      <div className="relative mb-5 flex h-[240px] items-center justify-center overflow-hidden rounded-[24px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+      <div className="relative -mx-[26px] mb-6 flex h-[320px] items-center justify-center overflow-hidden">
         {program.img ? (
-          <Image src={program.img} alt="" fill className="object-cover" />
+          <Image src={program.img} alt="" fill sizes="480px" className="object-cover" />
         ) : (
-          <div className="h-[84%] w-[80%]">
-            <AnatomyPlate plate={program.plate} sex={sex} />
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent/70 to-[#7c5cff]/70">
+            <div className="h-[70%] w-[60%] text-white">
+              <AnatomyPlate plate={program.plate} sex={sex} />
+            </div>
           </div>
         )}
-        <div className="absolute bottom-3 left-3.5 rounded-full bg-black/60 px-2.5 py-1 backdrop-blur">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-black/25" />
+        <button
+          onClick={() => router.back()}
+          aria-label={t('programs_back')}
+          className="press absolute top-4 left-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 backdrop-blur-md"
+        >
+          <svg width={10} height={16} viewBox="0 0 10 16" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 2 2 8l6 6" />
+          </svg>
+        </button>
+        <div className="absolute top-4 right-4 rounded-full bg-black/40 px-3 py-1.5 backdrop-blur-md">
           <span className="text-[11px] font-semibold text-white">
             {t('target_prefix')} · {copy.anatomy}
           </span>
+        </div>
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-5">
+          <div className="text-[12px] font-semibold tracking-[0.3px] text-white/70 uppercase">{t(sectionKey(program.section))}</div>
+          <div className="mt-1 text-[30px] leading-[1.05] font-bold tracking-[-0.4px] text-white">{copy.name}</div>
+          <div className="mt-1.5 text-[15px] text-white/75">{copy.tagline}</div>
         </div>
       </div>
 
@@ -65,14 +72,14 @@ export function ProgramDetail({ id }: { id: string }) {
         <StatTile value={t(levelKey(program.level))} label={t('stat_level')} small />
       </div>
 
-      <p className="mb-6 text-[16px] leading-[1.45] text-soft">{copy.overview}</p>
+      <p className="mb-7 text-[16px] leading-[1.5] text-soft">{copy.overview}</p>
 
-      <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('four_week_protocol')}</div>
+      <div className="mb-1 text-[22px] font-bold tracking-[-0.3px] text-ink">{t('four_week_protocol')}</div>
       {copy.weeks.map((w) => {
         const open = openWeek === w.n;
         return (
-          <div key={w.n} className="mb-2.5 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-            <button className="press flex w-full items-center justify-between p-4 text-left" onClick={() => setOpenWeek(open ? 0 : w.n)}>
+          <div key={w.n} className="border-b border-border">
+            <button className="press flex w-full items-center justify-between py-4 text-left" onClick={() => setOpenWeek(open ? 0 : w.n)}>
               <div>
                 <div className="text-[12px] font-semibold text-soft">
                   {t('week_label')} {w.n}
@@ -82,9 +89,9 @@ export function ProgramDetail({ id }: { id: string }) {
               <ChevronDown open={open} />
             </button>
             {open && (
-              <div className="px-4 pb-3.5">
+              <div className="pb-3.5">
                 {w.tasks.map((task, i) => (
-                  <div key={i} className="flex items-center gap-3 border-t border-border py-2.5">
+                  <div key={i} className="flex items-center gap-3 py-2.5">
                     <span className="mt-[1px] h-[5px] w-[5px] shrink-0 rounded-full bg-accent" />
                     <span className="flex-1 text-[16px] leading-[1.35] font-medium text-ink">{task}</span>
                   </div>

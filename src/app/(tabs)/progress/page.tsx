@@ -40,12 +40,12 @@ export default function ProgressPage() {
 
   return (
     <Screen>
-      <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">{t('progress_title')}</div>
+      <div className="mb-8 text-[34px] leading-[1.05] font-bold tracking-[-0.6px] text-ink">{t('progress_title')}</div>
 
-      <div className="mb-6 flex items-end justify-between">
+      <div className="mb-8 flex items-end justify-between">
         <div>
           <div className="text-[13px] font-medium text-soft">{t('current_score')}</div>
-          <div className="mt-1 text-[56px] leading-[0.85] font-bold text-ink">{latest.overall}</div>
+          <div className="mt-1 text-[64px] leading-[0.85] font-bold text-ink">{latest.overall}</div>
         </div>
         <div className="text-right">
           <div className="text-[12px] font-medium text-soft">{t('vs_last_scan')}</div>
@@ -53,8 +53,8 @@ export default function ProgressPage() {
         </div>
       </div>
 
-      <div className="mb-7 rounded-[24px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-        <div className="mb-4 flex items-baseline justify-between">
+      <div className="mb-9 border-y border-border py-6">
+        <div className="mb-5 flex items-baseline justify-between">
           <span className="text-[13px] font-semibold text-soft">{t('harmony_trend')}</span>
           <span className={`text-[13px] font-bold ${deltaColorClass(trendDeltaNum)}`}>
             {signedDelta(trendDeltaNum)} {t('since_baseline')}
@@ -74,14 +74,14 @@ export default function ProgressPage() {
         </div>
       </div>
 
-      <div className="mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('every_scan')}</div>
+      <div className="mb-1 text-[20px] font-bold tracking-[-0.3px] text-ink">{t('every_scan')}</div>
       {scanArchive.map((s, i) => {
         const older = scanArchive[i + 1];
         const delta = older ? s.overall - older.overall : 0;
         const note = !older ? t('baseline_note') : delta > 0 ? t('improved') : delta < 0 ? t('dipped') : t('held');
         const confirming = confirmId === s.id;
         return (
-          <div key={s.id} className="mb-2.5 flex items-center gap-3.5 rounded-2xl bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+          <div key={s.id} className="flex items-center gap-3.5 border-b border-border py-4">
             {confirming ? (
               <div className="flex flex-1 items-center justify-between py-1">
                 <span className="text-[14px] font-medium text-ink">{t('delete_scan_confirm')}</span>
