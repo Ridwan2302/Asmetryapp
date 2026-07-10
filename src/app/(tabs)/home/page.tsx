@@ -5,10 +5,8 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import { ActiveProgramCard } from '@/components/ActiveProgramCard';
 import { Pill } from '@/components/Pill';
-import { ProgressBar } from '@/components/ProgressBar';
 import { RingProgress } from '@/components/RingProgress';
 import { Screen } from '@/components/Screen';
-import { getProgram } from '@/data/programs';
 import { deltaVsPrior, gradeOf, greeting } from '@/lib/calc';
 import { useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
@@ -27,20 +25,6 @@ export default function HomePage() {
   const prev = scans.length > 1 ? scans[scans.length - 2] : latest;
   const overall = latest?.overall ?? null;
   const delta = latest && prev ? latest.overall - prev.overall : 0;
-
-  const todayTotals = started.reduce(
-    (acc, s) => {
-      const program = getProgram(s.id);
-      if (!program) return acc;
-      const dayNum = Math.min(28, s.done + 1);
-      const week = Math.min(4, Math.ceil(dayNum / 7));
-      const wk = program.weeks[week - 1] ?? program.weeks[0];
-      const done = wk.tasks.reduce((a, _, i) => a + (s.checks[i] ? 1 : 0), 0);
-      return { done: acc.done + done, total: acc.total + wk.tasks.length };
-    },
-    { done: 0, total: 0 }
-  );
-  const todayAllDone = todayTotals.total > 0 && todayTotals.done === todayTotals.total;
 
   function handlePickAvatar(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -116,18 +100,7 @@ export default function HomePage() {
           <div className="text-[17px] font-semibold text-ink">{t('start_a_program')}</div>
         </Link>
       ) : (
-        <>
-          <div className="mb-4 rounded-[20px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-            <div className="flex items-center gap-2">
-              <span className="w-14 text-[11px] font-medium text-soft">{t('today')}</span>
-              <ProgressBar pct={todayTotals.total ? (todayTotals.done / todayTotals.total) * 100 : 0} fillClassName={todayAllDone ? 'bg-success' : 'bg-accent'} className="flex-1" />
-              <span className={`w-12 text-right text-[13px] font-bold ${todayAllDone ? 'text-success' : 'text-ink'}`}>
-                {todayTotals.done}/{todayTotals.total}
-              </span>
-            </div>
-          </div>
-          {started.map((s) => <ActiveProgramCard key={s.id} started={s} />)}
-        </>
+        started.map((s) => <ActiveProgramCard key={s.id} started={s} />)
       )}
     </Screen>
   );
