@@ -113,7 +113,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
                   >
                     {checked && '✓'}
                   </span>
-                  <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft line-through' : 'text-ink'}`}>{text}</span>
+                  <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft' : 'text-ink'}`}>{text}</span>
                 </button>
                 <DemoButton taskEn={enTasks[i] ?? text} />
               </div>
