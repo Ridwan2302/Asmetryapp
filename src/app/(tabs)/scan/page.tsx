@@ -154,7 +154,13 @@ export default function ScanPage() {
     <Screen>
       <div className="mb-6 text-[28px] font-bold tracking-[-0.4px] text-ink">{t('facial_scan_title')}</div>
 
-      <div className="relative h-[420px] w-full overflow-hidden rounded-[28px] bg-black shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.12)]">
+      <div
+        className="relative h-[420px] w-full overflow-hidden rounded-[28px] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.12)]"
+        style={{
+          background:
+            'radial-gradient(130% 90% at 50% -8%, rgba(10,132,255,0.38), transparent 60%), radial-gradient(110% 80% at 50% 112%, rgba(10,132,255,0.2), transparent 60%), #07080b',
+        }}
+      >
         {phase === 'camera' && !cameraError && (
           <video ref={videoRef} muted playsInline className="absolute inset-0 h-full w-full object-cover [transform:scaleX(-1)]" />
         )}
