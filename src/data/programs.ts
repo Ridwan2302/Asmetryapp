@@ -107,7 +107,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
   {
     id: 'bodymaxing', section: 'BODY',
     mins: 35, level: 'INTERMEDIATE', plate: 'body', img: '/images/programs/bodymaxing-labeled.png',
-    name: 'Bodymaxing', tagline: 'V-taper · shoulders · lean composition', anatomy: 'Upper-Body Musculature',
+    name: 'Bodymaxing', tagline: 'V-taper · shoulders · lean composition', anatomy: 'Body Musculature',
     overview: 'A four-week push toward a wider, leaner frame: shoulder and back volume for the V-taper, a tighter waist, and daily habits that reveal definition.',
     weeks: [
       { n: 1, focus: 'Build the base', tasks: ['Push session: chest, shoulders, triceps', 'Lateral raises: 4 sets of 15', '8k steps for the day', 'Protein target: 1.6g per kg bodyweight'] },
@@ -116,7 +116,7 @@ export const ASMETRY_PROGRAMS: Program[] = [
       { n: 4, focus: 'Reveal definition', tasks: ['Full-body strength circuit', 'Shoulder finisher: 6 sets', 'Progress photo, front + back', 'Deficit + protein + 10k steps'] }
     ],
     fr: {
-      name: 'Bodymaxing', tagline: 'Silhouette en V · épaules · composition sèche', anatomy: 'Musculature du haut du corps',
+      name: 'Bodymaxing', tagline: 'Silhouette en V · épaules · composition sèche', anatomy: 'Musculature du corps',
       overview: 'Quatre semaines pour une carrure plus large et plus sèche : volume des épaules et du dos pour la silhouette en V, une taille plus fine et des habitudes quotidiennes qui révèlent la définition musculaire.',
       weeks: [
         { n: 1, focus: 'Construire la base', tasks: ['Séance poussée : pectoraux, épaules, triceps', 'Élévations latérales : 4 séries de 15', '8 000 pas dans la journée', 'Objectif protéines : 1,6 g par kg de poids de corps'] },
