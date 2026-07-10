@@ -55,7 +55,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   }
 
   return (
-    <div className="mb-3 rounded-[22px] bg-card-active p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+    <div className="mb-3 rounded-[22px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
       <button className="press flex w-full items-start gap-3 text-left" onClick={() => toggleExpanded(started.id)}>
         <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] bg-accent/10 text-accent">
           <PlateIcon plate={program.plate} />

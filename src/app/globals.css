@@ -26,7 +26,7 @@
   --color-paper: #000000;
   --color-ink: #f5f5f7;
   --color-soft: rgba(235, 235, 245, 0.6);
-  --color-card: #1c1c1e;
+  --color-card: #2d5b66;
   --color-accent: #0a84ff;
   --color-success: #30d158;
   --color-negative: #ff453a;
@@ -115,20 +115,6 @@ button {
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.05),
     0 10px 20px -10px rgba(0, 0, 0, 0.16);
-}
-
-/* Active program cards keep the standard card look in light mode, but switch to a
- * deep teal in dark mode (reference-matched), instead of the app-wide dark card gray. */
-.bg-card-active {
-  background-color: color-mix(in srgb, var(--color-card) 78%, transparent);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 10px 20px -10px rgba(0, 0, 0, 0.16);
-}
-.dark .bg-card-active {
-  background-color: color-mix(in srgb, #2d5b66 78%, transparent);
 }
 
 @keyframes dotgrid-pulse {
