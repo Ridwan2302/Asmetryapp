@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { getProgram, localizeProgram } from '@/data/programs';
 import { useT } from '@/lib/i18n';
 import { tapHaptic } from '@/lib/haptics';
@@ -55,14 +56,19 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
 
   return (
     <div className="mb-3 rounded-[22px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-      <button className="press flex w-full items-start justify-between text-left" onClick={() => toggleExpanded(started.id)}>
-        <div className="flex-1">
-          <div className="text-[19px] font-bold tracking-[-0.2px] text-ink">{copy.name}</div>
+      <button className="press flex w-full items-start gap-3 text-left" onClick={() => toggleExpanded(started.id)}>
+        {program.img && (
+          <div className="relative h-[52px] w-[52px] shrink-0 overflow-hidden rounded-[14px]">
+            <Image src={program.img} alt="" fill sizes="52px" className="object-cover" />
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[19px] font-bold tracking-[-0.2px] text-ink">{copy.name}</div>
           <div className="mt-0.5 text-[13px] text-soft">
             {t('week_label')} {week} · {wk.focus}
           </div>
         </div>
-        <div className="flex items-center gap-2 pl-2.5">
+        <div className="flex shrink-0 items-center gap-2 pl-2.5">
           <span className="text-[15px] font-semibold text-ink">
             {started.done}
             <span className="text-soft">/28</span>
