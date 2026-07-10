@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { TranslationKey, useT } from '@/lib/i18n';
 
 const TABS: { href: string; labelKey: TranslationKey; icon: (active: boolean, color: string) => React.ReactNode }[] = [
@@ -88,10 +89,35 @@ export function TabBar() {
     TABS.findIndex((tab) => pathname === tab.href || pathname.startsWith(tab.href + '/'))
   );
 
+  const [hidden, setHidden] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  const lastY = useRef(0);
+
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setHidden(false);
+  }
+
+  useEffect(() => {
+    function onScroll() {
+      const y = window.scrollY;
+      const diff = y - lastY.current;
+      if (y < 40) setHidden(false);
+      else if (diff > 4) setHidden(true);
+      else if (diff < -4) setHidden(false);
+      lastY.current = y;
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 18px)' }}
+      className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 transition-transform duration-300 ease-out"
+      style={{
+        paddingBottom: 'calc(env(safe-area-inset-bottom) + 18px)',
+        transform: hidden ? 'translateY(140%)' : 'translateY(0)',
+      }}
     >
       <div className="relative flex items-center gap-0.5 rounded-full border border-border bg-card/80 p-1 shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl">
         <div
