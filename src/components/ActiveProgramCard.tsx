@@ -139,7 +139,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
             </button>
           </div>
           <div className="mt-3 flex justify-center">
-            <button onClick={handleStop} className="press rounded-full border border-border bg-fill px-3 py-[5px] text-[11px] font-medium text-negative">
+            <button onClick={handleStop} className="press rounded-full bg-fill px-3.5 py-[7px] text-[12px] font-medium text-negative">
               {t('stop_program')}
             </button>
           </div>
