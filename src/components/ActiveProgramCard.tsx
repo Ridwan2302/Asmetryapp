@@ -85,8 +85,17 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
 
       {started.expanded && (
         <div className="mt-4">
-          <div className="mb-1.5 text-[12px] font-semibold tracking-[0.3px] text-soft uppercase">
-            {t('today_day')} {dayNum}
+          <div className="mb-3.5 flex items-center gap-3 rounded-[16px] bg-fill p-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-card text-ink">
+              <CalendarIcon />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">
+                {t('today_day')} {dayNum}
+              </div>
+              <div className="truncate text-[15px] font-semibold text-ink">{wk.focus}</div>
+            </div>
+            <ChevronIcon expanded={false} />
           </div>
           {tasks.map((text, i) => {
             const checked = !!started.checks[i];
@@ -148,6 +157,17 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
       className={`transition-transform ${expanded ? 'rotate-90' : ''}`}
     >
       <path d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+      <rect x={3.5} y={5} width={17} height={15.5} rx={3.5} />
+      <path d="M8 3v4M16 3v4M3.5 10h17" />
+      <circle cx={16.5} cy={16.5} r={3.2} fill="currentColor" stroke="none" />
+      <path d="M15.2 16.5l1 1 1.8-2" stroke="var(--color-card)" strokeWidth={1.4} />
     </svg>
   );
 }
