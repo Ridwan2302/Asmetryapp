@@ -5,6 +5,7 @@ import type { AnatomyPlate } from '@/data/programs';
 import { useT } from '@/lib/i18n';
 import { tapHaptic } from '@/lib/haptics';
 import { requestNotificationPermission } from '@/lib/notifications';
+import { plateTint } from '@/lib/plateColors';
 import { useAppStore } from '@/state/store';
 import type { StartedProgram } from '@/state/types';
 import { DemoButton } from './DemoButton';
@@ -57,7 +58,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   return (
     <div className="mb-3 rounded-[22px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
       <button className="press flex w-full items-start gap-3 text-left" onClick={() => toggleExpanded(started.id)}>
-        <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] bg-accent/10 text-accent">
+        <div className={`flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] ${plateTint(program.plate)}`}>
           <PlateIcon plate={program.plate} />
         </div>
         <div className="min-w-0 flex-1">
@@ -138,11 +139,9 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
               {started.done >= 28 ? t('complete') : allDone ? t('log_day') : t('finish_tasks')}
             </button>
           </div>
-          <div className="mt-3 flex justify-center">
-            <button onClick={handleStop} className="press rounded-full bg-fill px-3.5 py-[7px] text-[12px] font-medium text-negative">
-              {t('stop_program')}
-            </button>
-          </div>
+          <button onClick={handleStop} className="mt-3 block w-full py-1.5 text-center text-[13px] font-medium text-negative">
+            {t('stop_program')}
+          </button>
         </div>
       )}
     </div>
