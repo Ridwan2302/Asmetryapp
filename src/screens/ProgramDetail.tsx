@@ -9,6 +9,7 @@ import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
 import { getProgram, levelKey, localizeProgram, sectionKey } from '@/data/programs';
 import { useT } from '@/lib/i18n';
+import { plateTint } from '@/lib/plateColors';
 import { useAppStore } from '@/state/store';
 
 export function ProgramDetail({ id }: { id: string }) {
@@ -74,26 +75,29 @@ export function ProgramDetail({ id }: { id: string }) {
 
       <p className="mb-7 text-[16px] leading-[1.5] text-soft">{copy.overview}</p>
 
-      <div className="mb-1 text-[22px] font-bold tracking-[-0.3px] text-ink">{t('four_week_protocol')}</div>
+      <div className="mb-3.5 text-[22px] font-bold tracking-[-0.3px] text-ink">{t('four_week_protocol')}</div>
       {copy.weeks.map((w) => {
         const open = openWeek === w.n;
         return (
-          <div key={w.n} className="border-b border-border">
-            <button className="press flex w-full items-center justify-between py-4 text-left" onClick={() => setOpenWeek(open ? 0 : w.n)}>
-              <div>
-                <div className="text-[12px] font-semibold text-soft">
-                  {t('week_label')} {w.n}
+          <div key={w.n} className="mb-3 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+            <button className="press flex w-full items-center justify-between p-4 text-left" onClick={() => setOpenWeek(open ? 0 : w.n)}>
+              <div className="flex items-center gap-3">
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-bold ${plateTint(program.plate)}`}>{w.n}</span>
+                <div>
+                  <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">
+                    {t('week_label')} {w.n}
+                  </div>
+                  <div className="text-[17px] font-bold text-ink">{w.focus}</div>
                 </div>
-                <div className="mt-0.5 text-[18px] font-bold text-ink">{w.focus}</div>
               </div>
               <ChevronDown open={open} />
             </button>
             {open && (
-              <div className="pb-3.5">
+              <div className="px-4 pb-4">
                 {w.tasks.map((task, i) => (
-                  <div key={i} className="flex items-center gap-3 py-2.5">
-                    <span className="mt-[1px] h-[5px] w-[5px] shrink-0 rounded-full bg-accent" />
-                    <span className="flex-1 text-[16px] leading-[1.35] font-medium text-ink">{task}</span>
+                  <div key={i} className="flex items-center gap-3 border-t border-border py-2.5 first:border-t-0">
+                    <span className="mt-[1px] h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
+                    <span className="flex-1 text-[15px] leading-[1.35] font-medium text-ink">{task}</span>
                   </div>
                 ))}
               </div>

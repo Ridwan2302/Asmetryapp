@@ -75,7 +75,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      <Link href="/scan" className="press mt-4 flex items-center justify-between border-b border-border py-5">
+      <Link
+        href="/scan"
+        className="press mt-4 flex items-center justify-between rounded-[20px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
+      >
         <div>
           <div className="text-[19px] font-bold tracking-[-0.2px] text-ink">{t('new_analysis')}</div>
           <div className="mt-0.5 text-[13px] text-soft">{t('scan_90s')}</div>

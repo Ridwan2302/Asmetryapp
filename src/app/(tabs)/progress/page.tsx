@@ -53,7 +53,7 @@ export default function ProgressPage() {
         </div>
       </div>
 
-      <div className="mb-9 border-y border-border py-6">
+      <div className="mb-9 rounded-[20px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         <div className="mb-5 flex items-baseline justify-between">
           <span className="text-[13px] font-semibold text-soft">{t('harmony_trend')}</span>
           <span className={`text-[13px] font-bold ${deltaColorClass(trendDeltaNum)}`}>
@@ -81,7 +81,10 @@ export default function ProgressPage() {
         const note = !older ? t('baseline_note') : delta > 0 ? t('improved') : delta < 0 ? t('dipped') : t('held');
         const confirming = confirmId === s.id;
         return (
-          <div key={s.id} className="flex items-center gap-3.5 border-b border-border py-4">
+          <div
+            key={s.id}
+            className="mb-3 flex items-center gap-3.5 rounded-[18px] bg-card p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
+          >
             {confirming ? (
               <div className="flex flex-1 items-center justify-between py-1">
                 <span className="text-[14px] font-medium text-ink">{t('delete_scan_confirm')}</span>

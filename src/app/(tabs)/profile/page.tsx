@@ -83,7 +83,7 @@ export default function ProfilePage() {
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleSetPhoto} />
       </div>
 
-      <div className="mb-8 flex items-center gap-5 border-b border-border pb-8">
+      <div className="mb-8 flex items-center gap-5 rounded-[20px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         <div className="relative h-[180px] w-[104px] shrink-0 overflow-hidden rounded-[18px]">
           <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
         </div>
@@ -123,7 +123,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="mb-2 text-[20px] font-bold tracking-[-0.3px] text-ink">{t('settings_title')}</div>
-      <div>
+      <div className="overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         {SETTINGS_ROWS.map((row) => (
           <button
             key={row.id}
@@ -131,7 +131,7 @@ export default function ProfilePage() {
               toggleSetting(row.id);
               if (row.id === 'notifications' && !settings.notifications) void requestNotificationPermission();
             }}
-            className="flex w-full items-center justify-between border-b border-border py-3.5 text-left"
+            className="flex w-full items-center justify-between border-b border-border px-4 py-3.5 text-left"
           >
             <span className="text-[16px] font-medium text-ink">{t(row.labelKey)}</span>
             <span className={`relative h-[26px] w-11 rounded-full transition-colors ${settings[row.id] ? 'bg-success' : 'bg-fill-strong'}`}>
@@ -139,11 +139,11 @@ export default function ProfilePage() {
             </span>
           </button>
         ))}
-        <div className="flex items-center justify-between border-b border-border py-3.5">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
           <span className="text-[16px] font-medium text-ink">{t('setting_appearance')}</span>
           <DarkModeToggle />
         </div>
-        <div className="border-b border-border py-3.5">
+        <div className="px-4 py-3.5">
           <span className="mb-2 block text-[16px] font-medium text-ink">{t('setting_language')}</span>
           <LanguageToggle />
         </div>
@@ -151,7 +151,10 @@ export default function ProfilePage() {
 
       <div className="mt-8 mb-2 text-[20px] font-bold tracking-[-0.3px] text-ink">{t('danger_zone')}</div>
       {!confirmReset ? (
-        <button onClick={() => setConfirmReset(true)} className="press flex w-full items-center justify-between border-b border-border py-4 text-left">
+        <button
+          onClick={() => setConfirmReset(true)}
+          className="press flex w-full items-center justify-between rounded-[20px] bg-card p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
+        >
           <div>
             <div className="text-[17px] font-semibold text-negative">{t('start_fresh')}</div>
             <div className="mt-0.5 text-[13px] text-soft">{t('start_fresh_desc')}</div>
