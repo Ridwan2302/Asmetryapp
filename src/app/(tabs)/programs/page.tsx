@@ -69,8 +69,6 @@ export default function ProgramsPage() {
           </div>
         );
       })}
-
-      <p className="mt-1.5 text-center text-[12px] leading-[1.5] text-soft">{t('programs_disclaimer')}</p>
     </Screen>
   );
 }
