@@ -8,7 +8,6 @@ import { requestNotificationPermission } from '@/lib/notifications';
 import { useAppStore } from '@/state/store';
 import type { StartedProgram } from '@/state/types';
 import { DemoButton } from './DemoButton';
-import { ProgressBar } from './ProgressBar';
 
 export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const t = useT();
@@ -30,8 +29,6 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const enTasks = (program.weeks[week - 1] ?? program.weeks[0]).tasks;
   const doneCount = tasks.reduce((acc, _, i) => acc + (started.checks[i] ? 1 : 0), 0);
   const allDone = tasks.length > 0 && doneCount === tasks.length;
-  const overallPct = (started.done / 28) * 100;
-  const todayPct = tasks.length ? (doneCount / tasks.length) * 100 : 0;
 
   function handleReminderChange(time: string) {
     setReminder(started.id, time);
@@ -74,18 +71,6 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
           <ChevronIcon expanded={!!started.expanded} />
         </div>
       </button>
-
-      <div className="mt-3 flex items-center gap-2">
-        <span className="w-14 text-[11px] font-medium text-soft">{t('overall')}</span>
-        <ProgressBar pct={overallPct} className="flex-1" />
-      </div>
-      <div className="mt-2 flex items-center gap-2">
-        <span className="w-14 text-[11px] font-medium text-soft">{t('today')}</span>
-        <ProgressBar pct={todayPct} fillClassName={allDone ? 'bg-success' : 'bg-accent'} className="flex-1" />
-        <span className={`w-10 text-right text-[12px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
-          {doneCount}/{tasks.length}
-        </span>
-      </div>
 
       {started.expanded && (
         <div className="mt-4">
