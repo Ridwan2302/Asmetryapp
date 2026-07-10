@@ -83,22 +83,26 @@ const TABS: { href: string; labelKey: TranslationKey; icon: (active: boolean, co
 export function TabBar() {
   const pathname = usePathname();
   const t = useT();
+  const activeIndex = Math.max(
+    0,
+    TABS.findIndex((tab) => pathname === tab.href || pathname.startsWith(tab.href + '/'))
+  );
 
   return (
     <div
       className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 14px)' }}
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 18px)' }}
     >
-      <div className="flex items-center gap-0.5 rounded-full border border-border bg-card/80 p-1 shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl">
-        {TABS.map((tab) => {
-          const active = pathname === tab.href || pathname.startsWith(tab.href + '/');
+      <div className="relative flex items-center gap-0.5 rounded-full border border-border bg-card/80 p-1 shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl">
+        <div
+          className="absolute top-1 bottom-1 rounded-[14px] bg-fill transition-transform duration-300 ease-out"
+          style={{ width: `calc(${100 / TABS.length}% - 4px)`, transform: `translateX(calc(${activeIndex} * 100% + ${activeIndex * 4}px))` }}
+        />
+        {TABS.map((tab, i) => {
+          const active = i === activeIndex;
           const color = active ? '#0A84FF' : '#8E8E93';
           return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={`press flex flex-col items-center gap-0.5 rounded-full px-2.5 py-1.5 transition-colors ${active ? 'bg-fill' : ''}`}
-            >
+            <Link key={tab.href} href={tab.href} className="press relative z-10 flex flex-1 flex-col items-center gap-0.5 px-2.5 py-1.5">
               {tab.icon(active, color)}
               <span className="text-[8.5px] font-medium" style={{ color }}>
                 {t(tab.labelKey)}
