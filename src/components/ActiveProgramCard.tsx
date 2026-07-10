@@ -18,6 +18,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const toggleTask = useAppStore((s) => s.toggleTask);
   const logDay = useAppStore((s) => s.logDay);
   const setReminder = useAppStore((s) => s.setReminder);
+  const toggleProgram = useAppStore((s) => s.toggleProgram);
 
   if (!program) return null;
 
@@ -46,6 +47,11 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
     if (!allDone) return;
     tapHaptic();
     logDay(started.id);
+  }
+
+  function handleStop() {
+    tapHaptic();
+    toggleProgram(started.id);
   }
 
   return (
@@ -130,6 +136,11 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
               className={`press rounded-full px-4 py-[9px] text-[13px] font-semibold ${allDone ? 'bg-accent text-white' : 'bg-fill text-soft'}`}
             >
               {started.done >= 28 ? t('complete') : allDone ? t('log_day') : t('finish_tasks')}
+            </button>
+          </div>
+          <div className="mt-3 flex justify-center">
+            <button onClick={handleStop} className="press rounded-full border border-border bg-fill px-3 py-[5px] text-[11px] font-medium text-negative">
+              {t('stop_program')}
             </button>
           </div>
         </div>
