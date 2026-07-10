@@ -4,9 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
-import { METRIC_CONFIG, metricNoteFor } from '@/data/metricConfig';
+import { METRIC_CONFIG } from '@/data/metricConfig';
 import { getProgram, localizeProgram } from '@/data/programs';
-import { band, dateStr, gradeOf, summaryFor } from '@/lib/calc';
+import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { Translator, useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
@@ -305,43 +305,30 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
 
   return (
     <Screen>
-      <div className="text-[13px] font-medium text-soft">
+      <div className="mb-8 text-[13px] font-medium text-soft">
         {t('analysis_complete')} · {dateStr()}
       </div>
-      <div className="mt-1 mb-6 flex items-end justify-between">
-        <div className="text-[28px] font-bold tracking-[-0.4px] text-ink">{t('your_results')}</div>
-        <div className="text-right">
-          <div className="text-[44px] leading-[0.85] font-bold text-ink">{result.overall}</div>
-          <div className="text-[12px] font-medium text-soft">{gradeOf(result.overall, t)}</div>
+
+      <div className="relative">
+        <div className="relative z-10 flex justify-center">
+          <div className="h-[128px] w-[128px] overflow-hidden rounded-full ring-[5px] ring-paper">
+            {captureUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={captureUrl} alt="" className="h-full w-full object-cover [transform:scaleX(-1)]" />
+            ) : (
+              <div className="h-full w-full bg-fill" />
+            )}
+          </div>
+        </div>
+        <div className="-mt-16 rounded-[28px] bg-[#111113] px-5 pt-20 pb-7">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-7">
+            <MetricTile label={t('overall')} value={result.overall} />
+            {METRIC_CONFIG.map((m) => (
+              <MetricTile key={m.key} label={t(m.labelKey)} value={result.metrics[m.key]} />
+            ))}
+          </div>
         </div>
       </div>
-
-      <div className="mb-6 flex gap-3 rounded-[20px] bg-card p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-        {captureUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={captureUrl} alt="" className="h-[110px] w-[88px] rounded-[14px] object-cover [transform:scaleX(-1)]" />
-        )}
-        <div className="flex-1 text-[15px] leading-[1.4] font-medium text-ink self-center">{summaryFor(result.overall, t)}</div>
-      </div>
-
-      {METRIC_CONFIG.map((m) => {
-        const value = result.metrics[m.key];
-        return (
-          <div key={m.key} className="border-t border-border py-3.5">
-            <div className="flex items-baseline justify-between">
-              <span className="text-[15px] font-semibold text-ink">{t(m.labelKey)}</span>
-              <span>
-                <span className="text-[20px] font-bold text-ink">{value}</span>
-                <span className="text-[12px] font-medium text-soft"> {band(value, t)}</span>
-              </span>
-            </div>
-            <div className="my-2 h-1.5 rounded-full bg-fill">
-              <div className="h-full rounded-full bg-accent" style={{ width: `${value}%` }} />
-            </div>
-            <div className="text-[13px] leading-[1.4] text-soft">{metricNoteFor(m, value, t)}</div>
-          </div>
-        );
-      })}
 
       <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('recommended_programs')}</div>
       {picks.map((m) => {
@@ -369,5 +356,18 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
 
       <PrimaryButton label={t('save_to_progress')} onClick={handleSave} className="mt-4" />
     </Screen>
+  );
+}
+
+function MetricTile({ label, value }: { label: string; value: number }) {
+  const barColor = value >= 80 ? '#34d399' : value >= 65 ? '#a3e635' : '#f59e0b';
+  return (
+    <div>
+      <div className="text-[12px] leading-[1.3] font-medium tracking-[0.2px] text-white/55">{label}</div>
+      <div className="mt-1 text-[32px] leading-none font-bold text-white">{value}</div>
+      <div className="mt-2.5 h-[6px] overflow-hidden rounded-full bg-white/15">
+        <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: barColor }} />
+      </div>
+    </div>
   );
 }
