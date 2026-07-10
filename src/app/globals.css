@@ -92,10 +92,34 @@ button {
   opacity: 0.9;
 }
 
-/* "Lifted" card elevation — a floating shadow instead of the flat/flush look, applied globally
- * to every `bg-card` surface. Written outside any @layer so it overrides the assorted inline
- * shadow-[...] utilities already on these elements without having to touch each one. */
+/* Soft colorful gradient-mesh page background instead of the flat gray — the "modern" look
+ * referenced (soft blurred color blobs behind everything). Unlayered so it overrides Tailwind's
+ * own (layered) .bg-paper utility, turning every existing `bg-paper` usage into the mesh with no
+ * per-file changes. Dark mode gets its own near-black-to-teal mesh, scoped via the `.dark` class. */
+.bg-paper {
+  background-color: #f7f8f7;
+  background-image:
+    radial-gradient(60% 45% at 10% 6%, rgba(52, 211, 153, 0.24), transparent 65%),
+    radial-gradient(55% 42% at 94% 14%, rgba(56, 189, 248, 0.22), transparent 62%),
+    radial-gradient(60% 48% at 28% 96%, rgba(251, 191, 172, 0.24), transparent 65%),
+    radial-gradient(50% 40% at 88% 92%, rgba(167, 139, 250, 0.18), transparent 60%);
+  background-repeat: no-repeat;
+}
+
+.dark .bg-paper {
+  background-color: #050807;
+  background-image:
+    linear-gradient(180deg, #05080a 0%, #06201d 55%, #0d3b37 100%),
+    radial-gradient(70% 35% at 50% 0%, rgba(0, 0, 0, 0.55), transparent 70%);
+  background-repeat: no-repeat;
+}
+
+/* Frosted "glass" cards floating over the mesh — translucent + blurred instead of flat opaque,
+ * plus the lifted elevation shadow. color-mix keeps this theme-aware (light/dark) automatically. */
 .bg-card {
+  background-color: color-mix(in srgb, var(--color-card) 78%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.05),
     0 10px 20px -10px rgba(0, 0, 0, 0.16);
