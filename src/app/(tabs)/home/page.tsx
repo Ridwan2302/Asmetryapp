@@ -89,7 +89,7 @@ export default function HomePage() {
       </Link>
 
       <div className="mt-8 mb-4 flex items-baseline justify-between">
-        <span className="text-[20px] font-extrabold tracking-[-0.3px] text-ink">{t('active_programs_today')}</span>
+        <span className="text-[20px] font-black tracking-[-0.3px] text-ink">{t('active_programs_today')}</span>
         <Link href="/programs" className="text-[13px] font-semibold text-accent">
           {t('library')}
         </Link>
