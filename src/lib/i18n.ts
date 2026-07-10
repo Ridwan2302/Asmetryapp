@@ -173,7 +173,7 @@ const en = {
   stat_level: 'Level',
   four_week_protocol: 'The 4-week protocol',
   week_label: 'Week',
-  start_program: 'Start Program',
+  start_program: 'Start the program',
   stop_program: 'Stop Program',
   go_to_checklist: "Go to today's checklist →",
 
