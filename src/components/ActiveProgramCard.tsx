@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { getProgram, localizeProgram } from '@/data/programs';
 import type { AnatomyPlate } from '@/data/programs';
 import { useT } from '@/lib/i18n';
@@ -11,49 +10,8 @@ import type { StartedProgram } from '@/state/types';
 import { DemoButton } from './DemoButton';
 import { ProgressBar } from './ProgressBar';
 
-/** Subtle scroll-linked tilt/lift so cards feel like they're floating and gently
- * dancing as they drift through the viewport, instead of sitting static in the list. */
-function useFloatOnScroll<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  const [transform, setTransform] = useState('translateY(0px) rotate(0deg)');
-
-  useEffect(() => {
-    let ticking = false;
-
-    function apply() {
-      const el = ref.current;
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        const center = rect.top + rect.height / 2;
-        const viewportCenter = window.innerHeight / 2;
-        const offset = Math.max(-1, Math.min(1, (center - viewportCenter) / viewportCenter));
-        setTransform(`translateY(${(offset * 7).toFixed(2)}px) rotate(${(offset * 1.8).toFixed(2)}deg)`);
-      }
-      ticking = false;
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(apply);
-      }
-    }
-
-    apply();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, []);
-
-  return { ref, transform };
-}
-
 export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   const t = useT();
-  const { ref: floatRef, transform } = useFloatOnScroll<HTMLDivElement>();
   const language = useAppStore((s) => s.language);
   const program = getProgram(started.id);
   const toggleExpanded = useAppStore((s) => s.toggleExpanded);
@@ -97,11 +55,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   }
 
   return (
-    <div
-      ref={floatRef}
-      className="mb-3 rounded-[22px] bg-card p-4 shadow-[0_6px_14px_rgba(0,0,0,0.07),0_24px_48px_-12px_rgba(0,0,0,0.22)] transition-transform duration-150 ease-out will-change-transform"
-      style={{ transform }}
-    >
+    <div className="mb-3 rounded-[22px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
       <button className="press flex w-full items-start gap-3 text-left" onClick={() => toggleExpanded(started.id)}>
         <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[14px] bg-accent/10 text-accent">
           <PlateIcon plate={program.plate} />
