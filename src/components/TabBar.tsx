@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { TranslationKey, useT } from '@/lib/i18n';
 
 const TABS: { href: string; labelKey: TranslationKey; icon: (active: boolean, color: string) => React.ReactNode }[] = [
@@ -88,8 +89,27 @@ export function TabBar() {
     TABS.findIndex((tab) => pathname === tab.href || pathname.startsWith(tab.href + '/'))
   );
 
+  const [scrolling, setScrolling] = useState(false);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolling(true);
+      if (scrollTimer.current) clearTimeout(scrollTimer.current);
+      scrollTimer.current = setTimeout(() => setScrolling(false), 200);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (scrollTimer.current) clearTimeout(scrollTimer.current);
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center px-4" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 18px)' }}>
+    <div
+      className={`fixed inset-x-0 bottom-0 z-30 flex justify-center px-4 transition-opacity duration-200 ease-out ${scrolling ? 'opacity-55' : 'opacity-100'}`}
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 18px)' }}
+    >
       <div className="relative flex items-center gap-0.5 rounded-full border border-border bg-card/80 p-1 shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl">
         <div
           className="absolute top-1 bottom-1 rounded-[14px] bg-fill transition-transform duration-300 ease-out"
