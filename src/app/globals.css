@@ -92,6 +92,15 @@ button {
   opacity: 0.9;
 }
 
+/* "Lifted" card elevation — a floating shadow instead of the flat/flush look, applied globally
+ * to every `bg-card` surface. Written outside any @layer so it overrides the assorted inline
+ * shadow-[...] utilities already on these elements without having to touch each one. */
+.bg-card {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 24px 48px -12px rgba(0, 0, 0, 0.22);
+}
+
 @keyframes dotgrid-pulse {
   0%,
   100% {
