@@ -14,6 +14,7 @@ const en = {
   brand_tagline: 'Facial analysis · Looksmaxing OS',
   welcome_headline: 'Measure your face. Follow the protocol. Watch the structure change.',
   welcome_begin: 'Begin',
+  welcome_subtitle: 'Takes 90 seconds · Data stays on device',
   language_label: 'Language',
 
   intro1_step: 'Step 1 · Analyze',
@@ -246,6 +247,7 @@ const fr: Record<keyof typeof en, string> = {
   brand_tagline: 'Analyse faciale · OS Looksmaxing',
   welcome_headline: 'Analysez votre visage. Suivez un plan guidé. Regardez la structure changer.',
   welcome_begin: 'Commencer',
+  welcome_subtitle: '90 secondes · Les données restent sur l’appareil',
   language_label: 'Langue',
 
   intro1_step: 'Étape 1 · Analyser',
