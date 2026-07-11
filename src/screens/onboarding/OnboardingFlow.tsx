@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Pill } from '@/components/Pill';
@@ -103,33 +103,7 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
   );
 }
 
-/** Eases the page down to `target`, ignored when the visitor prefers reduced motion. */
-function slowScrollTo(target: HTMLElement, duration: number) {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const startY = window.scrollY;
-  const targetY = startY + target.getBoundingClientRect().top - Math.max(0, (window.innerHeight - target.offsetHeight) / 2);
-  const diff = targetY - startY;
-  if (Math.abs(diff) < 2) return;
-  const start = performance.now();
-  function step(now: number) {
-    const progress = Math.min(1, (now - start) / duration);
-    const eased = progress < 0.5 ? 2 * progress * progress : 1 - (-2 * progress + 2) ** 2 / 2;
-    window.scrollTo(0, startY + diff * eased);
-    if (progress < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
 function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
-  const langRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = langRef.current;
-    if (!el) return;
-    const timer = setTimeout(() => slowScrollTo(el, 1600), 600);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+28px)] pb-10">
       <div className="flex items-center gap-3">
@@ -154,8 +128,7 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
       <div>
         <h1 className="mb-6 text-[32px] leading-[1.15] font-bold tracking-[-0.5px] text-ink">{t('welcome_headline')}</h1>
         <PrimaryButton label={t('welcome_begin')} onClick={onNext} />
-        <div className="mt-4 text-center text-[12px] text-soft">{t('welcome_subtitle')}</div>
-        <div ref={langRef} className="mt-3 flex justify-center">
+        <div className="mt-4 flex justify-center">
           <LanguageToggle size="sm" />
         </div>
       </div>
