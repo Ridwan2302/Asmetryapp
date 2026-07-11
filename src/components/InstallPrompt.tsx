@@ -38,18 +38,21 @@ export function InstallPrompt() {
       // Deliberately deferred to an effect (not a lazy useState initializer) so the very first
       // client render matches the server's (both hidden) before this client-only UA/localStorage
       // check can run — a lazy initializer would run during SSR too and risk a hydration mismatch.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setDisplay({ visible: true, ios: true });
-      return;
+      const timer = setTimeout(() => setDisplay({ visible: true, ios: true }), 5000);
+      return () => clearTimeout(timer);
     }
 
+    let timer: ReturnType<typeof setTimeout> | null = null;
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setDisplay({ visible: true, ios: false });
+      timer = setTimeout(() => setDisplay({ visible: true, ios: false }), 5000);
     };
     window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   function dismiss() {
