@@ -52,12 +52,10 @@ export default function HomePage() {
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePickAvatar} />
       </div>
 
-      <div className="relative mb-4 h-[300px] overflow-hidden rounded-[28px]">
-        {latest?.thumb ? (
+      <div className="relative mb-4 h-[300px] overflow-hidden rounded-[28px] bg-fill">
+        {latest?.thumb && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={latest.thumb} alt="" className="absolute inset-0 h-full w-full object-cover [transform:scaleX(-1)]" />
-        ) : (
-          <Image src="/images/onboarding/welcome-hero.png" alt="" fill sizes="480px" className="object-cover" priority />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/25" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between px-6 pt-6">
