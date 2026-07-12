@@ -103,11 +103,10 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
   );
 }
 
-/** Eases the page down to `target`, ignored when the visitor prefers reduced motion. */
-function slowScrollTo(target: HTMLElement, duration: number) {
+/** Eases the page to an absolute scroll position, ignored when the visitor prefers reduced motion. */
+function animateScrollTo(targetY: number, duration: number) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const startY = window.scrollY;
-  const targetY = startY + target.getBoundingClientRect().top - Math.max(0, (window.innerHeight - target.offsetHeight) / 2);
   const diff = targetY - startY;
   if (Math.abs(diff) < 2) return;
   const start = performance.now();
@@ -126,8 +125,16 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
   useEffect(() => {
     const el = langRef.current;
     if (!el) return;
-    const timer = setTimeout(() => slowScrollTo(el, 1600), 600);
-    return () => clearTimeout(timer);
+    let upTimer: ReturnType<typeof setTimeout> | undefined;
+    const downTimer = setTimeout(() => {
+      const targetY = window.scrollY + el.getBoundingClientRect().top - Math.max(0, (window.innerHeight - el.offsetHeight) / 2);
+      animateScrollTo(targetY, 1600);
+      upTimer = setTimeout(() => animateScrollTo(0, 1600), 2200);
+    }, 600);
+    return () => {
+      clearTimeout(downTimer);
+      if (upTimer) clearTimeout(upTimer);
+    };
   }, []);
 
   return (
