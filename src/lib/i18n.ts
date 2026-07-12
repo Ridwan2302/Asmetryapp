@@ -12,7 +12,7 @@ const en = {
   tab_profile: 'Profile',
 
   brand_tagline: 'Facial analysis · Looksmaxing OS',
-  welcome_headline: 'Measure your face. Follow the protocol. Watch the structure change.',
+  welcome_headline: 'analyze your face. Follow a protocol. Watch the structure change.',
   welcome_begin: 'Begin',
   welcome_subtitle: 'Takes 90 seconds · Data stays on device',
   language_label: 'Language',
