@@ -12,13 +12,13 @@ const en = {
   tab_profile: 'Profile',
 
   brand_tagline: 'Facial analysis · Looksmaxing OS',
-  welcome_headline: 'analyze your face. Follow a protocol. Watch the structure change.',
+  welcome_headline: 'Analyze your face. Follow a protocol. Watch the structure change.',
   welcome_begin: 'Begin',
   welcome_subtitle: 'Takes 90 seconds · Data stays on device',
   language_label: 'Language',
 
   intro1_step: 'Step 1 · Analyze',
-  intro1_title: 'Analyze your face',
+  intro1_title: 'scan your face',
   intro1_body: 'A quick capture measures symmetry, proportion and seven structural traits.',
   intro2_step: 'Step 2 · Protocol',
   intro2_title: 'Follow a program',
