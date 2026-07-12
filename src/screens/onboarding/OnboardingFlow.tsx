@@ -19,7 +19,7 @@ const introData: {
 }[] = [
   { stepKey: 'intro1_step', titleKey: 'intro1_title', bodyKey: 'intro1_body', img: '/images/onboarding/intro-scan.png' },
   { stepKey: 'intro2_step', titleKey: 'intro2_title', bodyKey: 'intro2_body', img: '/images/onboarding/intro-jaw.png' },
-  { stepKey: 'intro3_step', titleKey: 'intro3_title', bodyKey: 'intro3_body', img: '/images/onboarding/welcome-hero.png' },
+  { stepKey: 'intro3_step', titleKey: 'intro3_title', bodyKey: 'intro3_body', img: '/images/onboarding/intro-change.png' },
 ];
 
 export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
@@ -128,9 +128,9 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
     let upTimer: ReturnType<typeof setTimeout> | undefined;
     const downTimer = setTimeout(() => {
       const targetY = window.scrollY + el.getBoundingClientRect().top - Math.max(0, (window.innerHeight - el.offsetHeight) / 2);
-      animateScrollTo(targetY, 1600);
-      upTimer = setTimeout(() => animateScrollTo(0, 1600), 2200);
-    }, 600);
+      animateScrollTo(targetY, 1100);
+      upTimer = setTimeout(() => animateScrollTo(0, 1500), 1300);
+    }, 200);
     return () => {
       clearTimeout(downTimer);
       if (upTimer) clearTimeout(upTimer);

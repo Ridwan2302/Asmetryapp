@@ -38,7 +38,7 @@ export function InstallPrompt() {
       // Deliberately deferred to an effect (not a lazy useState initializer) so the very first
       // client render matches the server's (both hidden) before this client-only UA/localStorage
       // check can run — a lazy initializer would run during SSR too and risk a hydration mismatch.
-      const timer = setTimeout(() => setDisplay({ visible: true, ios: true }), 5000);
+      const timer = setTimeout(() => setDisplay({ visible: true, ios: true }), 3000);
       return () => clearTimeout(timer);
     }
 
@@ -46,7 +46,7 @@ export function InstallPrompt() {
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      timer = setTimeout(() => setDisplay({ visible: true, ios: false }), 5000);
+      timer = setTimeout(() => setDisplay({ visible: true, ios: false }), 3000);
     };
     window.addEventListener('beforeinstallprompt', handler);
     return () => {
