@@ -278,6 +278,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
   const language = useAppStore((s) => s.language);
+  const setTheme = useAppStore((s) => s.setTheme);
 
   const sorted = [...METRIC_CONFIG].sort((a, b) => result.metrics[a.key] - result.metrics[b.key]);
   const seenPrograms = new Set<string>();
@@ -309,6 +310,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
     }
     onDone();
     router.push('/home');
+    setTimeout(() => setTheme('dark'), 3000);
   }
 
   return (
