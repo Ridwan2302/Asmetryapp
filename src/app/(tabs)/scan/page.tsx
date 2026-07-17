@@ -379,7 +379,7 @@ function MetricTile({ label, value }: { label: string; value: number }) {
   const barColor = value >= 80 ? '#34d399' : value >= 65 ? '#a3e635' : '#f59e0b';
   return (
     <div>
-      <div className="text-[12px] leading-[1.3] font-bold tracking-[0.2px] text-white/80">{label}</div>
+      <div className="text-[13px] leading-[1.3] font-black tracking-[0.1px] text-white/80">{label}</div>
       <div className="mt-1 text-[32px] leading-none font-bold text-white">{value}</div>
       <div className="mt-2.5 h-[6px] overflow-hidden rounded-full bg-white/15">
         <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: barColor }} />
