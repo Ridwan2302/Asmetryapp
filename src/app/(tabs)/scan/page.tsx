@@ -275,6 +275,8 @@ function Requirement({ label, value, last }: { label: string; value: string; las
 function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | null; result: AnalysisResult; onDone: () => void; t: Translator }) {
   const router = useRouter();
   const addScan = useAppStore((s) => s.addScan);
+  const scans = useAppStore((s) => s.scans);
+  const setProfilePic = useAppStore((s) => s.setProfilePic);
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
   const language = useAppStore((s) => s.language);
@@ -292,6 +294,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   }
 
   useEffect(() => {
+    const isFirstScan = scans.length === 0;
     addScan({
       id: `${Date.now()}`,
       date: dateStr(),
@@ -300,6 +303,9 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
       thumb: captureUrl,
       m: result.metrics,
     });
+    if (isFirstScan && captureUrl) {
+      setProfilePic(captureUrl);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -373,7 +379,7 @@ function MetricTile({ label, value }: { label: string; value: number }) {
   const barColor = value >= 80 ? '#34d399' : value >= 65 ? '#a3e635' : '#f59e0b';
   return (
     <div>
-      <div className="text-[12px] leading-[1.3] font-medium tracking-[0.2px] text-white/55">{label}</div>
+      <div className="text-[12px] leading-[1.3] font-semibold tracking-[0.2px] text-white/55">{label}</div>
       <div className="mt-1 text-[32px] leading-none font-bold text-white">{value}</div>
       <div className="mt-2.5 h-[6px] overflow-hidden rounded-full bg-white/15">
         <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: barColor }} />
