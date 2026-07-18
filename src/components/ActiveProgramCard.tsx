@@ -47,6 +47,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
     if (!allDone) return;
     tapHaptic();
     logDay(started.id);
+    toggleExpanded(started.id);
   }
 
   function handleStop() {
