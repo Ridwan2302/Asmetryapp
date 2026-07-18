@@ -316,7 +316,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
     }
     onDone();
     router.push('/home');
-    setTimeout(() => setTheme('dark'), 3000);
+    setTimeout(() => setTheme('dark'), 2000);
   }
 
   return (
