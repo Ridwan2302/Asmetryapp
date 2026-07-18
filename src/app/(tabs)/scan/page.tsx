@@ -9,6 +9,7 @@ import { getProgram, localizeProgram } from '@/data/programs';
 import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { Translator, useT } from '@/lib/i18n';
+import { playResultChime } from '@/lib/sound';
 import { useAppStore } from '@/state/store';
 
 type StageKey = 'stage_landmarks' | 'stage_symmetry' | 'stage_proportions' | 'stage_scoring' | 'stage_compiling';
@@ -306,6 +307,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
     if (isFirstScan && captureUrl) {
       setProfilePic(captureUrl);
     }
+    playResultChime();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
