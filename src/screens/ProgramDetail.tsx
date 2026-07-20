@@ -1,14 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AnatomyPlate } from '@/components/AnatomyPlate';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
+import { DemoButton } from '@/components/DemoButton';
 import { Screen } from '@/components/Screen';
 import { getProgram, levelKey, localizeProgram, sectionKey } from '@/data/programs';
+import { tapHaptic } from '@/lib/haptics';
 import { useT } from '@/lib/i18n';
+import { requestNotificationPermission } from '@/lib/notifications';
 import { plateTint } from '@/lib/plateColors';
 import { useAppStore } from '@/state/store';
 
@@ -20,6 +22,9 @@ export function ProgramDetail({ id }: { id: string }) {
   const [openWeek, setOpenWeek] = useState(1);
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
+  const toggleTask = useAppStore((s) => s.toggleTask);
+  const logDay = useAppStore((s) => s.logDay);
+  const setReminder = useAppStore((s) => s.setReminder);
   const sex = useAppStore((s) => s.profile.sex);
 
   if (!program) {
@@ -30,8 +35,33 @@ export function ProgramDetail({ id }: { id: string }) {
     );
   }
 
-  const isActive = started.some((s) => s.id === program.id);
+  const startedProgram = started.find((s) => s.id === program.id);
+  const isActive = !!startedProgram;
   const copy = localizeProgram(program, language);
+
+  const dayNum = startedProgram ? Math.min(28, startedProgram.done + 1) : 1;
+  const todayWeek = Math.min(4, Math.ceil(dayNum / 7));
+  const todayWk = copy.weeks[todayWeek - 1] ?? copy.weeks[0];
+  const todayTasks = todayWk.tasks;
+  const enTodayTasks = (program.weeks[todayWeek - 1] ?? program.weeks[0]).tasks;
+  const doneCount = startedProgram ? todayTasks.reduce((acc, _, i) => acc + (startedProgram.checks[i] ? 1 : 0), 0) : 0;
+  const allDone = todayTasks.length > 0 && doneCount === todayTasks.length;
+
+  function handleToggleTask(i: number) {
+    tapHaptic();
+    toggleTask(program!.id, i);
+  }
+
+  function handleLogDay() {
+    if (!allDone) return;
+    tapHaptic();
+    logDay(program!.id);
+  }
+
+  function handleReminderChange(time: string) {
+    setReminder(program!.id, time);
+    void requestNotificationPermission();
+  }
 
   return (
     <Screen withTabBarSpacing={false}>
@@ -73,6 +103,57 @@ export function ProgramDetail({ id }: { id: string }) {
 
       <p className="mb-7 text-[16px] leading-[1.5] text-soft">{copy.overview}</p>
 
+      {startedProgram && (
+        <div className="mb-7">
+          <div className="mb-3.5 flex items-center justify-between">
+            <div className="text-[22px] font-bold tracking-[-0.3px] text-ink">
+              {t('today_day')} {dayNum}
+            </div>
+            <span className={`text-[13px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
+              {doneCount}/{todayTasks.length}
+            </span>
+          </div>
+          <div className="mb-3.5 overflow-hidden rounded-[20px] bg-card px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+            {todayTasks.map((text, i) => {
+              const checked = !!startedProgram.checks[i];
+              return (
+                <div key={i} className="flex w-full items-center gap-3 border-b border-border py-[9px] last:border-b-0">
+                  <button className="press flex flex-1 items-start gap-3 text-left" onClick={() => handleToggleTask(i)}>
+                    <span
+                      className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
+                        checked ? 'bg-accent' : 'bg-fill-strong'
+                      }`}
+                    >
+                      {checked && '✓'}
+                    </span>
+                    <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft' : 'text-ink'}`}>{text}</span>
+                  </button>
+                  <DemoButton taskEn={enTodayTasks[i] ?? text} />
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-between rounded-[16px] bg-fill p-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[13px] font-medium text-soft">{t('remind')}</span>
+              <input
+                type="time"
+                value={startedProgram.reminder}
+                onChange={(e) => handleReminderChange(e.target.value)}
+                className="rounded-[10px] bg-card px-2.5 py-[6px] text-[13px] font-medium text-ink outline-none"
+              />
+            </div>
+            <button
+              onClick={handleLogDay}
+              disabled={!allDone}
+              className={`press rounded-full px-4 py-[9px] text-[13px] font-semibold ${allDone ? 'bg-accent text-white' : 'bg-card text-soft'}`}
+            >
+              {startedProgram.done >= 28 ? t('complete') : allDone ? t('log_day') : t('finish_tasks')}
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mb-3.5 text-[22px] font-bold tracking-[-0.3px] text-ink">{t('four_week_protocol')}</div>
       {copy.weeks.map((w) => {
         const open = openWeek === w.n;
@@ -111,11 +192,6 @@ export function ProgramDetail({ id }: { id: string }) {
           <PrimaryButton label={t('start_program')} onClick={() => toggleProgram(program.id)} />
         )}
       </div>
-      {isActive && (
-        <Link href="/home" className="mt-3 block text-center text-[14px] font-semibold text-accent">
-          {t('go_to_checklist')}
-        </Link>
-      )}
     </Screen>
   );
 }
