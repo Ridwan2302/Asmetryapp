@@ -26,7 +26,6 @@ interface AppState {
   toggleTask: (id: string, taskIndex: number) => void;
   logDay: (id: string) => void;
   setReminder: (id: string, time: string) => void;
-  toggleExpanded: (id: string) => void;
   markReminderFired: (id: string, key: string) => void;
 
   addScan: (entry: ScanEntry) => void;
@@ -79,7 +78,7 @@ export const useAppStore = create<AppState>()(
           return {
             started: [
               ...state.started,
-              { id, done: 0, checks: {}, reminder: '08:00', expanded: false },
+              { id, done: 0, checks: {}, reminder: '08:00' },
             ],
           };
         }),
@@ -99,11 +98,6 @@ export const useAppStore = create<AppState>()(
       setReminder: (id, time) =>
         set((state) => ({
           started: state.started.map((s) => (s.id === id ? { ...s, reminder: time } : s)),
-        })),
-
-      toggleExpanded: (id) =>
-        set((state) => ({
-          started: state.started.map((s) => (s.id === id ? { ...s, expanded: !s.expanded } : { ...s, expanded: false })),
         })),
 
       markReminderFired: (id, key) =>
