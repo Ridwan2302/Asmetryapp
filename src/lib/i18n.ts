@@ -175,6 +175,7 @@ const en = {
   week_label: 'Week',
   start_program: 'Start the program',
   stop_program: 'Stop Program',
+  go_to_checklist: "Go to today's checklist →",
 
   overall: 'Overall',
   today: 'Today',
@@ -407,6 +408,7 @@ const fr: Record<keyof typeof en, string> = {
   week_label: 'Semaine',
   start_program: 'Démarrer le programme',
   stop_program: 'Arrêter le programme',
+  go_to_checklist: 'Aller à la liste du jour →',
 
   overall: 'Global',
   today: 'Aujourd’hui',
