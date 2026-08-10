@@ -186,6 +186,10 @@ const en = {
   finish_tasks: 'Finish',
   complete: 'Complete',
   demo: 'Demo',
+  how_to_title: 'How to',
+  watch_on_youtube: 'Watch on YouTube',
+  guide_unavailable_title: 'No guide yet',
+  guide_unavailable_body: 'Tap to search on YouTube',
 
   program_complete_title: 'Program complete',
   program_complete_body: 'You finished all 28 days. Restart for another round, or explore another program.',
@@ -428,6 +432,10 @@ const fr: Record<keyof typeof en, string> = {
   finish_tasks: 'Terminer',
   complete: 'Terminé',
   demo: 'Démo',
+  how_to_title: 'Comment faire',
+  watch_on_youtube: 'Regarder sur YouTube',
+  guide_unavailable_title: 'Pas encore de guide',
+  guide_unavailable_body: 'Touchez pour rechercher sur YouTube',
 
   program_complete_title: 'Programme terminé',
   program_complete_body: 'Vous avez terminé les 28 jours. Recommencez pour un nouveau tour, ou explorez un autre programme.',

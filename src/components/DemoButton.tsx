@@ -1,68 +1,25 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { findDemoVideoId } from '@/lib/demoVideos';
+import { useState } from 'react';
+import { findDemoEntry } from '@/lib/demoVideos';
 import { useT } from '@/lib/i18n';
-import { loadYouTubeIframeApi, youtubeSearchUrl, type YTPlayer } from '@/lib/youtube';
+import { youtubeSearchUrl, youtubeThumbnailUrl, youtubeWatchUrl } from '@/lib/youtube';
+import { useAppStore } from '@/state/store';
 
-const PLAYER_READY_TIMEOUT_MS = 6000;
-
-/** Small "Demo" chip next to a task — opens an in-app video preview for that task, always in English.
- * Plays through the YouTube IFrame Player API rather than a raw iframe embed so a video that's been
- * deleted, made private, or had embedding disabled surfaces as a catchable error — the panel then
- * falls back to a "search on YouTube" link instead of showing a dead player. */
+/** "Demo" chip next to a task — opens a scrollable modal with a detailed how-to guide for
+ * the task, and a "Watch on YouTube" button at the bottom that opens the curated video
+ * externally (so any playback issue is YouTube's own page to show, not ours). */
 export function DemoButton({ taskEn }: { taskEn: string }) {
   const t = useT();
+  const language = useAppStore((s) => s.language);
   const [open, setOpen] = useState(false);
-  const [broken, setBroken] = useState(false);
-  const videoId = findDemoVideoId(taskEn);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<YTPlayer | null>(null);
-
-  useEffect(() => {
-    if (!open || !videoId) return;
-    let cancelled = false;
-
-    const timeout = setTimeout(() => {
-      if (!cancelled) setBroken(true);
-    }, PLAYER_READY_TIMEOUT_MS);
-
-    loadYouTubeIframeApi()
-      .then((YT) => {
-        if (cancelled || !containerRef.current) return;
-        playerRef.current = new YT.Player(containerRef.current, {
-          videoId,
-          playerVars: { hl: 'en', cc_lang_pref: 'en', modestbranding: 1, rel: 0, autoplay: 1, mute: 1 },
-          events: {
-            onReady: () => clearTimeout(timeout),
-            onError: () => {
-              clearTimeout(timeout);
-              if (!cancelled) setBroken(true);
-            },
-          },
-        });
-      })
-      .catch(() => {
-        clearTimeout(timeout);
-        if (!cancelled) setBroken(true);
-      });
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeout);
-      playerRef.current?.destroy();
-      playerRef.current = null;
-    };
-  }, [open, videoId]);
-
-  const showFallback = !videoId || broken;
+  const entry = findDemoEntry(taskEn);
 
   return (
     <>
       <button
         onClick={(e) => {
           e.stopPropagation();
-          setBroken(false);
           setOpen(true);
         }}
         className="press shrink-0 rounded-full bg-fill px-2 py-[3px] text-[10px] font-medium text-soft"
@@ -72,17 +29,17 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-8"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-6"
           onClick={(e) => {
             e.stopPropagation();
             setOpen(false);
           }}
         >
           <div
-            className="w-full max-w-[280px] overflow-hidden rounded-[20px] bg-[#0a0a0c] shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
+            className="flex max-h-[80vh] w-full max-w-[360px] flex-col overflow-hidden rounded-[20px] bg-[#0a0a0c] shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between py-2 pr-2 pl-3.5">
+            <div className="flex shrink-0 items-center justify-between border-b border-white/10 py-2 pr-2 pl-3.5">
               <span className="truncate text-[12px] font-medium text-white/70">{taskEn}</span>
               <button
                 onClick={() => setOpen(false)}
@@ -92,24 +49,54 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
                 ×
               </button>
             </div>
-            {showFallback ? (
-              <a
-                href={youtubeSearchUrl(taskEn)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="press flex aspect-square w-full flex-col items-center justify-center gap-2 bg-white/[0.04] px-6 text-center"
-              >
-                <span className="text-[13px] font-semibold text-white">No preview yet</span>
-                <span className="text-[12px] text-white/50">Tap to search on YouTube</span>
-              </a>
-            ) : (
-              <div className="relative aspect-square w-full bg-black">
-                <div ref={containerRef} className="absolute inset-0 h-full w-full" />
-              </div>
-            )}
+
+            <div className="overflow-y-auto p-4">
+              {entry ? (
+                <>
+                  <div className="text-[11px] font-semibold tracking-[0.3px] text-white/50 uppercase">{t('how_to_title')}</div>
+                  <p className="mt-1.5 text-[14px] leading-[1.55] text-white/90">{language === 'fr' ? entry.guide.fr : entry.guide.en}</p>
+
+                  <a
+                    href={youtubeWatchUrl(entry.videoId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="press relative mt-4 block aspect-video w-full overflow-hidden rounded-[14px] bg-black"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, not a local/optimizable asset */}
+                    <img src={youtubeThumbnailUrl(entry.videoId)} alt="" className="h-full w-full object-cover opacity-80" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-black shadow-lg">
+                        <PlayIcon />
+                      </span>
+                    </div>
+                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pt-6 pb-2 text-[12px] font-semibold text-white">
+                      {t('watch_on_youtube')}
+                    </span>
+                  </a>
+                </>
+              ) : (
+                <a
+                  href={youtubeSearchUrl(taskEn)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="press flex aspect-square w-full flex-col items-center justify-center gap-2 rounded-[14px] bg-white/[0.04] px-6 text-center"
+                >
+                  <span className="text-[13px] font-semibold text-white">{t('guide_unavailable_title')}</span>
+                  <span className="text-[12px] text-white/50">{t('guide_unavailable_body')}</span>
+                </a>
+              )}
+            </div>
           </div>
         </div>
       )}
     </>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M8 5v14l11-7Z" />
+    </svg>
   );
 }
