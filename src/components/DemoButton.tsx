@@ -1,21 +1,68 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { findDemoVideoId } from '@/lib/demoVideos';
 import { useT } from '@/lib/i18n';
-import { youtubeEmbedUrl, youtubeSearchUrl } from '@/lib/youtube';
+import { loadYouTubeIframeApi, youtubeSearchUrl, type YTPlayer } from '@/lib/youtube';
 
-/** Small "Demo" chip next to a task — opens an in-app video preview for that task, always in English. */
+const PLAYER_READY_TIMEOUT_MS = 6000;
+
+/** Small "Demo" chip next to a task — opens an in-app video preview for that task, always in English.
+ * Plays through the YouTube IFrame Player API rather than a raw iframe embed so a video that's been
+ * deleted, made private, or had embedding disabled surfaces as a catchable error — the panel then
+ * falls back to a "search on YouTube" link instead of showing a dead player. */
 export function DemoButton({ taskEn }: { taskEn: string }) {
   const t = useT();
   const [open, setOpen] = useState(false);
+  const [broken, setBroken] = useState(false);
   const videoId = findDemoVideoId(taskEn);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
+
+  useEffect(() => {
+    if (!open || !videoId) return;
+    let cancelled = false;
+
+    const timeout = setTimeout(() => {
+      if (!cancelled) setBroken(true);
+    }, PLAYER_READY_TIMEOUT_MS);
+
+    loadYouTubeIframeApi()
+      .then((YT) => {
+        if (cancelled || !containerRef.current) return;
+        playerRef.current = new YT.Player(containerRef.current, {
+          videoId,
+          playerVars: { hl: 'en', cc_lang_pref: 'en', modestbranding: 1, rel: 0, autoplay: 1, mute: 1 },
+          events: {
+            onReady: () => clearTimeout(timeout),
+            onError: () => {
+              clearTimeout(timeout);
+              if (!cancelled) setBroken(true);
+            },
+          },
+        });
+      })
+      .catch(() => {
+        clearTimeout(timeout);
+        if (!cancelled) setBroken(true);
+      });
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+      playerRef.current?.destroy();
+      playerRef.current = null;
+    };
+  }, [open, videoId]);
+
+  const showFallback = !videoId || broken;
 
   return (
     <>
       <button
         onClick={(e) => {
           e.stopPropagation();
+          setBroken(false);
           setOpen(true);
         }}
         className="press shrink-0 rounded-full bg-fill px-2 py-[3px] text-[10px] font-medium text-soft"
@@ -45,17 +92,7 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
                 ×
               </button>
             </div>
-            {videoId ? (
-              <div className="relative aspect-square w-full bg-black">
-                <iframe
-                  src={youtubeEmbedUrl(videoId)}
-                  className="absolute inset-0 h-full w-full"
-                  title={taskEn}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            ) : (
+            {showFallback ? (
               <a
                 href={youtubeSearchUrl(taskEn)}
                 target="_blank"
@@ -65,6 +102,10 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
                 <span className="text-[13px] font-semibold text-white">No preview yet</span>
                 <span className="text-[12px] text-white/50">Tap to search on YouTube</span>
               </a>
+            ) : (
+              <div className="relative aspect-square w-full bg-black">
+                <div ref={containerRef} className="absolute inset-0 h-full w-full" />
+              </div>
             )}
           </div>
         </div>
