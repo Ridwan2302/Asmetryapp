@@ -25,6 +25,7 @@ interface AppState {
   toggleProgram: (id: string) => void;
   toggleTask: (id: string, taskIndex: number) => void;
   logDay: (id: string) => void;
+  restartProgram: (id: string) => void;
   setReminder: (id: string, time: string) => void;
   markReminderFired: (id: string, key: string) => void;
 
@@ -93,6 +94,11 @@ export const useAppStore = create<AppState>()(
       logDay: (id) =>
         set((state) => ({
           started: state.started.map((s) => (s.id === id ? { ...s, done: Math.min(28, s.done + 1), checks: {} } : s)),
+        })),
+
+      restartProgram: (id) =>
+        set((state) => ({
+          started: state.started.map((s) => (s.id === id ? { ...s, done: 0, checks: {} } : s)),
         })),
 
       setReminder: (id, time) =>

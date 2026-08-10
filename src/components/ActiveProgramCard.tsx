@@ -16,6 +16,7 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
   if (!program) return null;
 
   const copy = localizeProgram(program, language);
+  const isComplete = started.done >= 28;
   const dayNum = Math.min(28, started.done + 1);
   const week = Math.min(4, Math.ceil(dayNum / 7));
   const wk = copy.weeks[week - 1] ?? copy.weeks[0];
@@ -37,11 +38,11 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
         <div className="min-w-0 flex-1">
           <div className="truncate text-[19px] font-bold tracking-[-0.2px] text-ink">{copy.name}</div>
           <div className="mt-0.5 text-[13px] text-soft">
-            {t('week_label')} {week} · {wk.focus}
+            {isComplete ? t('program_complete_title') : `${t('week_label')} ${week} · ${wk.focus}`}
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2 pl-2.5">
-          <span className="text-[15px] font-semibold text-ink">
+          <span className={`text-[15px] font-semibold ${isComplete ? 'text-success' : 'text-ink'}`}>
             {started.done}
             <span className="text-soft">/28</span>
           </span>
@@ -51,15 +52,17 @@ export function ActiveProgramCard({ started }: { started: StartedProgram }) {
 
       <div className="mt-3 flex items-center gap-2">
         <span className="w-14 text-[11px] font-medium text-soft">{t('overall')}</span>
-        <ProgressBar pct={overallPct} className="flex-1" />
+        <ProgressBar pct={overallPct} fillClassName={isComplete ? 'bg-success' : undefined} className="flex-1" />
       </div>
-      <div className="mt-2 flex items-center gap-2">
-        <span className="w-14 text-[11px] font-medium text-soft">{t('today')}</span>
-        <ProgressBar pct={todayPct} fillClassName={allDone ? 'bg-success' : 'bg-accent'} className="flex-1" />
-        <span className={`w-10 text-right text-[12px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
-          {doneCount}/{tasks.length}
-        </span>
-      </div>
+      {!isComplete && (
+        <div className="mt-2 flex items-center gap-2">
+          <span className="w-14 text-[11px] font-medium text-soft">{t('today')}</span>
+          <ProgressBar pct={todayPct} fillClassName={allDone ? 'bg-success' : 'bg-accent'} className="flex-1" />
+          <span className={`w-10 text-right text-[12px] font-bold ${allDone ? 'text-success' : 'text-ink'}`}>
+            {doneCount}/{tasks.length}
+          </span>
+        </div>
+      )}
     </Link>
   );
 }

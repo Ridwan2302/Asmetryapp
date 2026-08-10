@@ -19,11 +19,12 @@ export function ProgramDetail({ id }: { id: string }) {
   const t = useT();
   const language = useAppStore((s) => s.language);
   const program = getProgram(id);
-  const [openWeek, setOpenWeek] = useState(1);
+  const [openWeekOverride, setOpenWeekOverride] = useState<number | null>(null);
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
   const toggleTask = useAppStore((s) => s.toggleTask);
   const logDay = useAppStore((s) => s.logDay);
+  const restartProgram = useAppStore((s) => s.restartProgram);
   const setReminder = useAppStore((s) => s.setReminder);
   const sex = useAppStore((s) => s.profile.sex);
 
@@ -37,6 +38,7 @@ export function ProgramDetail({ id }: { id: string }) {
 
   const startedProgram = started.find((s) => s.id === program.id);
   const isActive = !!startedProgram;
+  const isComplete = !!startedProgram && startedProgram.done >= 28;
   const copy = localizeProgram(program, language);
 
   const dayNum = startedProgram ? Math.min(28, startedProgram.done + 1) : 1;
@@ -46,6 +48,7 @@ export function ProgramDetail({ id }: { id: string }) {
   const enTodayTasks = (program.weeks[todayWeek - 1] ?? program.weeks[0]).tasks;
   const doneCount = startedProgram ? todayTasks.reduce((acc, _, i) => acc + (startedProgram.checks[i] ? 1 : 0), 0) : 0;
   const allDone = todayTasks.length > 0 && doneCount === todayTasks.length;
+  const openWeek = openWeekOverride ?? (isActive ? todayWeek : 1);
 
   function handleToggleTask(i: number) {
     tapHaptic();
@@ -61,6 +64,12 @@ export function ProgramDetail({ id }: { id: string }) {
   function handleReminderChange(time: string) {
     setReminder(program!.id, time);
     void requestNotificationPermission();
+  }
+
+  function handleRestart() {
+    tapHaptic();
+    restartProgram(program!.id);
+    setOpenWeekOverride(null);
   }
 
   return (
@@ -103,7 +112,28 @@ export function ProgramDetail({ id }: { id: string }) {
 
       <p className="mb-7 text-[16px] leading-[1.5] text-soft">{copy.overview}</p>
 
-      {startedProgram && (
+      {startedProgram && isComplete && (
+        <div className="mb-7 overflow-hidden rounded-[20px] bg-card p-5 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-success/15 text-success">
+            <CheckBadgeIcon />
+          </div>
+          <div className="text-[19px] font-bold tracking-[-0.2px] text-ink">{t('program_complete_title')}</div>
+          <p className="mx-auto mt-1.5 max-w-[42ch] text-[14px] leading-[1.45] text-soft">{t('program_complete_body')}</p>
+          <div className="mt-4 flex flex-col gap-2.5">
+            <button onClick={handleRestart} className="press rounded-full bg-accent px-4 py-[11px] text-[14px] font-semibold text-white">
+              {t('restart_program')}
+            </button>
+            <button
+              onClick={() => router.push('/programs')}
+              className="press rounded-full bg-fill px-4 py-[11px] text-[14px] font-semibold text-ink"
+            >
+              {t('explore_programs')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {startedProgram && !isComplete && (
         <div className="mb-7">
           <div className="mb-3.5 flex items-center justify-between">
             <div className="text-[22px] font-bold tracking-[-0.3px] text-ink">
@@ -148,7 +178,7 @@ export function ProgramDetail({ id }: { id: string }) {
               disabled={!allDone}
               className={`press rounded-full px-4 py-[9px] text-[13px] font-semibold ${allDone ? 'bg-accent text-white' : 'bg-card text-soft'}`}
             >
-              {startedProgram.done >= 28 ? t('complete') : allDone ? t('log_day') : t('finish_tasks')}
+              {allDone ? t('log_day') : t('finish_tasks')}
             </button>
           </div>
         </div>
@@ -156,21 +186,31 @@ export function ProgramDetail({ id }: { id: string }) {
 
       <div className="mb-3.5 text-[22px] font-bold tracking-[-0.3px] text-ink">{t('four_week_protocol')}</div>
       {copy.weeks.map((w) => {
-        const open = openWeek === w.n;
+        const locked = isActive && w.n > todayWeek;
+        const open = !locked && openWeek === w.n;
         return (
-          <div key={w.n} className="mb-3 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-            <button className="press flex w-full items-center justify-between p-4 text-left" onClick={() => setOpenWeek(open ? 0 : w.n)}>
+          <div
+            key={w.n}
+            className={`mb-3 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] ${locked ? 'opacity-50' : ''}`}
+          >
+            <button
+              className="press flex w-full items-center justify-between p-4 text-left disabled:cursor-not-allowed"
+              disabled={locked}
+              onClick={() => setOpenWeekOverride(open ? 0 : w.n)}
+            >
               <div className="flex items-center gap-3">
                 <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-bold ${plateTint(program.plate)}`}>{w.n}</span>
                 <div>
                   <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">
                     {t('week_label')} {w.n}
+                    {locked && ` · ${t('week_locked_badge')}`}
                   </div>
                   <div className="text-[17px] font-bold text-ink">{w.focus}</div>
                 </div>
               </div>
-              <ChevronDown open={open} />
+              {locked ? <LockIcon /> : <ChevronDown open={open} />}
             </button>
+            {locked && <div className="px-4 pb-4 text-[13px] text-soft">{t('week_locked_hint')}</div>}
             {open && (
               <div className="px-4 pb-4">
                 {w.tasks.map((task, i) => (
@@ -219,6 +259,24 @@ function ChevronDown({ open }: { open: boolean }) {
       className={`shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
     >
       <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#8E8E93" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </svg>
+  );
+}
+
+function CheckBadgeIcon() {
+  return (
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx={12} cy={12} r={9} />
+      <path d="M8 12.5l2.5 2.5L16 9.5" />
     </svg>
   );
 }

@@ -9,6 +9,8 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
+// Session-scoped (not localStorage): dismissing only hides the reminder for this visit —
+// it should keep coming back on later visits until the app is actually installed.
 const DISMISS_KEY = 'asmetry_install_dismissed';
 
 function isStandalone(): boolean {
@@ -32,7 +34,7 @@ export function InstallPrompt() {
 
   useEffect(() => {
     if (isStandalone()) return;
-    if (localStorage.getItem(DISMISS_KEY)) return;
+    if (sessionStorage.getItem(DISMISS_KEY)) return;
 
     if (isIos()) {
       // Deliberately deferred to an effect (not a lazy useState initializer) so the very first
@@ -56,7 +58,7 @@ export function InstallPrompt() {
   }, []);
 
   function dismiss() {
-    localStorage.setItem(DISMISS_KEY, '1');
+    sessionStorage.setItem(DISMISS_KEY, '1');
     setDisplay((d) => ({ ...d, visible: false }));
   }
 
@@ -67,7 +69,7 @@ export function InstallPrompt() {
     const { outcome } = await deferredPrompt.userChoice;
     setInstalling(false);
     if (outcome === 'accepted') {
-      localStorage.setItem(DISMISS_KEY, '1');
+      sessionStorage.setItem(DISMISS_KEY, '1');
     }
     setDisplay((d) => ({ ...d, visible: false }));
     setDeferredPrompt(null);

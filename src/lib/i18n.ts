@@ -173,6 +173,8 @@ const en = {
   stat_level: 'Level',
   four_week_protocol: 'The 4-week protocol',
   week_label: 'Week',
+  week_locked_badge: 'Locked',
+  week_locked_hint: 'Complete the previous week to unlock',
   start_program: 'Start the program',
   stop_program: 'Stop Program',
 
@@ -184,6 +186,11 @@ const en = {
   finish_tasks: 'Finish',
   complete: 'Complete',
   demo: 'Demo',
+
+  program_complete_title: 'Program complete',
+  program_complete_body: 'You finished all 28 days. Restart for another round, or explore another program.',
+  restart_program: 'Restart program',
+  explore_programs: 'Explore other programs',
 
   progress_title: 'Progress',
   no_scans_yet: 'No scans yet',
@@ -405,6 +412,8 @@ const fr: Record<keyof typeof en, string> = {
   stat_level: 'Niveau',
   four_week_protocol: 'Le protocole de 4 semaines',
   week_label: 'Semaine',
+  week_locked_badge: 'Verrouillée',
+  week_locked_hint: 'Terminez la semaine précédente pour débloquer',
   start_program: 'Démarrer le programme',
   stop_program: 'Arrêter le programme',
 
@@ -416,6 +425,11 @@ const fr: Record<keyof typeof en, string> = {
   finish_tasks: 'Terminer',
   complete: 'Terminé',
   demo: 'Démo',
+
+  program_complete_title: 'Programme terminé',
+  program_complete_body: 'Vous avez terminé les 28 jours. Recommencez pour un nouveau tour, ou explorez un autre programme.',
+  restart_program: 'Recommencer le programme',
+  explore_programs: 'Explorer d’autres programmes',
 
   progress_title: 'Progrès',
   no_scans_yet: 'Aucun scan pour l’instant',
