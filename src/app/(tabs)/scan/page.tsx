@@ -278,10 +278,10 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   const addScan = useAppStore((s) => s.addScan);
   const scans = useAppStore((s) => s.scans);
   const setProfilePic = useAppStore((s) => s.setProfilePic);
-  const started = useAppStore((s) => s.started);
-  const toggleProgram = useAppStore((s) => s.toggleProgram);
+  const startPlan = useAppStore((s) => s.startPlan);
   const language = useAppStore((s) => s.language);
   const setTheme = useAppStore((s) => s.setTheme);
+  const [scanId] = useState(() => `${Date.now()}`);
 
   const sorted = [...METRIC_CONFIG].sort((a, b) => result.metrics[a.key] - result.metrics[b.key]);
   const seenPrograms = new Set<string>();
@@ -297,7 +297,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   useEffect(() => {
     const isFirstScan = scans.length === 0;
     addScan({
-      id: `${Date.now()}`,
+      id: scanId,
       date: dateStr(),
       title: t('new_scan_title'),
       overall: result.overall,
@@ -311,11 +311,11 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleStartProgram() {
-    const top = picks[0];
-    if (top && !started.some((s) => s.id === top.programId)) {
-      toggleProgram(top.programId);
-    }
+  function handleStartPlan() {
+    startPlan(
+      picks.map((m) => m.programId),
+      scanId
+    );
     onDone();
     router.push('/home');
     setTimeout(() => setTheme('dark'), 2000);
@@ -348,31 +348,22 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
         </div>
       </div>
 
-      <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('recommended_programs')}</div>
+      <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('your_plan_preview_title')}</div>
       {picks.map((m) => {
         const program = getProgram(m.programId);
         if (!program) return null;
-        const isActive = started.some((s) => s.id === m.programId);
         const copy = localizeProgram(program, language);
         return (
-          <div key={m.programId} className="mb-2.5 flex items-center justify-between rounded-2xl bg-card p-3.5 px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-            <div>
-              <div className="text-[17px] font-semibold text-ink">{copy.name}</div>
-              <div className="mt-0.5 text-[13px] text-soft">
-                {t(m.labelKey)} · {result.metrics[m.key]}
-              </div>
+          <div key={m.programId} className="mb-2.5 rounded-2xl bg-card p-3.5 px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+            <div className="text-[17px] font-semibold text-ink">{copy.name}</div>
+            <div className="mt-0.5 text-[13px] text-soft">
+              {t(m.labelKey)} · {result.metrics[m.key]}
             </div>
-            <button
-              onClick={() => toggleProgram(m.programId)}
-              className={`press rounded-full px-4 py-2 text-[13px] font-semibold ${isActive ? 'bg-accent text-white' : 'bg-accent/10 text-accent'}`}
-            >
-              {isActive ? t('added') : t('add')}
-            </button>
           </div>
         );
       })}
 
-      <PrimaryButton label={t('start_program')} onClick={handleStartProgram} className="mt-4" />
+      <PrimaryButton label={t('start_my_plan')} onClick={handleStartPlan} className="mt-4" />
     </Screen>
   );
 }

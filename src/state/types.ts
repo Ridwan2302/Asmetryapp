@@ -21,6 +21,15 @@ export interface StartedProgram {
   lastRem?: string;
 }
 
+/** The user's single active 4-week plan — a bundle of programs (started together, in lockstep)
+ * built from their weakest scan metrics. Progress/checks still live on each StartedProgram; this
+ * just records which ones belong to the plan and which scan it was built from. */
+export interface ActivePlan {
+  programIds: string[];
+  scanId: string;
+  startedAt: string; // "YYYY-MM-DD"
+}
+
 export interface ScanMetrics {
   sym: number;
   jaw: number;

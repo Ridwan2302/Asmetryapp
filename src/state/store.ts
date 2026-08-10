@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { monthYear } from '../lib/calc';
-import { DEFAULT_PROFILE, DEFAULT_SETTINGS, Language, Profile, ScanEntry, Settings, StartedProgram, Theme } from './types';
+import { dateStr, monthYear } from '../lib/calc';
+import { ActivePlan, DEFAULT_PROFILE, DEFAULT_SETTINGS, Language, Profile, ScanEntry, Settings, StartedProgram, Theme } from './types';
 
 interface AppState {
   hasHydrated: boolean;
@@ -9,6 +9,7 @@ interface AppState {
   profile: Profile;
   profilePic: string | null;
   started: StartedProgram[];
+  plan: ActivePlan | null;
   scans: ScanEntry[];
   settings: Settings;
   language: Language;
@@ -29,6 +30,11 @@ interface AppState {
   setReminder: (id: string, time: string) => void;
   markReminderFired: (id: string, key: string) => void;
 
+  startPlan: (programIds: string[], scanId: string) => void;
+  clearPlan: () => void;
+  logPlanDay: (programIds: string[]) => void;
+  restartPlan: (programIds: string[]) => void;
+
   addScan: (entry: ScanEntry) => void;
   deleteScan: (id: string) => void;
   toggleSetting: (id: keyof Settings) => void;
@@ -41,6 +47,7 @@ const initialState = {
   profile: DEFAULT_PROFILE,
   profilePic: null,
   started: [] as StartedProgram[],
+  plan: null as ActivePlan | null,
   scans: [] as ScanEntry[],
   settings: DEFAULT_SETTINGS,
   language: 'en' as Language,
@@ -111,6 +118,29 @@ export const useAppStore = create<AppState>()(
           started: state.started.map((s) => (s.id === id ? { ...s, lastRem: key } : s)),
         })),
 
+      startPlan: (programIds, scanId) =>
+        set((state) => {
+          const newlyStarted = programIds
+            .filter((id) => !state.started.some((s) => s.id === id))
+            .map((id): StartedProgram => ({ id, done: 0, checks: {}, reminder: '08:00' }));
+          return {
+            started: [...state.started, ...newlyStarted],
+            plan: { programIds, scanId, startedAt: dateStr() },
+          };
+        }),
+
+      clearPlan: () => set({ plan: null }),
+
+      logPlanDay: (programIds) =>
+        set((state) => ({
+          started: state.started.map((s) => (programIds.includes(s.id) ? { ...s, done: Math.min(28, s.done + 1), checks: {} } : s)),
+        })),
+
+      restartPlan: (programIds) =>
+        set((state) => ({
+          started: state.started.map((s) => (programIds.includes(s.id) ? { ...s, done: 0, checks: {} } : s)),
+        })),
+
       addScan: (entry) => set((state) => ({ scans: [...state.scans, entry] })),
 
       deleteScan: (id) => set((state) => ({ scans: state.scans.filter((s) => s.id !== id) })),
@@ -132,6 +162,7 @@ export const useAppStore = create<AppState>()(
         profile: state.profile,
         profilePic: state.profilePic,
         started: state.started,
+        plan: state.plan,
         scans: state.scans,
         settings: state.settings,
         language: state.language,
