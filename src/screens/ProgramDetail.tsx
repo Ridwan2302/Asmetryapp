@@ -143,6 +143,12 @@ export function ProgramDetail({ id }: { id: string }) {
               {doneCount}/{todayTasks.length}
             </span>
           </div>
+          <div className="mb-3.5 rounded-[16px] bg-fill p-3.5">
+            <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">
+              {t('week_label')} {todayWeek} · {todayWk.focus}
+            </div>
+            <p className="mt-1 text-[13px] leading-[1.5] text-ink/80">{todayWk.why}</p>
+          </div>
           <div className="mb-3.5 overflow-hidden rounded-[20px] bg-card px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
             {todayTasks.map((text, i) => {
               const checked = !!startedProgram.checks[i];
@@ -213,6 +219,7 @@ export function ProgramDetail({ id }: { id: string }) {
             {locked && <div className="px-4 pb-4 text-[13px] text-soft">{t('week_locked_hint')}</div>}
             {open && (
               <div className="px-4 pb-4">
+                <p className="mb-3 text-[13px] leading-[1.5] text-soft">{w.why}</p>
                 {w.tasks.map((task, i) => (
                   <div key={i} className="flex items-center gap-3 border-t border-border py-2.5 first:border-t-0">
                     <span className="mt-[1px] h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
