@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAppStore } from '@/state/store';
 import { InstallPrompt } from './InstallPrompt';
 import { LoadingScreen } from './LoadingScreen';
+import { UpdateBanner } from './UpdateBanner';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // `hasHydrated` defaults to false in the store's initial state, so the server render and
@@ -27,6 +28,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       {hasHydrated ? (
         <>
           <InstallPrompt />
+          <UpdateBanner />
           {children}
         </>
       ) : (

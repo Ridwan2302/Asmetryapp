@@ -213,6 +213,9 @@ const en = {
   install_button: 'Install',
   dismiss: 'Dismiss',
 
+  update_available_title: 'A new version is available',
+  update_button: 'Update',
+
   metric_sym_label: 'FACIAL SYMMETRY',
   metric_sym_note_0: 'Left and right halves align closely.',
   metric_sym_note_1: 'Minor deviation along the vertical axis.',
@@ -451,6 +454,9 @@ const fr: Record<keyof typeof en, string> = {
   install_android_hint: 'Installez pour l’expérience plein écran, comme une app',
   install_button: 'Installer',
   dismiss: 'Fermer',
+
+  update_available_title: 'Une nouvelle version est disponible',
+  update_button: 'Mettre à jour',
 
   metric_sym_label: 'SYMÉTRIE FACIALE',
   metric_sym_note_0: 'Les côtés gauche et droit s’alignent étroitement.',
