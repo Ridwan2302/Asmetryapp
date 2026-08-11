@@ -16,7 +16,8 @@ import { getProgram, localizeProgram } from '@/data/programs';
 import { deltaVsPrior, gradeOf, greeting } from '@/lib/calc';
 import { CoachState, getCoachState } from '@/lib/coach';
 import { requestNotificationPermission } from '@/lib/notifications';
-import { useT } from '@/lib/i18n';
+import { useT, Translator } from '@/lib/i18n';
+import { useAutoSpeak } from '@/lib/voice';
 import { useAppStore } from '@/state/store';
 
 export default function HomePage() {
@@ -286,8 +287,24 @@ export default function HomePage() {
   );
 }
 
+function coachMessage(coach: CoachState, t: Translator): string {
+  switch (coach.kind) {
+    case 'no_scan':
+      return t('coach_no_scan');
+    case 'scan_no_plan':
+      return `${coach.metricLabel} ${t('coach_scan_no_plan_body')}`;
+    case 'has_started_no_plan':
+      return t('coach_has_started_no_plan');
+    case 'plan_progress':
+      return coach.status === 'done' ? t('coach_plan_done_body') : coach.status === 'partial' ? t('coach_plan_partial_body') : t('coach_plan_not_started_body');
+    case 'plan_complete':
+      return `${t('coach_plan_complete_title')}. ${t('coach_plan_complete_body')}`;
+  }
+}
+
 function CoachCard({ coach }: { coach: CoachState }) {
   const t = useT();
+  useAutoSpeak(coachMessage(coach, t));
   return (
     <div className="mt-4 rounded-[20px] bg-ink p-4 dark:bg-card dark:ring-1 dark:ring-border">
       <div className="flex items-center gap-2">

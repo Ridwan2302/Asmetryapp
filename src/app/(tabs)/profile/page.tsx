@@ -20,6 +20,7 @@ const SETTINGS_ROWS: { id: keyof Settings; labelKey: TranslationKey }[] = [
   { id: 'haptics', labelKey: 'setting_haptics' },
   { id: 'grid', labelKey: 'setting_grid' },
   { id: 'private', labelKey: 'setting_private' },
+  { id: 'voiceGuide', labelKey: 'setting_voice_guide' },
 ];
 
 export default function ProfilePage() {

@@ -8,6 +8,7 @@ import { LanguageToggle } from '@/components/LanguageToggle';
 import { Pill } from '@/components/Pill';
 import { bmiAdvice, bmiCategory, bmiOf } from '@/lib/calc';
 import { Translator, useT } from '@/lib/i18n';
+import { useAutoSpeak } from '@/lib/voice';
 import { useAppStore } from '@/state/store';
 import { Sex } from '@/state/types';
 
@@ -121,6 +122,7 @@ function animateScrollTo(targetY: number, duration: number) {
 
 function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
   const langRef = useRef<HTMLDivElement>(null);
+  useAutoSpeak(t('welcome_headline'));
 
   useEffect(() => {
     const el = langRef.current;
@@ -172,6 +174,7 @@ function Welcome({ onNext, t }: { onNext: () => void; t: Translator }) {
 
 function Intro({ idx, onNext, onSkip, t }: { idx: number; onNext: () => void; onSkip: () => void; t: Translator }) {
   const cur = introData[idx];
+  useAutoSpeak(`${t(cur.titleKey)}. ${t(cur.bodyKey)}`);
   return (
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
       <div>
@@ -255,6 +258,7 @@ function StatsForm(props: {
   t: Translator;
 }) {
   const { name, setName, sex, setSex, age, setAge, height, setHeight, weight, setWeight, ready, onNext, t } = props;
+  useAutoSpeak(t('stats_title'));
   return (
     <div className="min-h-dvh px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
       <Pill label={t('stats_step')} tone="accent" className="mb-4" />
@@ -291,6 +295,7 @@ function StatsForm(props: {
 
 function ResultStep({ bmi, age, height, weight, onFinish, t }: { bmi: number; age: number; height: number; weight: number; onFinish: () => void; t: Translator }) {
   const healthy = bmi > 0 && bmi >= 18.5 && bmi < 25;
+  useAutoSpeak(`${t('baseline_captured')}. ${bmiAdvice(bmi, t)}`);
   return (
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
       <div>
