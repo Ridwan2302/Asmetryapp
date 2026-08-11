@@ -197,32 +197,44 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="mb-7">
-              <div className="mb-3.5 overflow-hidden rounded-[20px] bg-card px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-                {planTaskGroups.map((g) =>
-                  g.wk.tasks.map((text, i) => {
-                    const checked = !!g.sp.checks[i];
-                    const enTask = g.enWk.tasks[i] ?? text;
-                    return (
-                      <div key={`${g.sp.id}-${i}`} className="flex w-full items-center gap-3 border-b border-border py-[9px] last:border-b-0">
-                        <button className="press flex flex-1 items-start gap-3 text-left" onClick={() => toggleTask(g.sp.id, i)}>
-                          <span
-                            className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
-                              checked ? 'bg-accent' : 'bg-fill-strong'
-                            }`}
-                          >
-                            {checked && '✓'}
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-[10px] font-semibold tracking-[0.2px] text-soft uppercase">{g.copy.name}</span>
-                            <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft' : 'text-ink'}`}>{text}</span>
-                          </span>
-                        </button>
-                        <DemoButton taskEn={enTask} />
+              {planTaskGroups.map((g) => {
+                const groupDone = g.wk.tasks.reduce((acc, _, i) => acc + (g.sp.checks[i] ? 1 : 0), 0);
+                return (
+                  <div key={g.sp.id} className="mb-3.5 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+                    <div className="border-b border-border px-4 pt-3.5 pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className="text-[15px] font-bold tracking-[-0.1px] text-ink">{g.copy.name}</div>
+                        <span className={`text-[12px] font-bold ${groupDone === g.wk.tasks.length ? 'text-success' : 'text-soft'}`}>
+                          {groupDone}/{g.wk.tasks.length}
+                        </span>
                       </div>
-                    );
-                  })
-                )}
-              </div>
+                      <div className="mt-0.5 text-[11px] font-semibold tracking-[0.2px] text-accent uppercase">{g.wk.focus}</div>
+                      <p className="mt-1.5 text-[13px] leading-[1.5] text-soft">{g.wk.why}</p>
+                    </div>
+                    <div className="px-4">
+                      {g.wk.tasks.map((text, i) => {
+                        const checked = !!g.sp.checks[i];
+                        const enTask = g.enWk.tasks[i] ?? text;
+                        return (
+                          <div key={i} className="flex w-full items-center gap-3 border-b border-border py-[9px] last:border-b-0">
+                            <button className="press flex flex-1 items-start gap-3 text-left" onClick={() => toggleTask(g.sp.id, i)}>
+                              <span
+                                className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
+                                  checked ? 'bg-accent' : 'bg-fill-strong'
+                                }`}
+                              >
+                                {checked && '✓'}
+                              </span>
+                              <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft' : 'text-ink'}`}>{text}</span>
+                            </button>
+                            <DemoButton taskEn={enTask} />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
               <div className="flex items-center justify-between rounded-[16px] bg-fill p-3">
                 <div className="flex items-center gap-2">
                   <span className="text-[13px] font-medium text-soft">{t('remind')}</span>

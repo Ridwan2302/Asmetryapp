@@ -2,13 +2,15 @@
  * matched by keyword against the (always-English) task text. */
 export interface DemoEntry {
   keywords: string[];
-  videoId: string;
+  /** Omitted when no specific, verified video applies (mostly diet/habit/lifestyle tasks) — the
+   * guide always still shows, we just never link out to an unverified/invented video id. */
+  videoId?: string;
   guide: { en: string; fr: string };
 }
 
 const DEMO_ENTRIES: DemoEntry[] = [
   {
-    keywords: ['mewing'],
+    keywords: ['mewing', 'nasal breathing'],
     videoId: 'YoKy55QNivQ',
     guide: {
       en: 'Mewing means resting your entire tongue — tip to back — flat against the roof of your mouth, not just the tip behind your teeth. Keep your lips sealed and breathe through your nose. Your back teeth should touch lightly, without clenching. It should feel like a gentle, constant pressure, never straining. Hold it as a default resting posture, not just during dedicated reps — the cumulative time matters more than any single session.',
@@ -80,7 +82,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['cleanse', 'spf', 'retinoid', 'niacinamide', 'moisturiz', 'exfoliat'],
+    keywords: ['cleanse', 'spf', 'retinoid', 'niacinamide', 'moisturiz', 'exfolia'],
     videoId: '-Jt3gczy_4o',
     guide: {
       en: 'Order matters: cleanse first on damp skin, pat dry, then apply active ingredients (retinoid or niacinamide) before a moisturizer to seal them in, and SPF last every morning as the final step. Retinoids go on at night only — they break down in sunlight and increase sun sensitivity. Use a pea-sized amount; more product doesn’t mean faster results, just more irritation.',
@@ -112,7 +114,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['lateral raise'],
+    keywords: ['lateral raise', 'shoulder finisher'],
     videoId: 'nnH63icHYXY',
     guide: {
       en: 'Stand tall, dumbbells at your sides, and raise your arms out to shoulder height with a slight bend in the elbows, leading with your elbows rather than your hands. Stop at shoulder height — going higher shifts the work to your traps instead of your shoulders. Lower slowly; the negative matters as much as the lift.',
@@ -128,7 +130,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['push session', 'overhead press'],
+    keywords: ['push session', 'overhead press', 'push/pull superset'],
     videoId: 'OhOdvjKCvr0',
     guide: {
       en: 'Push movements (chest press, shoulder press, dips) all work the same direction — away from your body. Keep your core braced throughout so the force comes from your chest/shoulders, not your lower back arching. For overhead press specifically, press the bar or dumbbells in a straight line above your head, not out in front, and avoid locking your elbows hard at the top.',
@@ -141,6 +143,166 @@ const DEMO_ENTRIES: DemoEntry[] = [
     guide: {
       en: "Pull movements (rows, pull-ups, curls) work back toward your body. Start each row by pulling your shoulder blade back first, then your arm follows — leading with the arm alone turns it into a biceps exercise instead of a back exercise. Control the return; don't let the weight just drop.",
       fr: 'Les mouvements de tirage (rowing, tractions, curls) travaillent en ramenant vers le corps. Commencez chaque rowing en tirant d’abord l’omoplate vers l’arrière, puis le bras suit — mener uniquement avec le bras en fait un exercice de biceps plutôt que de dos. Contrôlez le retour ; ne laissez pas simplement tomber la charge.',
+    },
+  },
+  {
+    keywords: ['progress photo'],
+    guide: {
+      en: 'Take your progress photo in the same spot, same lighting (ideally natural daylight, not overhead artificial light), and the same time of day each time — inconsistent conditions make real changes impossible to see. Keep a neutral expression, pull hair back, and use the same distance from the camera so photos line up for a fair side-by-side comparison.',
+      fr: 'Prenez votre photo de progression au même endroit, avec le même éclairage (idéalement la lumière naturelle du jour, pas un éclairage artificiel au plafond), et au même moment de la journée à chaque fois — des conditions incohérentes rendent les vrais changements impossibles à voir. Gardez une expression neutre, dégagez les cheveux, et utilisez la même distance par rapport à l’appareil pour que les photos s’alignent pour une comparaison côte à côte équitable.',
+    },
+  },
+  {
+    keywords: [
+      'full face circuit',
+      'full jaw + neck recovery',
+      'full orbital circuit',
+      'full-body strength circuit',
+      'full posture circuit',
+      'full am + pm routine',
+      'full grooming pass',
+      'full nutrient-dense day',
+      'full protocol nightly',
+    ],
+    guide: {
+      en: "This is a recap week, not new material — run through everything you practiced across the last three weeks in one session, back to back, at a pace you can sustain with good form throughout. The point isn't to go harder than before; it's to prove the whole routine now runs together smoothly without needing to think through each step.",
+      fr: 'C’est une semaine de récapitulatif, pas de nouveau contenu — enchaînez tout ce que vous avez pratiqué au cours des trois dernières semaines en une seule séance, sans interruption, à un rythme que vous pouvez tenir en gardant une bonne forme tout du long. L’objectif n’est pas d’aller plus fort qu’avant ; c’est de prouver que toute la routine s’enchaîne désormais sans effort de réflexion à chaque étape.',
+    },
+  },
+  {
+    keywords: [
+      'protein target',
+      'protein:',
+      'hit protein',
+      'protein + vitamin',
+      'cut liquid sugar',
+      'whole-food carbs',
+      'zinc + magnesium',
+      'fasting',
+      'healthy fats',
+      'cut dairy',
+    ],
+    guide: {
+      en: 'Hit your protein target by spreading it across 3-4 meals rather than one big serving — the body can only use so much at once. Favor whole foods (meat, eggs, dairy, legumes, vegetables) over processed ones, since they carry the vitamins and minerals your body actually needs for this to work, not just calories. Consistency day-to-day matters far more than any single perfect meal.',
+      fr: 'Atteignez votre objectif de protéines en le répartissant sur 3 à 4 repas plutôt qu’une seule grosse portion — le corps ne peut en utiliser qu’une certaine quantité à la fois. Privilégiez les aliments complets (viande, œufs, produits laitiers, légumineuses, légumes) aux aliments transformés, car ils apportent les vitamines et minéraux dont votre corps a réellement besoin pour que cela fonctionne, pas seulement des calories. La régularité au quotidien compte bien plus qu’un seul repas parfait.',
+    },
+  },
+  {
+    keywords: ['steps for the day', '10k steps', '8k steps'],
+    guide: {
+      en: "Steps don't need to come from a dedicated walk — they add up from stairs, parking further away, pacing during calls, or a short walk after meals. Spreading them through the day (rather than one long walk) also helps regulate blood sugar better after eating. Track with your phone's built-in step counter; no special equipment needed.",
+      fr: 'Les pas n’ont pas besoin de venir d’une marche dédiée — ils s’accumulent avec les escaliers, se garer plus loin, marcher pendant les appels, ou une courte marche après les repas. Les répartir sur la journée (plutôt qu’une seule longue marche) aide aussi à mieux réguler la glycémie après les repas. Suivez avec le compteur de pas intégré à votre téléphone ; aucun équipement spécial n’est nécessaire.',
+    },
+  },
+  {
+    keywords: [
+      'water:',
+      'water target',
+      'reach 2.5l',
+      'electrolytes',
+      'sodium/potassium',
+      'herbal tea',
+      'facial puffiness',
+      'front-load water',
+      'water-rich foods',
+      'consistent 3l',
+      'de-puff routine',
+      'hydrate 2.5l',
+      'cut excess salt',
+      'review energy + skin clarity',
+    ],
+    guide: {
+      en: "Spread your water target across the whole day rather than drinking it all at once — the body absorbs a steady intake much better than a flood. Add a pinch of salt or an electrolyte packet if you're sweating a lot or drinking well over 2.5L, since water alone without minerals can actually flush out what you need. You'll know you're on track when urine runs pale yellow, not clear or dark.",
+      fr: 'Répartissez votre objectif d’eau sur toute la journée plutôt que de tout boire d’un coup — le corps absorbe bien mieux un apport régulier qu’un afflux soudain. Ajoutez une pincée de sel ou un sachet d’électrolytes si vous transpirez beaucoup ou buvez bien plus de 2,5 L, car l’eau seule sans minéraux peut en réalité évacuer ce dont vous avez besoin. Vous saurez que c’est le cas quand vos urines sont jaune pâle, ni claires ni foncées.',
+    },
+  },
+  {
+    keywords: [
+      'wake time',
+      'morning sunlight',
+      'sunlight 15 min',
+      'no caffeine after',
+      'cool, dark room',
+      'large meals',
+      'consistent bedtime',
+      'magnesium + no alcohol',
+      'blue-light filter',
+      'breathing / relaxation',
+      'morning puffiness',
+      'consistent 8h',
+      'de-puff in am',
+      'sleep schedule',
+      'sleep 8h window',
+      'sleep 7.5h',
+    ],
+    guide: {
+      en: 'Keep your wake time fixed even on weekends — that\'s what actually anchors your circadian rhythm, more than bedtime does. Get sunlight within 30 minutes of waking to lock that signal in, cut caffeine by early afternoon since it has a long half-life, and keep the bedroom cool and dark. Small, consistent habits repeated nightly matter far more than any single "perfect" night.',
+      fr: 'Gardez une heure de réveil fixe même le week-end — c’est en réalité elle qui ancre votre rythme circadien, plus que l’heure du coucher. Exposez-vous au soleil dans les 30 minutes suivant le réveil pour verrouiller ce signal, arrêtez la caféine en début d’après-midi car elle a une longue demi-vie, et gardez la chambre fraîche et sombre. De petites habitudes constantes répétées chaque soir comptent bien plus qu’une seule nuit « parfaite ».',
+    },
+  },
+  {
+    keywords: ['posture reset alarm', 'desk ergonomics', 'deep neck flexor', 'standing posture holds', 'loaded carries', 'alignment habit check'],
+    guide: {
+      en: 'These are about catching yourself throughout the day, not a single training session — set an actual phone alarm or reminder so you check in hourly rather than relying on memory. When it goes off, reset: ears over shoulders, shoulders back and down, core lightly braced. Over weeks, this conscious check-in is what turns into an unconscious default.',
+      fr: 'Il s’agit ici de vous rattraper tout au long de la journée, pas d’une seule séance d’entraînement — réglez une vraie alarme ou un rappel sur votre téléphone pour vérifier votre posture toutes les heures plutôt que de compter sur votre mémoire. Quand il sonne, réajustez-vous : oreilles au-dessus des épaules, épaules en arrière et basses, tronc légèrement gainé. Au fil des semaines, cette vérification consciente devient un réflexe inconscient.',
+    },
+  },
+  {
+    keywords: [
+      'spot treat',
+      'spot care',
+      'no picking',
+      'no touching / picking',
+      'phone screen',
+      'pillowcase',
+      'maintenance routine locked',
+      'clay mask',
+      'diet + sleep + hydration',
+      'track measurements',
+      'review sleep, training, diet',
+    ],
+    guide: {
+      en: 'These check-ins work because you write them down, not because you remember them — use a simple note, calendar tick, or the streak already built into this app. Spot treatments (like BHA on active breakouts) should go on clean, dry skin only where needed, not the whole face — over-applying just irritates skin that isn\'t broken out.',
+      fr: 'Ces suivis fonctionnent parce que vous les notez, pas parce que vous vous en souvenez — utilisez une simple note, une coche sur un calendrier, ou la série déjà intégrée à cette application. Les traitements localisés (comme le BHA sur les imperfections actives) doivent s’appliquer uniquement sur peau propre et sèche, là où c’est nécessaire, pas sur tout le visage — trop en mettre irrite juste la peau qui n’a pas d’imperfection.',
+    },
+  },
+  {
+    keywords: [
+      'sharp haircut',
+      'whitening routine',
+      'style hair',
+      'nail + hand grooming',
+      'whitening + flossing',
+      'fragrance + skin base',
+      'edge-up touch-ups',
+      'wardrobe fit check',
+      'restock products',
+      'weekly maintenance schedule',
+    ],
+    guide: {
+      en: 'Book grooming appointments (haircut, whitening) ahead rather than waiting until you need one urgently — staying ahead of it is what keeps presentation consistently sharp instead of cycling between "just cut" and "overdue." For daily upkeep (styling, nails, fragrance), little and often beats a big effort once a week.',
+      fr: 'Réservez vos rendez-vous grooming (coupe, blanchiment) à l’avance plutôt que d’attendre d’en avoir un besoin urgent — garder une longueur d’avance est ce qui maintient une présentation toujours soignée, au lieu d’alterner entre « fraîchement coupé » et « en retard ». Pour l’entretien quotidien (coiffage, ongles, parfum), un peu souvent vaut mieux qu’un gros effort une fois par semaine.',
+    },
+  },
+  {
+    keywords: ['jaw-fascia release', 'neck + jaw stretch', 'lower-lip pull downs'],
+    guide: {
+      en: "For jaw-fascia release, use your knuckles or a massage tool to apply firm, slow circular pressure along the jaw muscle — this releases tension built up from clenching, it isn't a strength exercise. Neck + jaw stretches should be slow and gentle, held for the full duration rather than bounced, since forcing a stretch can strain the jaw joint.",
+      fr: 'Pour le relâchement du fascia mandibulaire, utilisez vos jointures ou un outil de massage pour appliquer une pression circulaire ferme et lente le long du muscle de la mâchoire — cela relâche la tension accumulée par le serrage, ce n’est pas un exercice de force. Les étirements cou + mâchoire doivent être lents et doux, maintenus pendant toute la durée plutôt que réalisés en rebond, car forcer un étirement peut solliciter l’articulation de la mâchoire.',
+    },
+  },
+  {
+    keywords: ['lateral gaze holds', 'brow-set downward press', 'screen-distance', 'compress + massage'],
+    guide: {
+      en: "Keep these movements small and controlled — the muscles around the eyes are delicate, so this is about precise, gentle engagement, not force. For screen-distance checks, your screen should sit roughly an arm's length away and at eye level; too close or too low strains the eyes and encourages squinting outside of your actual training reps.",
+      fr: 'Gardez ces mouvements petits et contrôlés — les muscles autour des yeux sont délicats, il s’agit donc d’un engagement précis et doux, pas de force. Pour la vérification de la distance à l’écran, celui-ci doit se trouver à peu près à une longueur de bras et à hauteur des yeux ; trop proche ou trop bas fatigue les yeux et encourage à plisser les yeux en dehors de vos répétitions d’entraînement.',
+    },
+  },
+  {
+    keywords: ['strength train', 'resistance training progression'],
+    guide: {
+      en: 'Aim for compound movements (squats, presses, rows, deadlifts) that work multiple muscle groups at once — they drive the biggest hormonal response per session. Progress by adding small amounts of weight or reps week to week rather than jumping too fast; consistent, gradual overload beats sporadic maxing out.',
+      fr: 'Privilégiez les mouvements polyarticulaires (squats, développés, rowing, soulevé de terre) qui sollicitent plusieurs groupes musculaires à la fois — ils déclenchent la plus grande réponse hormonale par séance. Progressez en ajoutant de petites quantités de poids ou de répétitions semaine après semaine plutôt qu’en avançant trop vite ; une surcharge progressive et régulière vaut mieux que des efforts maximaux sporadiques.',
     },
   },
 ];

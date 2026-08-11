@@ -56,23 +56,34 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
                   <div className="text-[11px] font-semibold tracking-[0.3px] text-white/50 uppercase">{t('how_to_title')}</div>
                   <p className="mt-1.5 text-[14px] leading-[1.55] text-white/90">{language === 'fr' ? entry.guide.fr : entry.guide.en}</p>
 
-                  <a
-                    href={youtubeWatchUrl(entry.videoId)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="press relative mt-4 block aspect-video w-full overflow-hidden rounded-[14px] bg-black"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, not a local/optimizable asset */}
-                    <img src={youtubeThumbnailUrl(entry.videoId)} alt="" className="h-full w-full object-cover opacity-80" />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-black shadow-lg">
-                        <PlayIcon />
+                  {entry.videoId ? (
+                    <a
+                      href={youtubeWatchUrl(entry.videoId)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="press relative mt-4 block aspect-video w-full overflow-hidden rounded-[14px] bg-black"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, not a local/optimizable asset */}
+                      <img src={youtubeThumbnailUrl(entry.videoId)} alt="" className="h-full w-full object-cover opacity-80" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-black shadow-lg">
+                          <PlayIcon />
+                        </span>
+                      </div>
+                      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pt-6 pb-2 text-[12px] font-semibold text-white">
+                        {t('watch_on_youtube')}
                       </span>
-                    </div>
-                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pt-6 pb-2 text-[12px] font-semibold text-white">
-                      {t('watch_on_youtube')}
-                    </span>
-                  </a>
+                    </a>
+                  ) : (
+                    <a
+                      href={youtubeSearchUrl(taskEn)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="press mt-4 inline-block text-[13px] font-semibold text-accent"
+                    >
+                      {t('search_on_youtube_hint')} →
+                    </a>
+                  )}
                 </>
               ) : (
                 <a

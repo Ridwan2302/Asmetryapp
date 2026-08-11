@@ -188,6 +188,13 @@ const en = {
   stat_min_day: 'Min / day',
   stat_level: 'Level',
   four_week_protocol: 'The 4-week protocol',
+
+  rx_diagnosis: 'Diagnosis',
+  rx_why: 'Why this program',
+  rx_benefits: 'Expected benefits',
+  rx_protocol: 'Protocol',
+  rx_prescribed_on: 'Prescribed on',
+  rx_tap_hint: 'Tap a program for the full prescription',
   week_label: 'Week',
   week_locked_badge: 'Locked',
   week_locked_hint: 'Complete the previous week to unlock',
@@ -204,6 +211,7 @@ const en = {
   demo: 'Demo',
   how_to_title: 'How to',
   watch_on_youtube: 'Watch on YouTube',
+  search_on_youtube_hint: 'Search on YouTube',
   guide_unavailable_title: 'No guide yet',
   guide_unavailable_body: 'Tap to search on YouTube',
 
@@ -450,6 +458,13 @@ const fr: Record<keyof typeof en, string> = {
   stat_min_day: 'Min / jour',
   stat_level: 'Niveau',
   four_week_protocol: 'Le protocole de 4 semaines',
+
+  rx_diagnosis: 'Diagnostic',
+  rx_why: 'Pourquoi ce programme',
+  rx_benefits: 'Bénéfices attendus',
+  rx_protocol: 'Protocole',
+  rx_prescribed_on: 'Prescrit le',
+  rx_tap_hint: 'Touchez un programme pour l’ordonnance complète',
   week_label: 'Semaine',
   week_locked_badge: 'Verrouillée',
   week_locked_hint: 'Terminez la semaine précédente pour débloquer',
@@ -466,6 +481,7 @@ const fr: Record<keyof typeof en, string> = {
   demo: 'Démo',
   how_to_title: 'Comment faire',
   watch_on_youtube: 'Regarder sur YouTube',
+  search_on_youtube_hint: 'Rechercher sur YouTube',
   guide_unavailable_title: 'Pas encore de guide',
   guide_unavailable_body: 'Touchez pour rechercher sur YouTube',
 

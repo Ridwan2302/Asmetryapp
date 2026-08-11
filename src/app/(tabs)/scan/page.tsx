@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
-import { METRIC_CONFIG, MetricConfig } from '@/data/metricConfig';
-import { getProgram, localizeProgram } from '@/data/programs';
+import { METRIC_CONFIG, MetricConfig, metricNoteFor } from '@/data/metricConfig';
+import { getProgram, levelKey, localizeProgram } from '@/data/programs';
 import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { Translator, useT } from '@/lib/i18n';
@@ -282,6 +282,8 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   const language = useAppStore((s) => s.language);
   const setTheme = useAppStore((s) => s.setTheme);
   const [scanId] = useState(() => `${Date.now()}`);
+  const [isFirstScan] = useState(() => scans.length === 0);
+  const [rxPick, setRxPick] = useState<MetricConfig | null>(null);
 
   const sorted = [...METRIC_CONFIG].sort((a, b) => result.metrics[a.key] - result.metrics[b.key]);
   const seenPrograms = new Set<string>();
@@ -295,7 +297,6 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   }
 
   useEffect(() => {
-    const isFirstScan = scans.length === 0;
     addScan({
       id: scanId,
       date: dateStr(),
@@ -318,7 +319,14 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
     );
     onDone();
     router.push('/home');
-    setTimeout(() => setTheme('dark'), 2000);
+    // Only ever auto-switches theme on the user's very first scan, as a one-time demonstration
+    // that dark mode exists — it reverts itself, and never touches the theme on later scans.
+    if (isFirstScan) {
+      setTimeout(() => {
+        setTheme('dark');
+        setTimeout(() => setTheme('light'), 5000);
+      }, 2000);
+    }
   }
 
   return (
@@ -354,17 +362,133 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
         if (!program) return null;
         const copy = localizeProgram(program, language);
         return (
-          <div key={m.programId} className="mb-2.5 rounded-2xl bg-card p-3.5 px-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-            <div className="text-[17px] font-semibold text-ink">{copy.name}</div>
-            <div className="mt-0.5 text-[13px] text-soft">
-              {t(m.labelKey)} · {result.metrics[m.key]}
+          <button
+            key={m.programId}
+            onClick={() => setRxPick(m)}
+            className="press mb-2.5 flex w-full items-center justify-between rounded-2xl bg-card p-3.5 px-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
+          >
+            <div>
+              <div className="text-[17px] font-semibold text-ink">{copy.name}</div>
+              <div className="mt-0.5 text-[13px] text-soft">
+                {t(m.labelKey)} · {result.metrics[m.key]}
+              </div>
             </div>
-          </div>
+            <ChevronRightIcon />
+          </button>
         );
       })}
+      <div className="mb-1 text-center text-[12px] text-soft">{t('rx_tap_hint')}</div>
 
       <PrimaryButton label={t('start_my_plan')} onClick={handleStartPlan} className="mt-4" />
+
+      {rxPick && (
+        <PrescriptionModal m={rxPick} result={result} language={language} t={t} onClose={() => setRxPick(null)} />
+      )}
     </Screen>
+  );
+}
+
+function ChevronRightIcon() {
+  return (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#8E8E93" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+/** The "ordonnance" — a prescription-styled deep-dive on a single recommended program: what's
+ * wrong (diagnosis, from the actual scanned metric), why this program addresses it, what the
+ * user can expect to gain, and the protocol dosage (days / minutes / level). */
+function PrescriptionModal({
+  m,
+  result,
+  language,
+  t,
+  onClose,
+}: {
+  m: MetricConfig;
+  result: AnalysisResult;
+  language: 'en' | 'fr';
+  t: Translator;
+  onClose: () => void;
+}) {
+  const program = getProgram(m.programId);
+  if (!program) return null;
+  const copy = localizeProgram(program, language);
+  const value = result.metrics[m.key];
+  const note = metricNoteFor(m, value, t);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-6" onClick={onClose}>
+      <div
+        className="max-h-[85vh] w-full max-w-[380px] overflow-y-auto rounded-[22px] bg-paper p-6 shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-5 flex items-start justify-between border-b border-dashed border-border pb-4">
+          <div>
+            <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">Rx · {copy.anatomy}</div>
+            <div className="mt-1 text-[22px] leading-[1.1] font-bold tracking-[-0.3px] text-ink">{copy.name}</div>
+            <div className="mt-1 text-[13px] text-soft">{copy.tagline}</div>
+          </div>
+          <button onClick={onClose} aria-label={t('dismiss')} className="press flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-fill text-[16px] leading-none text-soft">
+            ×
+          </button>
+        </div>
+
+        <Section label={t('rx_diagnosis')}>
+          <div className="flex items-baseline gap-2">
+            <span className="text-[28px] leading-none font-bold text-ink">{value}</span>
+            <span className="text-[13px] font-semibold text-soft">{t(m.labelKey)}</span>
+          </div>
+          <p className="mt-2 text-[14px] leading-[1.5] text-soft">{note}</p>
+        </Section>
+
+        <Section label={t('rx_why')}>
+          <p className="text-[14px] leading-[1.55] text-ink/85">{copy.overview}</p>
+        </Section>
+
+        <Section label={t('rx_benefits')}>
+          <ul className="space-y-1.5">
+            {copy.benefits.map((b, i) => (
+              <li key={i} className="flex gap-2 text-[14px] leading-[1.45] text-ink/85">
+                <span className="mt-[3px] h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section label={t('rx_protocol')} last>
+          <div className="flex gap-2.5">
+            <RxStat value="28" label={t('stat_days')} />
+            <RxStat value={String(program.mins)} label={t('stat_min_day')} />
+            <RxStat value={t(levelKey(program.level))} label={t('stat_level')} />
+          </div>
+        </Section>
+
+        <div className="mt-5 border-t border-dashed border-border pt-4 text-center text-[11px] text-soft">
+          {t('rx_prescribed_on')} {dateStr()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Section({ label, children, last }: { label: string; children: React.ReactNode; last?: boolean }) {
+  return (
+    <div className={last ? '' : 'mb-5'}>
+      <div className="mb-1.5 text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">{label}</div>
+      {children}
+    </div>
+  );
+}
+
+function RxStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex-1 rounded-[14px] bg-fill p-2.5 text-center">
+      <div className="text-[17px] font-bold text-ink">{value}</div>
+      <div className="text-[11px] font-medium text-soft">{label}</div>
+    </div>
   );
 }
 
