@@ -447,7 +447,7 @@ const fr: Record<keyof typeof en, string> = {
   new_scan_title: 'Nouveau scan',
 
   programs_title: 'Programmes',
-  feature_map_caption: 'Fig. 1 — Carte des fonctionnalités',
+  feature_map_caption: 'Fig. 1 — Carte des traits',
   programs_intro: 'Chaque programme est un protocole complet de 4 semaines avec une liste de tâches quotidiennes. Démarrez-en un et il apparaît sur l’accueil.',
   active: 'Actif',
   start: 'Démarrer',
@@ -486,7 +486,7 @@ const fr: Record<keyof typeof en, string> = {
   today: 'Aujourd’hui',
   today_day: 'Aujourd’hui · Jour',
   remind: 'Rappel',
-  log_day: 'Jour validé',
+  log_day: 'Valider le jour',
   finish_tasks: 'Terminer',
   complete: 'Terminé',
   demo: 'Démo',

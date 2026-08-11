@@ -16,7 +16,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     videoId: { en: 'YoKy55QNivQ', fr: 'fn8tnQUZrng' },
     guide: {
       en: 'Mewing means resting your entire tongue — tip to back — flat against the roof of your mouth, not just the tip behind your teeth. Keep your lips sealed and breathe through your nose. Your back teeth should touch lightly, without clenching. It should feel like a gentle, constant pressure, never straining. Hold it as a default resting posture, not just during dedicated reps — the cumulative time matters more than any single session.',
-      fr: 'Le mewing consiste à poser toute la langue — de la pointe à l’arrière — bien à plat contre le palais, pas seulement le bout derrière les dents. Gardez les lèvres scellées et respirez par le nez. Les dents du fond doivent se toucher légèrement, sans serrer. Cela doit ressembler à une pression douce et constante, jamais forcée. Adoptez-la comme posture de repos par défaut, pas seulement pendant les répétitions dédiées — le temps cumulé compte plus qu’une seule séance.',
+      fr: 'Le mewing consiste à poser toute la langue — de la pointe à l’arrière — bien à plat contre le palais, pas seulement le bout derrière les dents. Gardez les lèvres scellées et respirez par le nez. Les dents du fond doivent se toucher légèrement, sans serrer. Cela doit ressembler à une pression douce et constante, jamais forcée. Faites-en votre posture de repos par défaut, pas seulement pendant les répétitions dédiées — le temps cumulé compte plus qu’une seule séance.',
     },
   },
   {
@@ -40,7 +40,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     videoId: { en: '0vYy3GKOa0w', fr: 'nZPQxG_9DYg' },
     guide: {
       en: "Fill a bowl with cold water (ice optional) and submerge your face for 15–30 seconds, or splash/compress if full immersion isn't practical. This constricts blood vessels near the surface, which reduces puffiness and inflammation fast. Don't hold your breath in a panic — a few seconds of adjustment is normal. Avoid this if you have a heart condition or are advised against cold exposure; a cold compress works nearly as well with less shock to the system.",
-      fr: 'Remplissez un bol d’eau froide (glaçons optionnels) et immergez le visage pendant 15 à 30 secondes, ou faites des éclaboussures/une compresse si l’immersion complète n’est pas pratique. Cela resserre les vaisseaux sanguins proches de la surface, ce qui réduit rapidement les poches et l’inflammation. Ne retenez pas votre respiration par panique — quelques secondes d’adaptation sont normales. Évitez si vous avez une condition cardiaque ou un avis médical contre l’exposition au froid ; une compresse froide fonctionne presque aussi bien avec moins de choc pour l’organisme.',
+      fr: 'Remplissez un bol d’eau froide (glaçons optionnels) et immergez le visage pendant 15 à 30 secondes, ou faites des éclaboussures/une compresse si l’immersion complète n’est pas pratique. Cela resserre les vaisseaux sanguins proches de la surface, ce qui réduit rapidement les poches et l’inflammation. Ne retenez pas votre respiration par panique — quelques secondes d’adaptation sont normales. Évitez si vous avez un problème cardiaque ou un avis médical contre l’exposition au froid ; une compresse froide fonctionne presque aussi bien avec moins de choc pour l’organisme.',
     },
   },
   {
@@ -246,7 +246,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     keywords: ['posture reset alarm', 'desk ergonomics', 'deep neck flexor', 'standing posture holds', 'loaded carries', 'alignment habit check'],
     guide: {
       en: 'These are about catching yourself throughout the day, not a single training session — set an actual phone alarm or reminder so you check in hourly rather than relying on memory. When it goes off, reset: ears over shoulders, shoulders back and down, core lightly braced. Over weeks, this conscious check-in is what turns into an unconscious default.',
-      fr: 'Il s’agit ici de vous rattraper tout au long de la journée, pas d’une seule séance d’entraînement — réglez une vraie alarme ou un rappel sur votre téléphone pour vérifier votre posture toutes les heures plutôt que de compter sur votre mémoire. Quand il sonne, réajustez-vous : oreilles au-dessus des épaules, épaules en arrière et basses, tronc légèrement gainé. Au fil des semaines, cette vérification consciente devient un réflexe inconscient.',
+      fr: 'Il s’agit ici de vous reprendre tout au long de la journée, pas d’une seule séance d’entraînement — réglez une vraie alarme ou un rappel sur votre téléphone pour vérifier votre posture toutes les heures plutôt que de compter sur votre mémoire. Quand il sonne, réajustez-vous : oreilles au-dessus des épaules, épaules en arrière et basses, tronc légèrement gainé. Au fil des semaines, cette vérification consciente devient un réflexe inconscient.',
     },
   },
   {
