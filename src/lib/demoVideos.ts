@@ -47,7 +47,36 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['mewing', 'nasal breathing check'],
+    keywords: ['nasal breathing check'],
+    guide: {
+      en: {
+        title: 'Nasal Breathing Check',
+        steps: [
+          'At random points through the day, notice whether your mouth is open or closed.',
+          'If it’s open, close your lips and take your next breath through your nose instead.',
+          'Repeat the check every waking hour until it stops needing conscious thought.',
+        ],
+        benefits: [
+          'Mouth breathing dries the mouth and undoes the pressure mewing is meant to build.',
+          'A simple awareness habit, not a technique to practice — it costs nothing extra.',
+        ],
+      },
+      fr: {
+        title: 'Vérification de la respiration nasale',
+        steps: [
+          'À des moments aléatoires de la journée, remarquez si votre bouche est ouverte ou fermée.',
+          'Si elle est ouverte, fermez les lèvres et prenez votre prochaine respiration par le nez.',
+          'Répétez la vérification à chaque heure éveillée jusqu’à ce que cela ne demande plus d’y penser.',
+        ],
+        benefits: [
+          'La respiration par la bouche assèche la bouche et annule la pression que le mewing est censé construire.',
+          'Une simple habitude de vigilance, pas une technique à pratiquer — elle ne coûte rien de plus.',
+        ],
+      },
+    },
+  },
+  {
+    keywords: ['mewing'],
     guide: {
       en: {
         title: 'Mewing (Tongue Posture)',
