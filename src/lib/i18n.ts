@@ -210,9 +210,7 @@ const en = {
   complete: 'Complete',
   demo: 'Demo',
   how_to_title: 'How to',
-  search_on_youtube_hint: 'Search on YouTube',
-  guide_unavailable_title: 'No guide yet',
-  guide_unavailable_body: 'Tap to search on YouTube',
+  guide_benefits_title: 'Benefits',
 
   encouragement_title: 'Day logged!',
   week_complete_suffix: 'complete!',
@@ -491,9 +489,7 @@ const fr: Record<keyof typeof en, string> = {
   complete: 'Terminé',
   demo: 'Démo',
   how_to_title: 'Comment faire',
-  search_on_youtube_hint: 'Rechercher sur YouTube',
-  guide_unavailable_title: 'Pas encore de guide',
-  guide_unavailable_body: 'Touchez pour rechercher sur YouTube',
+  guide_benefits_title: 'Bénéfices',
 
   encouragement_title: 'Journée enregistrée !',
   week_complete_suffix: 'terminée !',
