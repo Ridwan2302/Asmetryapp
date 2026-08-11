@@ -3,27 +3,31 @@
 import { useState } from 'react';
 import { findDemoEntry } from '@/lib/demoVideos';
 import { useT } from '@/lib/i18n';
-import { youtubeSearchUrl, youtubeThumbnailUrl, youtubeWatchUrl } from '@/lib/youtube';
+import { youtubeEmbedUrl, youtubeSearchUrl, youtubeThumbnailUrl } from '@/lib/youtube';
 import { useAppStore } from '@/state/store';
 
 /** "Demo" chip next to a task — opens a scrollable modal with a detailed how-to guide for
- * the task, and a "Watch on YouTube" button at the bottom that opens the curated video
- * externally (so any playback issue is YouTube's own page to show, not ours). */
+ * the task, plus a curated video in the user's current language that plays inline in the app
+ * (click-to-play, so it doesn't autoplay sound while they're still reading the guide). A video
+ * only ever shows in the language the app is currently set to — never the other language's clip
+ * as a fallback. */
 export function DemoButton({ taskEn }: { taskEn: string }) {
   const t = useT();
   const language = useAppStore((s) => s.language);
   const [open, setOpen] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const entry = findDemoEntry(taskEn);
+  const videoId = entry?.videoId?.[language];
+
+  function handleOpen(e: React.MouseEvent) {
+    e.stopPropagation();
+    setPlaying(false);
+    setOpen(true);
+  }
 
   return (
     <>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        className="press shrink-0 rounded-full bg-fill px-2 py-[3px] text-[10px] font-medium text-soft"
-      >
+      <button onClick={handleOpen} className="press shrink-0 rounded-full bg-fill px-2 py-[3px] text-[10px] font-medium text-soft">
         {t('demo')}
       </button>
 
@@ -56,24 +60,28 @@ export function DemoButton({ taskEn }: { taskEn: string }) {
                   <div className="text-[11px] font-semibold tracking-[0.3px] text-white/50 uppercase">{t('how_to_title')}</div>
                   <p className="mt-1.5 text-[14px] leading-[1.55] text-white/90">{language === 'fr' ? entry.guide.fr : entry.guide.en}</p>
 
-                  {entry.videoId ? (
-                    <a
-                      href={youtubeWatchUrl(entry.videoId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="press relative mt-4 block aspect-video w-full overflow-hidden rounded-[14px] bg-black"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, not a local/optimizable asset */}
-                      <img src={youtubeThumbnailUrl(entry.videoId)} alt="" className="h-full w-full object-cover opacity-80" />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-black shadow-lg">
-                          <PlayIcon />
-                        </span>
-                      </div>
-                      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pt-6 pb-2 text-[12px] font-semibold text-white">
-                        {t('watch_on_youtube')}
-                      </span>
-                    </a>
+                  {videoId ? (
+                    <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-[14px] bg-black">
+                      {playing ? (
+                        <iframe
+                          src={youtubeEmbedUrl(videoId, language)}
+                          className="absolute inset-0 h-full w-full"
+                          title={taskEn}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <button onClick={() => setPlaying(true)} className="press absolute inset-0 h-full w-full">
+                          {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, not a local/optimizable asset */}
+                          <img src={youtubeThumbnailUrl(videoId)} alt="" className="h-full w-full object-cover opacity-80" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-black shadow-lg">
+                              <PlayIcon />
+                            </span>
+                          </div>
+                        </button>
+                      )}
+                    </div>
                   ) : (
                     <a
                       href={youtubeSearchUrl(taskEn)}

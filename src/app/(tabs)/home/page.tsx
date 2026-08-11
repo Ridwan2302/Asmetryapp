@@ -3,10 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { ActiveProgramCard } from '@/components/ActiveProgramCard';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { DemoButton } from '@/components/DemoButton';
+import { EncouragementModal } from '@/components/EncouragementModal';
 import { Pill } from '@/components/Pill';
 import { RingProgress } from '@/components/RingProgress';
 import { Screen } from '@/components/Screen';
@@ -101,9 +102,12 @@ export default function HomePage() {
     improvement,
   });
 
+  const [encouragementDay, setEncouragementDay] = useState<number | null>(null);
+
   function handleLogPlanDay() {
-    if (!plan || !planAllDone) return;
+    if (!plan || !planAllDone || planDay == null) return;
     logPlanDay(plan.programIds);
+    if (planDay < 28) setEncouragementDay(planDay);
   }
 
   function handleRestartPlan() {
@@ -276,6 +280,8 @@ export default function HomePage() {
           )}
         </>
       )}
+
+      {encouragementDay != null && <EncouragementModal day={encouragementDay} onClose={() => setEncouragementDay(null)} />}
     </Screen>
   );
 }

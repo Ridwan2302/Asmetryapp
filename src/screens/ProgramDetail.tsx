@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { AnatomyPlate } from '@/components/AnatomyPlate';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { DemoButton } from '@/components/DemoButton';
+import { EncouragementModal } from '@/components/EncouragementModal';
 import { Screen } from '@/components/Screen';
 import { getProgram, levelKey, localizeProgram, sectionKey } from '@/data/programs';
 import { tapHaptic } from '@/lib/haptics';
@@ -20,6 +21,7 @@ export function ProgramDetail({ id }: { id: string }) {
   const language = useAppStore((s) => s.language);
   const program = getProgram(id);
   const [openWeekOverride, setOpenWeekOverride] = useState<number | null>(null);
+  const [encouragementDay, setEncouragementDay] = useState<number | null>(null);
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
   const toggleTask = useAppStore((s) => s.toggleTask);
@@ -59,6 +61,7 @@ export function ProgramDetail({ id }: { id: string }) {
     if (!allDone) return;
     tapHaptic();
     logDay(program!.id);
+    if (dayNum < 28) setEncouragementDay(dayNum);
   }
 
   function handleReminderChange(time: string) {
@@ -239,6 +242,8 @@ export function ProgramDetail({ id }: { id: string }) {
           <PrimaryButton label={t('start_program')} onClick={() => toggleProgram(program.id)} />
         )}
       </div>
+
+      {encouragementDay != null && <EncouragementModal day={encouragementDay} onClose={() => setEncouragementDay(null)} />}
     </Screen>
   );
 }
