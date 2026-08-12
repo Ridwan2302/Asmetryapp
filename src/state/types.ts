@@ -54,9 +54,6 @@ export interface Settings {
   haptics: boolean;
   grid: boolean;
   private: boolean;
-  /** App-wide voice guidance (native browser speech synthesis) reading out onboarding, coach
-   * messages, notifications, and task guides. */
-  voiceGuide: boolean;
 }
 
 export const DEFAULT_PROFILE: Profile = {
@@ -73,5 +70,4 @@ export const DEFAULT_SETTINGS: Settings = {
   haptics: true,
   grid: false,
   private: true,
-  voiceGuide: false,
 };

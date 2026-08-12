@@ -1,6 +1,5 @@
 import { getProgram } from '../data/programs';
 import { useAppStore } from '../state/store';
-import { speak } from './voice';
 
 /** Browser reminders, best-effort: fire while a tab is open (any tab, backgrounded is fine),
  * via the Notification API. There is no reliable way to deliver a notification once every
@@ -35,7 +34,7 @@ function taskListFor(programId: string, dayNumber: number): string {
  * time against the current minute and fires a browser Notification once per program per day. */
 export function checkAndFireReminders() {
   if (!notificationsSupported() || Notification.permission !== 'granted') return;
-  const { started, settings, language, markReminderFired } = useAppStore.getState();
+  const { started, settings, markReminderFired } = useAppStore.getState();
   if (!settings.notifications) return;
 
   const now = new Date();
@@ -48,9 +47,10 @@ export function checkAndFireReminders() {
       if (!program) continue;
       const dayNumber = Math.min(28, s.done + 1);
       markReminderFired(s.id, key);
-      const body = `DAY ${dayNumber}/28 · ${taskListFor(s.id, dayNumber)}`;
-      new Notification(program.name, { body, tag: `asmetry-${s.id}` });
-      if (settings.voiceGuide) speak(`${program.name}. ${body}`, language);
+      new Notification(program.name, {
+        body: `DAY ${dayNumber}/28 · ${taskListFor(s.id, dayNumber)}`,
+        tag: `asmetry-${s.id}`,
+      });
     }
   }
 }

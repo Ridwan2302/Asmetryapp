@@ -6,11 +6,10 @@ import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
 import { METRIC_CONFIG, MetricConfig, metricNoteFor } from '@/data/metricConfig';
 import { getProgram, levelKey, localizeProgram } from '@/data/programs';
-import { dateStr, summaryFor } from '@/lib/calc';
+import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { Translator, useT } from '@/lib/i18n';
 import { playResultChime } from '@/lib/sound';
-import { useAutoSpeak } from '@/lib/voice';
 import { useAppStore } from '@/state/store';
 
 type StageKey = 'stage_landmarks' | 'stage_symmetry' | 'stage_proportions' | 'stage_scoring' | 'stage_compiling';
@@ -275,7 +274,6 @@ function Requirement({ label, value, last }: { label: string; value: string; las
 }
 
 function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | null; result: AnalysisResult; onDone: () => void; t: Translator }) {
-  useAutoSpeak(`${t('analysis_complete')}. ${summaryFor(result.overall, t)}`);
   const router = useRouter();
   const addScan = useAppStore((s) => s.addScan);
   const scans = useAppStore((s) => s.scans);
