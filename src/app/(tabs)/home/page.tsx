@@ -6,17 +6,18 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { ActiveProgramCard } from '@/components/ActiveProgramCard';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
-import { DemoButton } from '@/components/DemoButton';
 import { EncouragementModal } from '@/components/EncouragementModal';
+import { GuidedSession } from '@/components/GuidedSession';
 import { Pill } from '@/components/Pill';
 import { RingProgress } from '@/components/RingProgress';
 import { Screen } from '@/components/Screen';
 import { METRIC_CONFIG } from '@/data/metricConfig';
 import { getProgram, localizeProgram } from '@/data/programs';
+import { PLAN_TOPIC } from '@/data/planTopics';
 import { deltaVsPrior, gradeOf, greeting } from '@/lib/calc';
 import { CoachState, getCoachState } from '@/lib/coach';
 import { requestNotificationPermission } from '@/lib/notifications';
-import { useT } from '@/lib/i18n';
+import { Translator, useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
 
 export default function HomePage() {
@@ -75,6 +76,18 @@ export default function HomePage() {
   const planAllDone = planTotalTasks > 0 && planDoneCount === planTotalTasks;
   const planAnyDone = planDoneCount > 0;
 
+  // Today's plan, flattened into one continuous sequence of steps across every program it draws
+  // from — the dashboard never shows this as a per-program list, only as a single guided walk.
+  const flatPlanSteps = planTaskGroups.flatMap((g) => {
+    const topic = PLAN_TOPIC[g.sp.id];
+    const topicLabel = topic ? t(topic.labelKey) : g.copy.name;
+    return g.wk.tasks.map((task, i) => ({ programId: g.sp.id, localIndex: i, task, enTask: g.enWk.tasks[i] ?? task, topicLabel }));
+  });
+  const flatPlanChecks: Record<number, boolean> = {};
+  flatPlanSteps.forEach((s, i) => {
+    flatPlanChecks[i] = !!planPrograms.find((p) => p.id === s.programId)?.checks[s.localIndex];
+  });
+
   const otherStarted = started.filter((s) => !plan || !plan.programIds.includes(s.id));
 
   const weakestMetric = latest ? [...METRIC_CONFIG].sort((a, b) => latest.m[a.key] - latest.m[b.key])[0] : null;
@@ -103,11 +116,17 @@ export default function HomePage() {
   });
 
   const [encouragementDay, setEncouragementDay] = useState<number | null>(null);
+  const [planGuidedOpen, setPlanGuidedOpen] = useState(false);
 
   function handleLogPlanDay() {
     if (!plan || !planAllDone || planDay == null) return;
     logPlanDay(plan.programIds);
     if (planDay < 28) setEncouragementDay(planDay);
+  }
+
+  function handlePlanStepDone(i: number) {
+    const step = flatPlanSteps[i];
+    if (step) toggleTask(step.programId, step.localIndex);
   }
 
   function handleRestartPlan() {
@@ -200,64 +219,16 @@ export default function HomePage() {
               </div>
             </div>
           ) : (
-            <div className="mb-7">
-              {planTaskGroups.map((g) => {
-                const groupDone = g.wk.tasks.reduce((acc, _, i) => acc + (g.sp.checks[i] ? 1 : 0), 0);
-                return (
-                  <div key={g.sp.id} className="mb-3.5 overflow-hidden rounded-[20px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
-                    <div className="border-b border-border px-4 pt-3.5 pb-3">
-                      <div className="flex items-center justify-between">
-                        <div className="text-[15px] font-bold tracking-[-0.1px] text-ink">{g.copy.name}</div>
-                        <span className={`text-[12px] font-bold ${groupDone === g.wk.tasks.length ? 'text-success' : 'text-soft'}`}>
-                          {groupDone}/{g.wk.tasks.length}
-                        </span>
-                      </div>
-                      <div className="mt-0.5 text-[11px] font-semibold tracking-[0.2px] text-accent uppercase">{g.wk.focus}</div>
-                      <p className="mt-1.5 text-[13px] leading-[1.5] text-soft">{g.wk.why}</p>
-                    </div>
-                    <div className="px-4">
-                      {g.wk.tasks.map((text, i) => {
-                        const checked = !!g.sp.checks[i];
-                        const enTask = g.enWk.tasks[i] ?? text;
-                        return (
-                          <div key={i} className="flex w-full items-center gap-3 border-b border-border py-[9px] last:border-b-0">
-                            <button className="press flex flex-1 items-start gap-3 text-left" onClick={() => toggleTask(g.sp.id, i)}>
-                              <span
-                                className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
-                                  checked ? 'bg-accent' : 'bg-fill-strong'
-                                }`}
-                              >
-                                {checked && '✓'}
-                              </span>
-                              <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft' : 'text-ink'}`}>{text}</span>
-                            </button>
-                            <DemoButton taskEn={enTask} />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-              <div className="flex items-center justify-between rounded-[16px] bg-fill p-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-medium text-soft">{t('remind')}</span>
-                  <input
-                    type="time"
-                    value={planPrograms[0]?.reminder ?? '08:00'}
-                    onChange={(e) => handlePlanReminderChange(e.target.value)}
-                    className="rounded-[10px] bg-card px-2.5 py-[6px] text-[13px] font-medium text-ink outline-none"
-                  />
-                </div>
-                <button
-                  onClick={handleLogPlanDay}
-                  disabled={!planAllDone}
-                  className={`press rounded-full px-4 py-[9px] text-[13px] font-semibold ${planAllDone ? 'bg-accent text-white' : 'bg-card text-soft'}`}
-                >
-                  {planAllDone ? t('log_day') : t('finish_tasks')}
-                </button>
-              </div>
-            </div>
+            <PlanTodayCard
+              doneCount={planDoneCount}
+              totalCount={planTotalTasks}
+              topicsCount={planTaskGroups.length}
+              allDone={planAllDone}
+              onOpen={() => setPlanGuidedOpen(true)}
+              reminder={planPrograms[0]?.reminder ?? '08:00'}
+              onReminderChange={handlePlanReminderChange}
+              t={t}
+            />
           )}
         </>
       )}
@@ -282,7 +253,116 @@ export default function HomePage() {
       )}
 
       {encouragementDay != null && <EncouragementModal day={encouragementDay} onClose={() => setEncouragementDay(null)} />}
+
+      {planGuidedOpen && plan && !planComplete && (
+        <GuidedSession
+          programName=""
+          dayNum={planDay ?? 1}
+          weekFocus=""
+          weekWhy={t('plan_guided_why')}
+          welcomeBody={t('plan_guided_body_tpl').replace('{day}', String(planDay ?? 1))}
+          welcomeExtra={<PlanTopicsList groups={planTaskGroups} t={t} />}
+          stepTopics={flatPlanSteps.map((s) => s.topicLabel)}
+          tasks={flatPlanSteps.map((s) => s.task)}
+          enTasks={flatPlanSteps.map((s) => s.enTask)}
+          checks={flatPlanChecks}
+          language={language}
+          onStepDone={handlePlanStepDone}
+          onFinish={() => {
+            handleLogPlanDay();
+            setPlanGuidedOpen(false);
+          }}
+          onClose={() => setPlanGuidedOpen(false)}
+          t={t}
+        />
+      )}
     </Screen>
+  );
+}
+
+function PlanTodayCard({
+  doneCount,
+  totalCount,
+  topicsCount,
+  allDone,
+  onOpen,
+  reminder,
+  onReminderChange,
+  t,
+}: {
+  doneCount: number;
+  totalCount: number;
+  topicsCount: number;
+  allDone: boolean;
+  onOpen: () => void;
+  reminder: string;
+  onReminderChange: (time: string) => void;
+  t: Translator;
+}) {
+  const started = doneCount > 0;
+  return (
+    <div className="mb-7 overflow-hidden rounded-[20px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+      {allDone ? (
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-success/15 text-success">
+            <CheckBadgeIcon />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="text-[16px] font-bold text-ink">{t('plan_done_today_title')}</div>
+            <div className="mt-0.5 text-[13px] text-soft">{t('plan_done_today_sub')}</div>
+          </div>
+          <button onClick={onOpen} className="press shrink-0 text-[13px] font-semibold text-accent">
+            {t('guided_review_session')}
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="text-[13px] text-soft">
+            {started
+              ? t('plan_partial_sub_tpl').replace('{done}', String(doneCount)).replace('{total}', String(totalCount))
+              : t('plan_not_started_sub_tpl').replace('{n}', String(topicsCount))}
+          </div>
+          <button onClick={onOpen} className="press mt-3 w-full rounded-full bg-accent py-[13px] text-[15px] font-semibold text-white">
+            {started ? t('plan_cta_continue') : t('plan_cta_start')}
+          </button>
+        </>
+      )}
+      <div className="mt-4 flex items-center justify-between rounded-[16px] bg-fill p-3">
+        <span className="text-[13px] font-medium text-soft">{t('remind')}</span>
+        <input
+          type="time"
+          value={reminder}
+          onChange={(e) => onReminderChange(e.target.value)}
+          className="rounded-[10px] bg-card px-2.5 py-[6px] text-[13px] font-medium text-ink outline-none"
+        />
+      </div>
+    </div>
+  );
+}
+
+function PlanTopicsList({
+  groups,
+  t,
+}: {
+  groups: { sp: { id: string }; copy: { name: string } }[];
+  t: Translator;
+}) {
+  return (
+    <div className="mx-auto mt-6 max-w-[320px] space-y-2 text-left">
+      <div className="mb-1 text-center text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">{t('plan_topics_heading')}</div>
+      {groups.map((g) => {
+        const topic = PLAN_TOPIC[g.sp.id];
+        return (
+          <div key={g.sp.id} className="flex items-center gap-2.5 rounded-[14px] bg-fill px-3.5 py-2.5">
+            <span className="h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
+            <div className="text-[14px] leading-[1.3] text-ink">
+              <span className="font-semibold">{topic ? t(topic.labelKey) : g.copy.name}</span>
+              {topic && <span className="text-soft"> — {t(topic.descKey)}</span>}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

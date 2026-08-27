@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { findDemoEntry } from '@/lib/demoVideos';
 import { Translator } from '@/lib/i18n';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
@@ -14,6 +14,9 @@ export function GuidedSession({
   dayNum,
   weekFocus,
   weekWhy,
+  welcomeBody,
+  welcomeExtra,
+  stepTopics,
   tasks,
   enTasks,
   checks,
@@ -27,6 +30,14 @@ export function GuidedSession({
   dayNum: number;
   weekFocus: string;
   weekWhy: string;
+  /** Overrides the templated "day X of your {program} program" sentence — for callers (like the
+   * merged daily plan) that aren't a single catalog program and need their own wording. */
+  welcomeBody?: string;
+  /** Extra content rendered on the welcome screen below the intro text, e.g. a list of what
+   * today's session actually covers. */
+  welcomeExtra?: ReactNode;
+  /** Parallel to `tasks` — a short plain-language label shown above each step (e.g. "Sommeil"). */
+  stepTopics?: string[];
   tasks: string[];
   enTasks: string[];
   checks: Record<number, boolean>;
@@ -66,7 +77,16 @@ export function GuidedSession({
       <div className="flex-1 overflow-y-auto px-6 pt-2 pb-10">
         {screen === -1 && (
           <div className="flex min-h-full flex-col justify-center">
-            <WelcomeScreen programName={programName} dayNum={dayNum} weekFocus={weekFocus} weekWhy={weekWhy} onNext={goToFirstStep} t={t} />
+            <WelcomeScreen
+              programName={programName}
+              dayNum={dayNum}
+              weekFocus={weekFocus}
+              weekWhy={weekWhy}
+              welcomeBody={welcomeBody}
+              welcomeExtra={welcomeExtra}
+              onNext={goToFirstStep}
+              t={t}
+            />
           </div>
         )}
         {screen >= 0 && screen < tasks.length && (
@@ -77,6 +97,7 @@ export function GuidedSession({
             taskEn={enTasks[screen] ?? tasks[screen]}
             done={!!checks[screen]}
             language={language}
+            topic={stepTopics?.[screen]}
             onBack={screen > 0 ? () => setScreen((s) => (typeof s === 'number' ? s - 1 : s)) : undefined}
             onDone={completeCurrentStep}
             t={t}
@@ -97,6 +118,8 @@ function WelcomeScreen({
   dayNum,
   weekFocus,
   weekWhy,
+  welcomeBody,
+  welcomeExtra,
   onNext,
   t,
 }: {
@@ -104,19 +127,21 @@ function WelcomeScreen({
   dayNum: number;
   weekFocus: string;
   weekWhy: string;
+  welcomeBody?: string;
+  welcomeExtra?: ReactNode;
   onNext: () => void;
   t: Translator;
 }) {
-  const body = t('guided_welcome_body_tpl')
-    .replace('{day}', String(dayNum))
-    .replace('{program}', programName)
-    .replace('{focus}', weekFocus);
+  const body =
+    welcomeBody ??
+    t('guided_welcome_body_tpl').replace('{day}', String(dayNum)).replace('{program}', programName).replace('{focus}', weekFocus);
   return (
     <div className="text-center">
       <div className="mb-2 text-[12px] font-semibold tracking-[0.3px] text-soft uppercase">{t('guided_welcome_eyebrow')}</div>
       <h2 className="mb-4 text-[30px] leading-[1.1] font-bold tracking-[-0.4px] text-ink">{t('guided_welcome_title')}</h2>
       <p className="mx-auto max-w-[38ch] text-[16px] leading-[1.5] text-soft">{body}</p>
       <p className="mx-auto mt-3 max-w-[38ch] text-[14px] leading-[1.5] text-soft/80">{weekWhy}</p>
+      {welcomeExtra}
       <PrimaryButton label={t('guided_start_cta')} onClick={onNext} className="mt-8" />
     </div>
   );
@@ -129,6 +154,7 @@ function StepScreen({
   taskEn,
   done,
   language,
+  topic,
   onBack,
   onDone,
   t,
@@ -139,6 +165,7 @@ function StepScreen({
   taskEn: string;
   done: boolean;
   language: 'en' | 'fr';
+  topic?: string;
   onBack?: () => void;
   onDone: () => void;
   t: Translator;
@@ -148,6 +175,9 @@ function StepScreen({
 
   return (
     <div>
+      {topic && (
+        <div className="mb-2.5 inline-block rounded-full bg-fill px-2.5 py-1 text-[11px] font-semibold tracking-[0.2px] text-soft uppercase">{topic}</div>
+      )}
       <div className="mb-5 text-[13px] font-semibold tracking-[0.2px] text-accent">
         {t('guided_step_of_tpl').replace('{n}', String(index + 1)).replace('{total}', String(total))}
       </div>
