@@ -376,7 +376,8 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
         </div>
       </div>
 
-      <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('your_plan_preview_title')}</div>
+      <p className="mt-7 text-[15px] leading-[1.5] text-soft">{t('plan_preview_intro')}</p>
+      <div className="mt-3 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('your_plan_preview_title')}</div>
       {picks.map((c) => {
         const program = getProgram(c.programId);
         if (!program) return null;

@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AnatomyPlate } from '@/components/AnatomyPlate';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
-import { DemoButton } from '@/components/DemoButton';
 import { EncouragementModal } from '@/components/EncouragementModal';
+import { GuidedSession } from '@/components/GuidedSession';
 import { Screen } from '@/components/Screen';
 import { getProgram, levelKey, localizeProgram, sectionKey } from '@/data/programs';
 import { tapHaptic } from '@/lib/haptics';
@@ -22,6 +22,7 @@ export function ProgramDetail({ id }: { id: string }) {
   const program = getProgram(id);
   const [openWeekOverride, setOpenWeekOverride] = useState<number | null>(null);
   const [encouragementDay, setEncouragementDay] = useState<number | null>(null);
+  const [guidedOpen, setGuidedOpen] = useState(false);
   const started = useAppStore((s) => s.started);
   const toggleProgram = useAppStore((s) => s.toggleProgram);
   const toggleTask = useAppStore((s) => s.toggleTask);
@@ -52,7 +53,7 @@ export function ProgramDetail({ id }: { id: string }) {
   const allDone = todayTasks.length > 0 && doneCount === todayTasks.length;
   const openWeek = openWeekOverride ?? (isActive ? todayWeek : 1);
 
-  function handleToggleTask(i: number) {
+  function handleStepDone(i: number) {
     tapHaptic();
     toggleTask(program!.id, i);
   }
@@ -157,39 +158,42 @@ export function ProgramDetail({ id }: { id: string }) {
               const checked = !!startedProgram.checks[i];
               return (
                 <div key={i} className="flex w-full items-center gap-3 border-b border-border py-[9px] last:border-b-0">
-                  <button className="press flex flex-1 items-start gap-3 text-left" onClick={() => handleToggleTask(i)}>
-                    <span
-                      className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
-                        checked ? 'bg-accent' : 'bg-fill-strong'
-                      }`}
-                    >
-                      {checked && '✓'}
-                    </span>
-                    <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft' : 'text-ink'}`}>{text}</span>
-                  </button>
-                  <DemoButton taskEn={enTodayTasks[i] ?? text} />
+                  <span
+                    className={`mt-[1px] flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[13px] text-white transition-colors ${
+                      checked ? 'bg-accent' : 'bg-fill-strong'
+                    }`}
+                  >
+                    {checked && '✓'}
+                  </span>
+                  <span className={`text-[16px] leading-[1.3] font-medium ${checked ? 'text-soft' : 'text-ink'}`}>{text}</span>
                 </div>
               );
             })}
           </div>
-          <div className="flex items-center justify-between rounded-[16px] bg-fill p-3">
-            <div className="flex items-center gap-2">
-              <span className="text-[13px] font-medium text-soft">{t('remind')}</span>
-              <input
-                type="time"
-                value={startedProgram.reminder}
-                onChange={(e) => handleReminderChange(e.target.value)}
-                className="rounded-[10px] bg-card px-2.5 py-[6px] text-[13px] font-medium text-ink outline-none"
-              />
-            </div>
+
+          {!allDone ? (
             <button
-              onClick={handleLogDay}
-              disabled={!allDone}
-              className={`press rounded-full px-4 py-[9px] text-[13px] font-semibold ${allDone ? 'bg-accent text-white' : 'bg-card text-soft'}`}
+              onClick={() => setGuidedOpen(true)}
+              className="press w-full rounded-full bg-accent py-[13px] text-[15px] font-semibold text-white"
             >
-              {allDone ? t('log_day') : t('finish_tasks')}
+              {doneCount === 0 ? t('guided_start_session') : t('guided_resume_session')}
             </button>
-          </div>
+          ) : (
+            <div className="flex items-center justify-between rounded-[16px] bg-fill p-3">
+              <div className="flex items-center gap-2">
+                <span className="text-[13px] font-medium text-soft">{t('remind')}</span>
+                <input
+                  type="time"
+                  value={startedProgram.reminder}
+                  onChange={(e) => handleReminderChange(e.target.value)}
+                  className="rounded-[10px] bg-card px-2.5 py-[6px] text-[13px] font-medium text-ink outline-none"
+                />
+              </div>
+              <button onClick={handleLogDay} className="press rounded-full bg-accent px-4 py-[9px] text-[13px] font-semibold text-white">
+                {t('log_day')}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -244,6 +248,26 @@ export function ProgramDetail({ id }: { id: string }) {
       </div>
 
       {encouragementDay != null && <EncouragementModal day={encouragementDay} onClose={() => setEncouragementDay(null)} />}
+
+      {guidedOpen && startedProgram && (
+        <GuidedSession
+          programName={copy.name}
+          dayNum={dayNum}
+          weekFocus={todayWk.focus}
+          weekWhy={todayWk.why}
+          tasks={todayTasks}
+          enTasks={enTodayTasks}
+          checks={startedProgram.checks}
+          language={language}
+          onStepDone={handleStepDone}
+          onFinish={() => {
+            handleLogDay();
+            setGuidedOpen(false);
+          }}
+          onClose={() => setGuidedOpen(false)}
+          t={t}
+        />
+      )}
     </Screen>
   );
 }
