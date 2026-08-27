@@ -1253,177 +1253,262 @@ const DEMO_ENTRIES: DemoEntry[] = [
 
   // ---------- Skin (Skinmaxing / Skin Clarity, shared concepts) ----------
   {
-    keywords: ['am: cleanse', 'pm: cleanse', 'am routine + spf', 'am antioxidant', 'full am + pm routine', 'gentle cleanse am/pm', 'non-comedogenic moisturizer', 'spf every morning', 'spf reapply midday', 'maintenance routine locked'],
+    keywords: ['cool water rinse', 'gentle water rinse', 'full morning + evening ritual', 'light, natural moisturizer', 'maintenance ritual locked'],
     guide: {
       en: {
-        title: 'Skincare Routine Order',
+        title: 'Natural Cleanse Ritual',
         steps: [
-          'Cleanse first on damp skin, then pat dry.',
-          'Apply active ingredients (retinoid or niacinamide, whichever the week calls for) before a moisturizer to seal them in.',
-          'Finish every morning with SPF as the final step, and reapply midday if you’re outdoors.',
+          'Splash the face with cool (not hot) water — hot water strips the skin\'s natural oils.',
+          'Pat dry with a clean towel rather than rubbing.',
+          'Follow with a light, natural moisturizer (aloe vera gel or a few drops of a plant oil) while skin is still slightly damp, so it locks in moisture.',
         ],
         benefits: [
-          'The correct order lets every product actually absorb and work as intended.',
-          'Builds a stronger, more resilient skin barrier over time.',
+          'A simple, consistent rinse is gentler on the skin barrier than any harsh product.',
+          'Costs nothing beyond what\'s already in most kitchens or bathrooms.',
           'Once this order is automatic, it takes no extra thought to maintain.',
         ],
       },
       fr: {
-        title: 'Ordre de la routine de soin',
+        title: 'Rituel de nettoyage naturel',
         steps: [
-          'Nettoyez d’abord sur peau humide, puis séchez en tamponnant.',
-          'Appliquez les actifs (rétinoïde ou niacinamide, selon la semaine) avant une crème hydratante pour les sceller.',
-          'Terminez chaque matin par le SPF comme étape finale, et renouvelez à midi si vous êtes dehors.',
+          'Aspergez le visage d’eau fraîche (pas chaude) — l’eau chaude retire les huiles naturelles de la peau.',
+          'Séchez en tamponnant avec une serviette propre plutôt qu’en frottant.',
+          'Faites suivre d’un hydratant léger et naturel (gel d’aloe vera ou quelques gouttes d’une huile végétale) pendant que la peau est encore légèrement humide, pour retenir l’hydratation.',
         ],
         benefits: [
-          'Le bon ordre permet à chaque produit de vraiment pénétrer et d’agir comme prévu.',
-          'Construit une barrière cutanée plus forte et plus résiliente avec le temps.',
+          'Un rinçage simple et régulier est plus doux pour la barrière cutanée que n’importe quel produit agressif.',
+          'Ne coûte rien de plus que ce qu’on a déjà dans la cuisine ou la salle de bain.',
           'Une fois cet ordre automatique, il ne demande plus aucun effort de réflexion.',
         ],
       },
     },
   },
   {
-    keywords: ['low-% retinoid', 'retinoid nightly'],
+    keywords: ['jojoba oil'],
     guide: {
       en: {
-        title: 'Retinoid Usage',
+        title: 'Natural Jojoba Oil Treatment',
         steps: [
-          'Apply at night only, in a pea-sized amount for the whole face — retinoids break down in sunlight and increase sun sensitivity.',
-          'Start on alternate nights; move to nightly only once your skin tolerates it without irritation.',
-          'Always follow with a moisturizer, and never skip morning SPF the next day.',
+          'Warm 2–3 drops of jojoba oil between clean fingertips.',
+          'Press gently into the skin in the evening, after rinsing — it\'s close enough to skin\'s own oil that it absorbs without feeling greasy.',
+          'Use a light hand: a few drops for the whole face is enough.',
         ],
         benefits: [
-          'Increases cell turnover, which is what drives smoother texture and fewer fine lines over time.',
-          'Going in slowly avoids irritating the barrier instead of strengthening it.',
+          'Nourishes and softens the skin barrier without synthetic ingredients.',
+          'Going gently and consistently is what actually strengthens the barrier, instead of stripping it.',
         ],
       },
       fr: {
-        title: 'Utilisation du rétinoïde',
+        title: 'Soin naturel à l’huile de jojoba',
         steps: [
-          'Appliquez uniquement le soir, en quantité de la taille d’un petit pois pour tout le visage — les rétinoïdes se dégradent à la lumière du jour et augmentent la sensibilité au soleil.',
-          'Commencez une nuit sur deux ; passez à un usage quotidien seulement une fois que la peau le tolère sans irritation.',
-          'Faites toujours suivre d’une crème hydratante, et ne sautez jamais le SPF du matin le lendemain.',
+          'Réchauffez 2 à 3 gouttes d’huile de jojoba entre des doigts propres.',
+          'Pressez doucement sur la peau le soir, après le rinçage — sa composition est proche de l’huile naturelle de la peau, donc elle pénètre sans laisser de film gras.',
+          'Restez léger : quelques gouttes suffisent pour tout le visage.',
         ],
         benefits: [
-          'Augmente le renouvellement cellulaire, ce qui affine la texture et réduit les ridules avec le temps.',
-          'Une introduction progressive évite d’irriter la barrière au lieu de la renforcer.',
+          'Nourrit et assouplit la barrière cutanée sans ingrédient de synthèse.',
+          'Y aller doucement et régulièrement est ce qui renforce vraiment la barrière, au lieu de l’agresser.',
         ],
       },
     },
   },
   {
-    keywords: ['niacinamide'],
+    keywords: ['rose water mist'],
     guide: {
       en: {
-        title: 'Niacinamide Usage',
+        title: 'Rose Water Morning Mist',
         steps: [
-          'Apply in the morning after cleansing, before your moisturizer and SPF.',
-          'It layers well with most other actives, so no need to alternate nights the way you would with a retinoid.',
-          'Give it several weeks of consistent use before judging the result.',
+          'After rinsing in the morning, mist a little rose water onto the face from arm\'s length.',
+          'Let it air-dry, or pat in gently rather than wiping it off.',
         ],
         benefits: [
-          'Targets post-inflammatory marks left behind once active breakouts have calmed down.',
-          'Gentle enough for daily use without the irritation risk of stronger actives.',
+          'A light, natural way to refresh and soften the skin before the day starts.',
+          'Gentle enough for daily use, with no irritation risk.',
         ],
       },
       fr: {
-        title: 'Utilisation de la niacinamide',
+        title: 'Brume matinale à l’eau de rose',
         steps: [
-          'Appliquez le matin après le nettoyage, avant la crème hydratante et le SPF.',
-          'Elle se superpose bien à la plupart des autres actifs, pas besoin d’alterner les nuits comme avec un rétinoïde.',
-          'Laissez plusieurs semaines d’usage régulier avant de juger le résultat.',
+          'Après le rinçage du matin, vaporisez un peu d’eau de rose sur le visage à bout de bras.',
+          'Laissez sécher à l’air, ou tamponnez doucement plutôt que d’essuyer.',
         ],
         benefits: [
-          'Cible les marques post-inflammatoires laissées une fois que les imperfections actives se sont calmées.',
-          'Assez douce pour un usage quotidien, sans le risque d’irritation des actifs plus forts.',
+          'Une façon légère et naturelle de rafraîchir et d’assouplir la peau avant de commencer la journée.',
+          'Assez douce pour un usage quotidien, sans aucun risque d’irritation.',
         ],
       },
     },
   },
   {
-    keywords: ['weekly gentle exfoliation'],
+    keywords: ['honey-sugar scrub', 'honey and sugar scrub'],
     guide: {
       en: {
-        title: 'Weekly Gentle Exfoliation',
+        title: 'Homemade Honey-Sugar Scrub',
         steps: [
-          'Exfoliate once a week only — more than that strips the barrier you’ve spent weeks building.',
-          'Use a gentle chemical exfoliant rather than a harsh physical scrub.',
-          'Follow immediately with a moisturizer, since freshly exfoliated skin loses water faster.',
+          'Mix one spoon of raw honey with one spoon of fine sugar.',
+          'Massage gently onto damp skin in small circles for about a minute — no more, once a week is enough.',
+          'Rinse off with cool water and follow with your usual moisturizer.',
         ],
         benefits: [
-          'Removes the buildup from three weeks of actives without over-stripping the skin.',
-          'Keeps texture smooth without adding daily irritation risk.',
+          'Clears the light buildup from the week\'s masks and oils without harsh exfoliants.',
+          'Honey is naturally soothing, so the scrub cleans without irritating.',
         ],
       },
       fr: {
-        title: 'Exfoliation douce hebdomadaire',
+        title: 'Gommage maison au miel et au sucre',
         steps: [
-          'Exfoliez seulement une fois par semaine — plus que cela abîme la barrière que vous avez mis des semaines à construire.',
-          'Utilisez un exfoliant chimique doux plutôt qu’un gommage physique agressif.',
-          'Faites suivre immédiatement d’une crème hydratante, car une peau fraîchement exfoliée perd l’eau plus vite.',
+          'Mélangez une cuillère de miel cru avec une cuillère de sucre fin.',
+          'Massez doucement sur peau humide en petits cercles pendant environ une minute — pas plus, une fois par semaine suffit.',
+          'Rincez à l’eau fraîche et faites suivre de votre hydratant habituel.',
         ],
         benefits: [
-          'Élimine l’accumulation de trois semaines d’actifs sans agresser la peau.',
-          'Garde la texture lisse sans ajouter de risque d’irritation quotidien.',
+          'Élimine la légère accumulation des masques et huiles de la semaine sans exfoliant agressif.',
+          'Le miel est naturellement apaisant, donc le gommage nettoie sans irriter.',
         ],
       },
     },
   },
   {
-    keywords: ['bha exfoliant'],
+    keywords: ['green tea compress'],
     guide: {
       en: {
-        title: 'BHA Exfoliant Routine',
+        title: 'Green Tea Compress',
         steps: [
-          'Apply to the whole face on alternate nights, not every night, to avoid over-exfoliating.',
-          'BHA works specifically inside the pore to clear the congestion causing breakouts.',
-          'Follow with a non-comedogenic moisturizer to protect the barrier.',
+          'Steep a green tea bag, then let it cool until just warm (or chill it for extra de-puffing).',
+          'Press the tea bag gently onto active spots for 1–2 minutes.',
+          'Repeat in the evening on any breakout that\'s still active.',
         ],
         benefits: [
-          'Clears congestion at the source instead of just treating visible breakouts.',
-          'Alternating nights lets already-inflamed skin recover between applications.',
+          'The natural compounds in green tea are calming on irritated, active skin.',
+          'A targeted, gentle touch instead of a harsh spot treatment.',
         ],
       },
       fr: {
-        title: 'Routine à l’exfoliant BHA',
+        title: 'Compresse au thé vert',
         steps: [
-          'Appliquez sur tout le visage une nuit sur deux, pas chaque soir, pour éviter de sur-exfolier.',
-          'Le BHA agit spécifiquement à l’intérieur du pore pour dégager la congestion à l’origine des imperfections.',
-          'Faites suivre d’un hydratant non comédogène pour protéger la barrière.',
+          'Faites infuser un sachet de thé vert, puis laissez-le refroidir jusqu’à ce qu’il soit à peine tiède (ou mettez-le au frais pour un effet anti-poches supplémentaire).',
+          'Pressez doucement le sachet sur les zones actives pendant 1 à 2 minutes.',
+          'Répétez le soir sur toute imperfection encore active.',
         ],
         benefits: [
-          'Dégage la congestion à la source au lieu de traiter seulement les imperfections visibles.',
-          'Alterner les nuits laisse à une peau déjà inflammée le temps de récupérer entre les applications.',
+          'Les composés naturels du thé vert apaisent une peau irritée et active.',
+          'Un geste ciblé et doux plutôt qu’un traitement localisé agressif.',
         ],
       },
     },
   },
   {
-    keywords: ['spot treat', 'continue bha + spot care'],
+    keywords: ['chamomile steam', 'continue compresses'],
     guide: {
       en: {
-        title: 'Spot Treatment (BHA / Benzoyl Peroxide)',
+        title: 'Chamomile Steam',
         steps: [
-          'Apply a small amount directly onto active breakouts only, on clean, dry skin.',
-          'Never apply to the whole face — this is a targeted treatment, not a leave-on routine step.',
-          'Continue daily on active spots until they’ve visibly calmed down.',
+          'Steep chamomile in a bowl of hot water, then lean over it (not too close) with a towel over your head for 5 minutes.',
+          'Pat the face dry afterward — don\'t rub.',
+          'Follow with a green tea compress on any spots that are still active.',
         ],
         benefits: [
-          'Treats active breakouts directly without irritating skin that isn’t broken out.',
-          'Over-applying elsewhere on the face just adds irritation with no extra benefit.',
+          'The steam opens pores gently so a natural clay mask can actually draw out what\'s clogging them.',
+          'Chamomile is naturally calming on already-inflamed skin.',
         ],
       },
       fr: {
-        title: 'Traitement localisé (BHA / peroxyde de benzoyle)',
+        title: 'Vapeur de camomille',
         steps: [
-          'Appliquez une petite quantité directement sur les imperfections actives uniquement, sur peau propre et sèche.',
-          'N’appliquez jamais sur tout le visage — c’est un traitement ciblé, pas une étape de routine généralisée.',
-          'Continuez chaque jour sur les zones actives jusqu’à ce qu’elles se calment visiblement.',
+          'Faites infuser de la camomille dans un bol d’eau chaude, puis penchez-vous au-dessus (pas trop près) avec une serviette sur la tête pendant 5 minutes.',
+          'Séchez ensuite le visage en tamponnant — ne frottez pas.',
+          'Faites suivre d’une compresse de thé vert sur les zones encore actives.',
         ],
         benefits: [
-          'Traite directement les imperfections actives sans irriter la peau qui n’en a pas.',
-          'En mettre ailleurs sur le visage n’ajoute que de l’irritation, sans bénéfice supplémentaire.',
+          'La vapeur ouvre doucement les pores pour qu’un masque à l’argile naturel puisse vraiment en extraire ce qui les bouche.',
+          'La camomille est naturellement apaisante sur une peau déjà inflammée.',
+        ],
+      },
+    },
+  },
+  {
+    keywords: ['raw honey mask'],
+    guide: {
+      en: {
+        title: 'Raw Honey Mask',
+        steps: [
+          'Apply a thin layer of raw honey to clean, dry skin.',
+          'Leave on for about 10 minutes, then rinse off with lukewarm water.',
+          'Pat dry and follow with your usual light moisturizer.',
+        ],
+        benefits: [
+          'Raw honey is naturally soothing and helps the skin hold onto moisture.',
+          'A simple, one-ingredient ritual — nothing to buy, nothing to overthink.',
+        ],
+      },
+      fr: {
+        title: 'Masque au miel cru',
+        steps: [
+          'Appliquez une fine couche de miel cru sur une peau propre et sèche.',
+          'Laissez poser environ 10 minutes, puis rincez à l’eau tiède.',
+          'Séchez en tamponnant et faites suivre de votre hydratant léger habituel.',
+        ],
+        benefits: [
+          'Le miel cru est naturellement apaisant et aide la peau à retenir l’hydratation.',
+          'Un rituel simple à un seul ingrédient — rien à acheter, rien à sur-analyser.',
+        ],
+      },
+    },
+  },
+  {
+    keywords: ['oat + yogurt mask', 'oat and yogurt mask'],
+    guide: {
+      en: {
+        title: 'Oat & Yogurt Mask',
+        steps: [
+          'Mix a spoon of finely ground oats with a spoon of plain natural yogurt into a paste.',
+          'Apply to clean skin and leave for about 10 minutes.',
+          'Rinse off with lukewarm water, massaging gently as you do — the oats double as a very soft scrub.',
+        ],
+        benefits: [
+          'Oats calm and soothe the skin; the lactic acid in yogurt gently supports an even tone.',
+          'Two kitchen ingredients, no synthetic additives.',
+        ],
+      },
+      fr: {
+        title: 'Masque à l’avoine et au yaourt',
+        steps: [
+          'Mélangez une cuillère de flocons d’avoine finement moulus avec une cuillère de yaourt nature pour former une pâte.',
+          'Appliquez sur peau propre et laissez poser environ 10 minutes.',
+          'Rincez à l’eau tiède en massant doucement — l’avoine agit aussi comme un gommage très doux.',
+        ],
+        benefits: [
+          'L’avoine calme et apaise la peau ; l’acide lactique du yaourt aide en douceur à uniformiser le teint.',
+          'Deux ingrédients de cuisine, aucun additif de synthèse.',
+        ],
+      },
+    },
+  },
+  {
+    keywords: ['natural sun protection', 'reapply sun protection', 'reapply natural sun'],
+    guide: {
+      en: {
+        title: 'Natural Sun Protection',
+        steps: [
+          'Cover up first — a hat and shade do most of the work before any product does.',
+          'For skin left exposed, use a mineral (zinc oxide) sunscreen rather than a chemical one.',
+          'Reapply after a couple of hours outdoors, or right after sweating or swimming.',
+        ],
+        benefits: [
+          'Sun exposure is the single biggest driver of visible skin aging — this is the one step worth never skipping.',
+          'A mineral formula sits on top of the skin rather than being absorbed by it.',
+        ],
+      },
+      fr: {
+        title: 'Protection solaire naturelle',
+        steps: [
+          'Couvrez-vous d’abord — un chapeau et l’ombre font l’essentiel du travail avant même un produit.',
+          'Pour la peau exposée, utilisez une protection solaire minérale (à l’oxyde de zinc) plutôt que chimique.',
+          'Réappliquez après quelques heures dehors, ou juste après avoir transpiré ou nagé.',
+        ],
+        benefits: [
+          'L’exposition au soleil est le facteur numéro un du vieillissement visible de la peau — c’est l’étape à ne jamais sauter.',
+          'Une formule minérale reste à la surface de la peau plutôt que d’être absorbée.',
         ],
       },
     },
@@ -2893,7 +2978,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['review sleep, training, diet', 'diet + sleep + hydration', 'sleep + hydration + spf'],
+    keywords: ['review sleep, training, diet', 'diet + sleep + hydration', 'sleep + hydration + sun-care'],
     guide: {
       en: {
         title: 'Weekly Habit Review',

@@ -21,6 +21,7 @@ import { CoachState, getCoachState } from '@/lib/coach';
 import { requestNotificationPermission } from '@/lib/notifications';
 import { Translator, TranslationKey, useT } from '@/lib/i18n';
 import { DayMoment, formatUnlockHour, inferMoment, isMomentUnlocked, MOMENT_ORDER, MOMENT_UNLOCK_HOUR } from '@/lib/timeOfDay';
+import { resolveTaskMoment } from '@/lib/taskMoments';
 import { useAppStore } from '@/state/store';
 
 const MOMENT_LABEL_KEY: Partial<Record<DayMoment, TranslationKey>> = {
@@ -117,7 +118,7 @@ export default function HomePage() {
     const reason = reasonForProgram(g.sp.id);
     return g.wk.tasks.map((task, i) => {
       const enTask = g.enWk.tasks[i] ?? task;
-      const moment = inferMoment(enTask);
+      const moment = resolveTaskMoment(enTask, inferMoment);
       return { programId: g.sp.id, localIndex: i, task, enTask, topicLabel, moment, reason };
     });
   });
