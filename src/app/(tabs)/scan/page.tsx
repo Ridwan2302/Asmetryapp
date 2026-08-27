@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
+import { ProgressBar } from '@/components/ProgressBar';
 import { Screen } from '@/components/Screen';
 import { LIFESTYLE_METRIC_CONFIG } from '@/data/lifestyleConfig';
 import { METRIC_CONFIG, noteForBand } from '@/data/metricConfig';
@@ -11,6 +12,7 @@ import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { Translator, TranslationKey, useT } from '@/lib/i18n';
 import { playResultChime } from '@/lib/sound';
+import { speak, stopSpeaking } from '@/lib/speech';
 import { useAppStore } from '@/state/store';
 
 type StageKey = 'stage_landmarks' | 'stage_symmetry' | 'stage_proportions' | 'stage_scoring' | 'stage_compiling';
@@ -295,7 +297,10 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   const lifestyle = useAppStore((s) => s.lifestyle);
   const [scanId] = useState(() => `${Date.now()}`);
   const [isFirstScan] = useState(() => scans.length === 0);
-  const [rxPick, setRxPick] = useState<Candidate | null>(null);
+  // -1 = welcome/overall score, 0..picks.length-1 = one recommended program at a time,
+  // picks.length = final confirmation. Revealed gradually instead of all at once — a scan
+  // used to dump ~12 metrics and 3 programs on a single screen, which was simply too much.
+  const [screen, setScreen] = useState(-1);
 
   // The face scan and the onboarding lifestyle answers are two pools of "how weak is this
   // area, 0-100" candidates — merged and sorted together so a badly-rated sleep habit can
@@ -329,6 +334,16 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Stop any narration in progress the moment this view is left.
+  useEffect(() => stopSpeaking, []);
+
+  function goNext() {
+    setScreen((s) => Math.min(picks.length, s + 1));
+  }
+  function goBack() {
+    setScreen((s) => Math.max(-1, s - 1));
+  }
+
   function handleStartPlan() {
     startPlan(
       picks.map((m) => m.programId),
@@ -348,147 +363,189 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
 
   return (
     <Screen>
-      <div className="mb-8 text-[13px] font-medium text-soft">
-        {t('analysis_complete')} · {dateStr()}
-      </div>
-
-      <div className="relative">
-        <div className="relative z-10 flex justify-center">
-          <div className="h-[128px] w-[128px] overflow-hidden rounded-full ring-[5px] ring-paper">
-            {captureUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={captureUrl} alt="" className="h-full w-full object-cover [transform:scaleX(-1)]" />
-            ) : (
-              <div className="h-full w-full bg-fill" />
-            )}
-          </div>
+      {screen >= 0 && screen < picks.length && (
+        <div className="mb-6">
+          <ProgressBar pct={((screen + 1) / picks.length) * 100} />
         </div>
-        <div className="-mt-16 rounded-[28px] bg-[#111113] px-5 pt-20 pb-7">
-          <div className="grid grid-cols-2 gap-x-5 gap-y-7">
-            <MetricTile label={t('overall')} value={result.overall} />
-            {METRIC_CONFIG.map((m) => (
-              <MetricTile key={m.key} label={t(m.labelKey)} value={result.metrics[m.key]} />
-            ))}
-            {LIFESTYLE_METRIC_CONFIG.map((m) => (
-              <MetricTile key={m.key} label={t(m.labelKey)} value={lifestyle[m.key]} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <p className="mt-7 text-[15px] leading-[1.5] text-soft">{t('plan_preview_intro')}</p>
-      <div className="mt-3 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('your_plan_preview_title')}</div>
-      {picks.map((c) => {
-        const program = getProgram(c.programId);
-        if (!program) return null;
-        const copy = localizeProgram(program, language);
-        return (
-          <button
-            key={c.programId}
-            onClick={() => setRxPick(c)}
-            className="press mb-2.5 flex w-full items-center justify-between rounded-2xl bg-card p-3.5 px-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
-          >
-            <div>
-              <div className="text-[17px] font-semibold text-ink">{copy.name}</div>
-              <div className="mt-0.5 text-[13px] text-soft">
-                {t(c.labelKey)} · {c.value}
-              </div>
-            </div>
-            <ChevronRightIcon />
-          </button>
-        );
-      })}
-      <div className="mb-1 text-center text-[12px] text-soft">{t('rx_tap_hint')}</div>
-
-      <PrimaryButton label={t('start_my_plan')} onClick={handleStartPlan} className="mt-4" />
-
-      {rxPick && (
-        <PrescriptionModal pick={rxPick} language={language} t={t} onClose={() => setRxPick(null)} />
       )}
+
+      {screen === -1 && (
+        <ResultWelcomeScreen captureUrl={captureUrl} overall={result.overall} language={language} onNext={goNext} t={t} />
+      )}
+
+      {screen >= 0 && screen < picks.length && (
+        <ResultPickScreen
+          index={screen}
+          total={picks.length}
+          pick={picks[screen]}
+          language={language}
+          onBack={goBack}
+          onNext={goNext}
+          t={t}
+        />
+      )}
+
+      {screen === picks.length && <ResultConfirmScreen picks={picks} language={language} onStart={handleStartPlan} t={t} />}
     </Screen>
   );
 }
 
-function ChevronRightIcon() {
+function ResultWelcomeScreen({
+  captureUrl,
+  overall,
+  language,
+  onNext,
+  t,
+}: {
+  captureUrl: string | null;
+  overall: number;
+  language: 'en' | 'fr';
+  onNext: () => void;
+  t: Translator;
+}) {
+  useEffect(() => {
+    speak(`${t('result_welcome_title')}. ${t('result_welcome_body_tpl').replace('{score}', String(overall))}`, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#8E8E93" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-      <path d="M9 6l6 6-6 6" />
-    </svg>
+    <div className="flex min-h-[75dvh] flex-col items-center justify-center text-center">
+      <div className="mb-6 text-[13px] font-medium text-soft">
+        {t('analysis_complete')} · {dateStr()}
+      </div>
+      <div className="mb-7 h-[128px] w-[128px] overflow-hidden rounded-full ring-[5px] ring-paper">
+        {captureUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={captureUrl} alt="" className="h-full w-full object-cover [transform:scaleX(-1)]" />
+        ) : (
+          <div className="h-full w-full bg-fill" />
+        )}
+      </div>
+      <h2 className="mb-2 text-[28px] leading-[1.15] font-bold tracking-[-0.3px] text-ink">{t('result_welcome_title')}</h2>
+      <p className="mx-auto max-w-[34ch] text-[15px] leading-[1.5] text-soft">
+        {t('result_welcome_body_tpl').replace('{score}', String(overall))}
+      </p>
+      <div className="mt-5 text-[64px] leading-none font-bold text-ink">{overall}</div>
+      <PrimaryButton label={t('result_welcome_cta')} onClick={onNext} className="mt-9" />
+    </div>
   );
 }
 
-/** The "ordonnance" — a prescription-styled deep-dive on a single recommended program: what's
- * wrong (diagnosis, from the actual scanned metric), why this program addresses it, what the
- * user can expect to gain, and the protocol dosage (days / minutes / level). */
-function PrescriptionModal({
+/** One recommended program at a time — the same diagnosis → why → benefits detail that used to
+ * live behind an optional tap, now the only thing on screen so it actually gets read. */
+function ResultPickScreen({
+  index,
+  total,
   pick,
   language,
+  onBack,
+  onNext,
   t,
-  onClose,
 }: {
+  index: number;
+  total: number;
   pick: Candidate;
   language: 'en' | 'fr';
+  onBack: () => void;
+  onNext: () => void;
   t: Translator;
-  onClose: () => void;
 }) {
   const program = getProgram(pick.programId);
-  if (!program) return null;
-  const copy = localizeProgram(program, language);
-  const value = pick.value;
-  const note = noteForBand(pick.noteKeys, value, t);
+  const copy = program ? localizeProgram(program, language) : null;
+  const note = noteForBand(pick.noteKeys, pick.value, t);
+
+  useEffect(() => {
+    if (!copy) return;
+    speak(`${t(pick.labelKey)}, ${pick.value}. ${note}. ${copy.name}. ${copy.overview}`, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  if (!program || !copy) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-6" onClick={onClose}>
-      <div
-        className="max-h-[85vh] w-full max-w-[380px] overflow-y-auto rounded-[22px] bg-paper p-6 shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-5 flex items-start justify-between border-b border-dashed border-border pb-4">
-          <div>
-            <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">Rx · {copy.anatomy}</div>
-            <div className="mt-1 text-[22px] leading-[1.1] font-bold tracking-[-0.3px] text-ink">{copy.name}</div>
-            <div className="mt-1 text-[13px] text-soft">{copy.tagline}</div>
-          </div>
-          <button onClick={onClose} aria-label={t('dismiss')} className="press flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-fill text-[16px] leading-none text-soft">
-            ×
-          </button>
-        </div>
-
-        <Section label={t('rx_diagnosis')}>
-          <div className="flex items-baseline gap-2">
-            <span className="text-[28px] leading-none font-bold text-ink">{value}</span>
-            <span className="text-[13px] font-semibold text-soft">{t(pick.labelKey)}</span>
-          </div>
-          <p className="mt-2 text-[14px] leading-[1.5] text-soft">{note}</p>
-        </Section>
-
-        <Section label={t('rx_why')}>
-          <p className="text-[14px] leading-[1.55] text-ink/85">{copy.overview}</p>
-        </Section>
-
-        <Section label={t('rx_benefits')}>
-          <ul className="space-y-1.5">
-            {copy.benefits.map((b, i) => (
-              <li key={i} className="flex gap-2 text-[14px] leading-[1.45] text-ink/85">
-                <span className="mt-[3px] h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        <Section label={t('rx_protocol')} last>
-          <div className="flex gap-2.5">
-            <RxStat value="28" label={t('stat_days')} />
-            <RxStat value={String(program.mins)} label={t('stat_min_day')} />
-            <RxStat value={t(levelKey(program.level))} label={t('stat_level')} />
-          </div>
-        </Section>
-
-        <div className="mt-5 border-t border-dashed border-border pt-4 text-center text-[11px] text-soft">
-          {t('rx_prescribed_on')} {dateStr()}
-        </div>
+    <div>
+      <div className="mb-5 text-[13px] font-semibold tracking-[0.2px] text-accent">
+        {t('guided_step_of_tpl').replace('{n}', String(index + 1)).replace('{total}', String(total))}
       </div>
+
+      <Section label={t('rx_diagnosis')}>
+        <div className="flex items-baseline gap-2">
+          <span className="text-[28px] leading-none font-bold text-ink">{pick.value}</span>
+          <span className="text-[13px] font-semibold text-soft">{t(pick.labelKey)}</span>
+        </div>
+        <p className="mt-2 text-[14px] leading-[1.5] text-soft">{note}</p>
+      </Section>
+
+      <div className="mb-5 overflow-hidden rounded-[20px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+        <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">Rx · {copy.anatomy}</div>
+        <div className="mt-1 text-[20px] leading-[1.15] font-bold tracking-[-0.3px] text-ink">{copy.name}</div>
+        <div className="mt-1 text-[13px] text-soft">{copy.tagline}</div>
+        <p className="mt-3 text-[14px] leading-[1.5] text-ink/85">{copy.overview}</p>
+      </div>
+
+      <Section label={t('rx_benefits')}>
+        <ul className="space-y-1.5">
+          {copy.benefits.map((b, i) => (
+            <li key={i} className="flex gap-2 text-[14px] leading-[1.45] text-ink/85">
+              <span className="mt-[3px] h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section label={t('rx_protocol')} last>
+        <div className="flex gap-2.5">
+          <RxStat value="28" label={t('stat_days')} />
+          <RxStat value={String(program.mins)} label={t('stat_min_day')} />
+          <RxStat value={t(levelKey(program.level))} label={t('stat_level')} />
+        </div>
+      </Section>
+
+      <div className="mt-8 flex gap-3">
+        {index > 0 && <OutlineButton label={t('guided_back_cta')} onClick={onBack} className="!w-auto flex-1" />}
+        <PrimaryButton label={t('guided_next_cta')} onClick={onNext} className="!w-auto flex-[2]" />
+      </div>
+    </div>
+  );
+}
+
+function ResultConfirmScreen({
+  picks,
+  language,
+  onStart,
+  t,
+}: {
+  picks: Candidate[];
+  language: 'en' | 'fr';
+  onStart: () => void;
+  t: Translator;
+}) {
+  useEffect(() => {
+    speak(`${t('result_confirm_title')}. ${t('result_confirm_body')}`, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="flex min-h-[75dvh] flex-col items-center justify-center text-center">
+      <h2 className="mb-3 text-[28px] leading-[1.15] font-bold tracking-[-0.3px] text-ink">{t('result_confirm_title')}</h2>
+      <p className="mx-auto max-w-[36ch] text-[15px] leading-[1.5] text-soft">{t('result_confirm_body')}</p>
+
+      <div className="mt-6 w-full max-w-[320px] space-y-2">
+        {picks.map((c) => {
+          const program = getProgram(c.programId);
+          if (!program) return null;
+          const copy = localizeProgram(program, language);
+          return (
+            <div key={c.programId} className="rounded-2xl bg-card p-3.5 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
+              <div className="text-[15px] font-semibold text-ink">{copy.name}</div>
+              <div className="text-[12px] text-soft">{copy.tagline}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      <PrimaryButton label={t('start_my_plan')} onClick={onStart} className="mt-9" />
     </div>
   );
 }
@@ -507,19 +564,6 @@ function RxStat({ value, label }: { value: string; label: string }) {
     <div className="flex-1 rounded-[14px] bg-fill p-2.5 text-center">
       <div className="text-[17px] font-bold text-ink">{value}</div>
       <div className="text-[11px] font-medium text-soft">{label}</div>
-    </div>
-  );
-}
-
-function MetricTile({ label, value }: { label: string; value: number }) {
-  const barColor = value >= 80 ? '#34d399' : value >= 65 ? '#a3e635' : '#f59e0b';
-  return (
-    <div>
-      <div className="text-[12px] leading-[1.3] font-medium tracking-[0.2px] text-white/55">{label}</div>
-      <div className="mt-1 text-[32px] leading-none font-bold text-white">{value}</div>
-      <div className="mt-2.5 h-[6px] overflow-hidden rounded-full bg-white/15">
-        <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: barColor }} />
-      </div>
     </div>
   );
 }

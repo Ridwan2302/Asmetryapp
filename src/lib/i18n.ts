@@ -151,8 +151,6 @@ const en = {
   coach_plan_complete_body: 'You finished your 4-week plan. Take a new scan to see your real progress and start your next one.',
 
   your_plan_title: 'Your Plan',
-  plan_preview_intro: 'From this analysis, here is the program I recommend you follow over the next four weeks.',
-  your_plan_preview_title: 'Your 4-week plan',
   start_my_plan: 'Start my plan',
   rescan_cta: 'Take a new scan',
   plan_complete_badge: 'Complete',
@@ -171,6 +169,7 @@ const en = {
   settings_title: 'Settings',
   setting_notifications: 'Program reminders',
   setting_haptics: 'Haptic feedback',
+  setting_voice: 'Voice guidance',
   setting_grid: 'Scan grid overlay',
   setting_private: 'Private mode',
   setting_language: 'Language',
@@ -272,6 +271,12 @@ const en = {
   guided_complete_title: 'Congratulations',
   guided_complete_body: 'You have completed every step planned for today. Consistency is what will make the difference.',
   guided_finish_cta: 'Finish my day',
+
+  result_welcome_title: 'Your analysis is ready',
+  result_welcome_body_tpl: 'Your overall score is {score} out of 100. Let us go through your personalised plan together, one step at a time.',
+  result_welcome_cta: 'Discover my plan',
+  result_confirm_title: 'Your plan is ready',
+  result_confirm_body: 'These are the programs we have selected for you. Begin whenever you are ready, and we will guide you through every step.',
 
   encouragement_title: 'Day logged!',
   week_complete_suffix: 'complete!',
@@ -491,8 +496,6 @@ const fr: Record<keyof typeof en, string> = {
   coach_plan_complete_body: 'Vous avez terminé votre plan de 4 semaines. Faites un nouveau scan pour voir vos vrais progrès et démarrer le suivant.',
 
   your_plan_title: 'Votre Plan',
-  plan_preview_intro: 'À partir de cette analyse, voici le programme que je vous propose de suivre au cours des quatre prochaines semaines.',
-  your_plan_preview_title: 'Votre plan de 4 semaines',
   start_my_plan: 'Démarrer mon plan',
   rescan_cta: 'Faire un nouveau scan',
   plan_complete_badge: 'Terminé',
@@ -511,6 +514,7 @@ const fr: Record<keyof typeof en, string> = {
   settings_title: 'Paramètres',
   setting_notifications: 'Rappels de programme',
   setting_haptics: 'Retour haptique',
+  setting_voice: 'Guidage vocal',
   setting_grid: 'Grille de superposition du scan',
   setting_private: 'Mode privé',
   setting_language: 'Langue',
@@ -612,6 +616,12 @@ const fr: Record<keyof typeof en, string> = {
   guided_complete_title: 'Félicitations',
   guided_complete_body: 'Vous avez accompli toutes les étapes prévues aujourd’hui. Votre constance est ce qui fera la différence.',
   guided_finish_cta: 'Terminer ma journée',
+
+  result_welcome_title: 'Votre analyse est prête',
+  result_welcome_body_tpl: 'Votre score global est de {score} sur 100. Parcourons ensemble votre plan personnalisé, étape par étape.',
+  result_welcome_cta: 'Découvrir mon plan',
+  result_confirm_title: 'Votre plan est prêt',
+  result_confirm_body: 'Voici les programmes que nous avons sélectionnés pour vous. Commencez dès que vous êtes prêt, nous vous guiderons à chaque étape.',
 
   encouragement_title: 'Journée enregistrée !',
   week_complete_suffix: 'terminée !',

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { findDemoEntry } from '@/lib/demoVideos';
 import { Translator } from '@/lib/i18n';
+import { speak, stopSpeaking } from '@/lib/speech';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { ProgressBar } from '@/components/ProgressBar';
 
@@ -50,6 +51,9 @@ export function GuidedSession({
     setScreen((s) => (typeof s === 'number' ? Math.min(tasks.length, s + 1) : s));
   }
 
+  // Stop any narration in progress the moment this session closes.
+  useEffect(() => stopSpeaking, []);
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-paper">
       <div className="flex items-center gap-3 px-5 pt-[calc(env(safe-area-inset-top)+16px)] pb-3">
@@ -66,7 +70,7 @@ export function GuidedSession({
       <div className="flex-1 overflow-y-auto px-6 pt-2 pb-10">
         {screen === -1 && (
           <div className="flex min-h-full flex-col justify-center">
-            <WelcomeScreen programName={programName} dayNum={dayNum} weekFocus={weekFocus} weekWhy={weekWhy} onNext={goToFirstStep} t={t} />
+            <WelcomeScreen programName={programName} dayNum={dayNum} weekFocus={weekFocus} weekWhy={weekWhy} language={language} onNext={goToFirstStep} t={t} />
           </div>
         )}
         {screen >= 0 && screen < tasks.length && (
@@ -84,7 +88,7 @@ export function GuidedSession({
         )}
         {screen === tasks.length && (
           <div className="flex min-h-full flex-col justify-center">
-            <CompleteScreen onFinish={onFinish} t={t} />
+            <CompleteScreen onFinish={onFinish} language={language} t={t} />
           </div>
         )}
       </div>
@@ -97,6 +101,7 @@ function WelcomeScreen({
   dayNum,
   weekFocus,
   weekWhy,
+  language,
   onNext,
   t,
 }: {
@@ -104,6 +109,7 @@ function WelcomeScreen({
   dayNum: number;
   weekFocus: string;
   weekWhy: string;
+  language: 'en' | 'fr';
   onNext: () => void;
   t: Translator;
 }) {
@@ -111,6 +117,12 @@ function WelcomeScreen({
     .replace('{day}', String(dayNum))
     .replace('{program}', programName)
     .replace('{focus}', weekFocus);
+
+  useEffect(() => {
+    speak(`${t('guided_welcome_title')}. ${body} ${weekWhy}`, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="text-center">
       <div className="mb-2 text-[12px] font-semibold tracking-[0.3px] text-soft uppercase">{t('guided_welcome_eyebrow')}</div>
@@ -145,6 +157,13 @@ function StepScreen({
 }) {
   const entry = findDemoEntry(taskEn);
   const guide = entry ? (language === 'fr' ? entry.guide.fr : entry.guide.en) : null;
+
+  useEffect(() => {
+    const lead = t('guided_step_lead');
+    const spoken = guide ? `${lead} ${guide.title}. ${guide.steps.join(' ')}` : `${lead} ${task}`;
+    speak(spoken, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
 
   return (
     <div>
@@ -190,7 +209,12 @@ function StepScreen({
   );
 }
 
-function CompleteScreen({ onFinish, t }: { onFinish: () => void; t: Translator }) {
+function CompleteScreen({ onFinish, language, t }: { onFinish: () => void; language: 'en' | 'fr'; t: Translator }) {
+  useEffect(() => {
+    speak(`${t('guided_complete_title')}. ${t('guided_complete_body')}`, language);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="text-center">
       <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-success/15 text-success">
