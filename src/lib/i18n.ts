@@ -167,8 +167,11 @@ const en = {
   plan_guided_why: "We've organized today's steps from morning to evening — each one is tagged with when to do it, so you're never guessing.",
   plan_topics_heading: 'Today, we will work on:',
   plan_calendar_label: 'Your 28-day calendar',
+  moment_wake_up: 'On waking',
   moment_morning: 'Morning',
+  moment_afternoon: 'Afternoon',
   moment_evening: 'Evening',
+  moment_before_bed: 'Before bed',
   moment_twice_daily: 'Morning & evening',
 
   topic_face_structure: 'Face structure',
@@ -540,8 +543,11 @@ const fr: Record<keyof typeof en, string> = {
   plan_guided_why: 'Nous avons organisé les étapes d’aujourd’hui du matin au soir — chacune indique le moment où la faire, pour que vous ne soyez jamais dans le flou.',
   plan_topics_heading: 'Aujourd’hui, nous allons travailler sur :',
   plan_calendar_label: 'Votre calendrier sur 28 jours',
+  moment_wake_up: 'Au réveil',
   moment_morning: 'Matin',
+  moment_afternoon: 'Après-midi',
   moment_evening: 'Soir',
+  moment_before_bed: 'Avant le coucher',
   moment_twice_daily: 'Matin et soir',
 
   topic_face_structure: 'Structure du visage',

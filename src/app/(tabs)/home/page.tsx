@@ -22,8 +22,11 @@ import { DayMoment, inferMoment, MOMENT_ORDER } from '@/lib/timeOfDay';
 import { useAppStore } from '@/state/store';
 
 const MOMENT_LABEL_KEY: Partial<Record<DayMoment, TranslationKey>> = {
+  wake_up: 'moment_wake_up',
   morning: 'moment_morning',
+  afternoon: 'moment_afternoon',
   evening: 'moment_evening',
+  before_bed: 'moment_before_bed',
   twice_daily: 'moment_twice_daily',
 };
 
