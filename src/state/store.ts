@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { dateStr, monthYear } from '../lib/calc';
-import { ActivePlan, DEFAULT_PROFILE, DEFAULT_SETTINGS, Language, Profile, ScanEntry, Settings, StartedProgram, Theme } from './types';
+import { ActivePlan, DEFAULT_LIFESTYLE, DEFAULT_PROFILE, DEFAULT_SETTINGS, Language, Lifestyle, Profile, ScanEntry, Settings, StartedProgram, Theme } from './types';
 
 interface AppState {
   hasHydrated: boolean;
   onboarded: boolean;
   profile: Profile;
+  lifestyle: Lifestyle;
   profilePic: string | null;
   started: StartedProgram[];
   plan: ActivePlan | null;
@@ -18,8 +19,9 @@ interface AppState {
   setHasHydrated: (v: boolean) => void;
   setLanguage: (lang: Language) => void;
   setTheme: (theme: Theme) => void;
-  completeOnboarding: (profile: Profile) => void;
+  completeOnboarding: (profile: Profile, lifestyle: Lifestyle) => void;
   updateProfile: (profile: Profile) => void;
+  setLifestyle: (lifestyle: Lifestyle) => void;
   setProfilePic: (uri: string | null) => void;
 
   isStarted: (id: string) => boolean;
@@ -45,6 +47,7 @@ const initialState = {
   hasHydrated: false,
   onboarded: false,
   profile: DEFAULT_PROFILE,
+  lifestyle: DEFAULT_LIFESTYLE,
   profilePic: null,
   started: [] as StartedProgram[],
   plan: null as ActivePlan | null,
@@ -69,10 +72,12 @@ export const useAppStore = create<AppState>()(
       setLanguage: (lang) => set({ language: lang }),
       setTheme: (theme) => set({ theme }),
 
-      completeOnboarding: (profile) =>
-        set({ onboarded: true, profile: { ...profile, since: profile.since || monthYear() } }),
+      completeOnboarding: (profile, lifestyle) =>
+        set({ onboarded: true, profile: { ...profile, since: profile.since || monthYear() }, lifestyle }),
 
       updateProfile: (profile) => set({ profile }),
+
+      setLifestyle: (lifestyle) => set({ lifestyle }),
 
       setProfilePic: (uri) => set({ profilePic: uri }),
 
@@ -160,6 +165,7 @@ export const useAppStore = create<AppState>()(
       partialize: (state) => ({
         onboarded: state.onboarded,
         profile: state.profile,
+        lifestyle: state.lifestyle,
         profilePic: state.profilePic,
         started: state.started,
         plan: state.plan,

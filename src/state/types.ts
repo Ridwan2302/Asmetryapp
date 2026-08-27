@@ -56,6 +56,18 @@ export interface Settings {
   private: boolean;
 }
 
+/** Self-reported habits, collected once during onboarding — the counterpart to ScanMetrics
+ * for everything a camera can't measure. Same 0-100 scale, so both pools sort together when
+ * picking the weakest areas to build a plan around. */
+export interface Lifestyle {
+  posture: number;
+  physique: number;
+  sleep: number;
+  hydration: number;
+}
+
+export const DEFAULT_LIFESTYLE: Lifestyle = { posture: 70, physique: 70, sleep: 70, hydration: 70 };
+
 export const DEFAULT_PROFILE: Profile = {
   name: '',
   sex: 'M',

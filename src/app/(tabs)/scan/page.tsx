@@ -4,16 +4,27 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { Screen } from '@/components/Screen';
-import { METRIC_CONFIG, MetricConfig, metricNoteFor } from '@/data/metricConfig';
+import { LIFESTYLE_METRIC_CONFIG } from '@/data/lifestyleConfig';
+import { METRIC_CONFIG, noteForBand } from '@/data/metricConfig';
 import { getProgram, levelKey, localizeProgram } from '@/data/programs';
 import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
-import { Translator, useT } from '@/lib/i18n';
+import { Translator, TranslationKey, useT } from '@/lib/i18n';
 import { playResultChime } from '@/lib/sound';
 import { useAppStore } from '@/state/store';
 
 type StageKey = 'stage_landmarks' | 'stage_symmetry' | 'stage_proportions' | 'stage_scoring' | 'stage_compiling';
 const STAGE_KEYS: StageKey[] = ['stage_landmarks', 'stage_symmetry', 'stage_proportions', 'stage_scoring', 'stage_compiling'];
+
+/** A single "weakest area" candidate for the plan — either a face metric from this scan or a
+ * self-reported lifestyle answer from onboarding. Both pools share this shape so they can be
+ * sorted and picked from together. */
+type Candidate = {
+  programId: string;
+  labelKey: TranslationKey;
+  value: number;
+  noteKeys: [TranslationKey, TranslationKey, TranslationKey];
+};
 
 /** The real analysis usually finishes in well under a second — that reads as fake/broken, so we
  * hold the scanning UI open for at least this long to make the scan feel substantial. */
@@ -281,17 +292,23 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
   const startPlan = useAppStore((s) => s.startPlan);
   const language = useAppStore((s) => s.language);
   const setTheme = useAppStore((s) => s.setTheme);
+  const lifestyle = useAppStore((s) => s.lifestyle);
   const [scanId] = useState(() => `${Date.now()}`);
   const [isFirstScan] = useState(() => scans.length === 0);
-  const [rxPick, setRxPick] = useState<MetricConfig | null>(null);
+  const [rxPick, setRxPick] = useState<Candidate | null>(null);
 
-  const sorted = [...METRIC_CONFIG].sort((a, b) => result.metrics[a.key] - result.metrics[b.key]);
+  // The face scan and the onboarding lifestyle answers are two pools of "how weak is this
+  // area, 0-100" candidates — merged and sorted together so a badly-rated sleep habit can
+  // outrank a merely mediocre face metric, exactly as it should.
+  const faceCandidates: Candidate[] = METRIC_CONFIG.map((m) => ({ programId: m.programId, labelKey: m.labelKey, value: result.metrics[m.key], noteKeys: m.noteKeys }));
+  const lifestyleCandidates: Candidate[] = LIFESTYLE_METRIC_CONFIG.map((m) => ({ programId: m.programId, labelKey: m.labelKey, value: lifestyle[m.key], noteKeys: m.noteKeys }));
+  const sorted = [...faceCandidates, ...lifestyleCandidates].sort((a, b) => a.value - b.value);
   const seenPrograms = new Set<string>();
-  const picks: MetricConfig[] = [];
-  for (const m of sorted) {
-    if (!seenPrograms.has(m.programId)) {
-      seenPrograms.add(m.programId);
-      picks.push(m);
+  const picks: Candidate[] = [];
+  for (const c of sorted) {
+    if (!seenPrograms.has(c.programId)) {
+      seenPrograms.add(c.programId);
+      picks.push(c);
     }
     if (picks.length >= 3) break;
   }
@@ -352,25 +369,28 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
             {METRIC_CONFIG.map((m) => (
               <MetricTile key={m.key} label={t(m.labelKey)} value={result.metrics[m.key]} />
             ))}
+            {LIFESTYLE_METRIC_CONFIG.map((m) => (
+              <MetricTile key={m.key} label={t(m.labelKey)} value={lifestyle[m.key]} />
+            ))}
           </div>
         </div>
       </div>
 
       <div className="mt-7 mb-3 text-[13px] font-semibold tracking-[0.3px] text-soft uppercase">{t('your_plan_preview_title')}</div>
-      {picks.map((m) => {
-        const program = getProgram(m.programId);
+      {picks.map((c) => {
+        const program = getProgram(c.programId);
         if (!program) return null;
         const copy = localizeProgram(program, language);
         return (
           <button
-            key={m.programId}
-            onClick={() => setRxPick(m)}
+            key={c.programId}
+            onClick={() => setRxPick(c)}
             className="press mb-2.5 flex w-full items-center justify-between rounded-2xl bg-card p-3.5 px-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]"
           >
             <div>
               <div className="text-[17px] font-semibold text-ink">{copy.name}</div>
               <div className="mt-0.5 text-[13px] text-soft">
-                {t(m.labelKey)} · {result.metrics[m.key]}
+                {t(c.labelKey)} · {c.value}
               </div>
             </div>
             <ChevronRightIcon />
@@ -382,7 +402,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
       <PrimaryButton label={t('start_my_plan')} onClick={handleStartPlan} className="mt-4" />
 
       {rxPick && (
-        <PrescriptionModal m={rxPick} result={result} language={language} t={t} onClose={() => setRxPick(null)} />
+        <PrescriptionModal pick={rxPick} language={language} t={t} onClose={() => setRxPick(null)} />
       )}
     </Screen>
   );
@@ -400,23 +420,21 @@ function ChevronRightIcon() {
  * wrong (diagnosis, from the actual scanned metric), why this program addresses it, what the
  * user can expect to gain, and the protocol dosage (days / minutes / level). */
 function PrescriptionModal({
-  m,
-  result,
+  pick,
   language,
   t,
   onClose,
 }: {
-  m: MetricConfig;
-  result: AnalysisResult;
+  pick: Candidate;
   language: 'en' | 'fr';
   t: Translator;
   onClose: () => void;
 }) {
-  const program = getProgram(m.programId);
+  const program = getProgram(pick.programId);
   if (!program) return null;
   const copy = localizeProgram(program, language);
-  const value = result.metrics[m.key];
-  const note = metricNoteFor(m, value, t);
+  const value = pick.value;
+  const note = noteForBand(pick.noteKeys, value, t);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-6" onClick={onClose}>
@@ -438,7 +456,7 @@ function PrescriptionModal({
         <Section label={t('rx_diagnosis')}>
           <div className="flex items-baseline gap-2">
             <span className="text-[28px] leading-none font-bold text-ink">{value}</span>
-            <span className="text-[13px] font-semibold text-soft">{t(m.labelKey)}</span>
+            <span className="text-[13px] font-semibold text-soft">{t(pick.labelKey)}</span>
           </div>
           <p className="mt-2 text-[14px] leading-[1.5] text-soft">{note}</p>
         </Section>

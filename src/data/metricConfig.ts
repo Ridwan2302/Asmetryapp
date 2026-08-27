@@ -19,7 +19,13 @@ export const METRIC_CONFIG: MetricConfig[] = [
   { key: 'skin', labelKey: 'metric_skin_label', programId: 'skin-clarity', noteKeys: ['metric_skin_note_0', 'metric_skin_note_1', 'metric_skin_note_2'] },
 ];
 
-export function metricNoteFor(m: MetricConfig, value: number, t: Translator): string {
+/** Shared by face metrics and lifestyle answers alike — both use the same 0-100 scale and
+ * the same [strong, mid, weak] note-key shape. */
+export function noteForBand(noteKeys: [TranslationKey, TranslationKey, TranslationKey], value: number, t: Translator): string {
   const idx = value >= 80 ? 0 : value >= 65 ? 1 : 2;
-  return t(m.noteKeys[idx]);
+  return t(noteKeys[idx]);
+}
+
+export function metricNoteFor(m: MetricConfig, value: number, t: Translator): string {
+  return noteForBand(m.noteKeys, value, t);
 }

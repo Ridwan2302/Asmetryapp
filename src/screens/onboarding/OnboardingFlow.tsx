@@ -6,10 +6,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { Pill } from '@/components/Pill';
+import { lifestyleScoreFromIndex } from '@/data/lifestyleConfig';
 import { bmiAdvice, bmiCategory, bmiOf } from '@/lib/calc';
 import { Translator, useT } from '@/lib/i18n';
 import { useAppStore } from '@/state/store';
-import { Sex } from '@/state/types';
+import { Lifestyle, Sex } from '@/state/types';
+
+type LifestyleIdx = { posture: number; physique: number; sleep: number; hydration: number };
+const DEFAULT_LIFESTYLE_IDX: LifestyleIdx = { posture: 2, physique: 2, sleep: 2, hydration: 2 };
 
 const introData: {
   stepKey: 'intro1_step' | 'intro2_step' | 'intro3_step';
@@ -35,6 +39,11 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
   const [age, setAge] = useState(mode === 'edit' ? String(profile.age) : '');
   const [height, setHeight] = useState(mode === 'edit' ? String(profile.height) : '');
   const [weight, setWeight] = useState(mode === 'edit' ? String(profile.weight) : '');
+  const [lifestyleIdx, setLifestyleIdxState] = useState<LifestyleIdx>(DEFAULT_LIFESTYLE_IDX);
+
+  function setLifestyleIdx(key: keyof LifestyleIdx, idx: number) {
+    setLifestyleIdxState((prev) => ({ ...prev, [key]: idx }));
+  }
 
   const bmiLive = useMemo(() => {
     const h = parseInt(height, 10) || profile.height;
@@ -45,7 +54,9 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
   const statsReady = !!(age && height && weight);
 
   function next() {
-    setStep((s) => s + 1);
+    // Edit mode only ever touches the basic stats — skip straight past the lifestyle
+    // questionnaire (step 5) to the BMI result, exactly like before this step existed.
+    setStep((s) => (mode === 'edit' && s === 4 ? 6 : s + 1));
   }
   function skipIntro() {
     setStep(4);
@@ -63,7 +74,13 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
       updateProfile(finalProfile);
       router.back();
     } else {
-      completeOnboarding(finalProfile);
+      const lifestyle: Lifestyle = {
+        posture: lifestyleScoreFromIndex(lifestyleIdx.posture),
+        physique: lifestyleScoreFromIndex(lifestyleIdx.physique),
+        sleep: lifestyleScoreFromIndex(lifestyleIdx.sleep),
+        hydration: lifestyleScoreFromIndex(lifestyleIdx.hydration),
+      };
+      completeOnboarding(finalProfile, lifestyle);
       router.replace('/home');
     }
   }
@@ -89,7 +106,8 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
           t={t}
         />
       )}
-      {step >= 5 && (
+      {step === 5 && <LifestyleForm lifestyleIdx={lifestyleIdx} setLifestyleIdx={setLifestyleIdx} onNext={next} t={t} />}
+      {step >= 6 && (
         <ResultStep
           bmi={bmiLive}
           age={parseInt(age, 10) || profile.age}
@@ -284,6 +302,78 @@ function StatsForm(props: {
 
       <div className="mt-10">
         {ready ? <PrimaryButton label={t('calculate')} onClick={onNext} /> : <OutlineButton label={t('calculate')} onClick={onNext} />}
+      </div>
+    </div>
+  );
+}
+
+function ChoiceField({ label, value, options, onChange }: { label: string; value: number; options: string[]; onChange: (i: number) => void }) {
+  return (
+    <div>
+      <label className="mb-2 block text-[13px] font-medium text-soft">{label}</label>
+      <div className="flex flex-wrap gap-2">
+        {options.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => onChange(i)}
+            className={`press rounded-full px-4 py-2 text-[14px] font-semibold transition-colors ${
+              value === i ? 'bg-ink text-white dark:bg-white dark:text-[#1d1d1f]' : 'bg-fill text-ink'
+            }`}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LifestyleForm({
+  lifestyleIdx,
+  setLifestyleIdx,
+  onNext,
+  t,
+}: {
+  lifestyleIdx: { posture: number; physique: number; sleep: number; hydration: number };
+  setLifestyleIdx: (key: 'posture' | 'physique' | 'sleep' | 'hydration', idx: number) => void;
+  onNext: () => void;
+  t: Translator;
+}) {
+  return (
+    <div className="min-h-dvh px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
+      <Pill label={t('lifestyle_step')} tone="accent" className="mb-4" />
+      <h2 className="mb-2 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{t('lifestyle_title')}</h2>
+      <p className="mb-6 text-[15px] leading-[1.45] text-soft">{t('lifestyle_subtitle')}</p>
+
+      <div className="space-y-6">
+        <ChoiceField
+          label={t('lifestyle_posture_question')}
+          value={lifestyleIdx.posture}
+          onChange={(i) => setLifestyleIdx('posture', i)}
+          options={[t('lifestyle_posture_opt0'), t('lifestyle_posture_opt1'), t('lifestyle_posture_opt2'), t('lifestyle_posture_opt3'), t('lifestyle_posture_opt4')]}
+        />
+        <ChoiceField
+          label={t('lifestyle_physique_question')}
+          value={lifestyleIdx.physique}
+          onChange={(i) => setLifestyleIdx('physique', i)}
+          options={[t('lifestyle_physique_opt0'), t('lifestyle_physique_opt1'), t('lifestyle_physique_opt2'), t('lifestyle_physique_opt3'), t('lifestyle_physique_opt4')]}
+        />
+        <ChoiceField
+          label={t('lifestyle_sleep_question')}
+          value={lifestyleIdx.sleep}
+          onChange={(i) => setLifestyleIdx('sleep', i)}
+          options={[t('lifestyle_sleep_opt0'), t('lifestyle_sleep_opt1'), t('lifestyle_sleep_opt2'), t('lifestyle_sleep_opt3'), t('lifestyle_sleep_opt4')]}
+        />
+        <ChoiceField
+          label={t('lifestyle_hydration_question')}
+          value={lifestyleIdx.hydration}
+          onChange={(i) => setLifestyleIdx('hydration', i)}
+          options={[t('lifestyle_hydration_opt0'), t('lifestyle_hydration_opt1'), t('lifestyle_hydration_opt2'), t('lifestyle_hydration_opt3'), t('lifestyle_hydration_opt4')]}
+        />
+      </div>
+
+      <div className="mt-10">
+        <PrimaryButton label={t('continue')} onClick={onNext} />
       </div>
     </div>
   );
