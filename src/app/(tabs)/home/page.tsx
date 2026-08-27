@@ -17,8 +17,15 @@ import { PLAN_TOPIC } from '@/data/planTopics';
 import { addDaysIso, calendarDayOfMonth, daysSinceIso, deltaVsPrior, gradeOf, greeting, shortCalendarDate } from '@/lib/calc';
 import { CoachState, getCoachState } from '@/lib/coach';
 import { requestNotificationPermission } from '@/lib/notifications';
-import { Translator, useT } from '@/lib/i18n';
+import { Translator, TranslationKey, useT } from '@/lib/i18n';
+import { DayMoment, inferMoment, MOMENT_ORDER } from '@/lib/timeOfDay';
 import { useAppStore } from '@/state/store';
+
+const MOMENT_LABEL_KEY: Partial<Record<DayMoment, TranslationKey>> = {
+  morning: 'moment_morning',
+  evening: 'moment_evening',
+  twice_daily: 'moment_twice_daily',
+};
 
 export default function HomePage() {
   const t = useT();
@@ -81,11 +88,19 @@ export default function HomePage() {
 
   // Today's plan, flattened into one continuous sequence of steps across every program it draws
   // from — the dashboard never shows this as a per-program list, only as a single guided walk.
-  const flatPlanSteps = planTaskGroups.flatMap((g) => {
+  // Steps are then grouped into morning / twice-daily / anytime / evening, in that chronological
+  // order, instead of an undifferentiated back-to-back sequence — someone can't realistically do
+  // 12 unrelated steps in one sitting, so the walk now tells them when each one actually belongs.
+  const unorderedPlanSteps = planTaskGroups.flatMap((g) => {
     const topic = PLAN_TOPIC[g.sp.id];
     const topicLabel = topic ? t(topic.labelKey) : g.copy.name;
-    return g.wk.tasks.map((task, i) => ({ programId: g.sp.id, localIndex: i, task, enTask: g.enWk.tasks[i] ?? task, topicLabel }));
+    return g.wk.tasks.map((task, i) => {
+      const enTask = g.enWk.tasks[i] ?? task;
+      const moment = inferMoment(enTask);
+      return { programId: g.sp.id, localIndex: i, task, enTask, topicLabel, moment };
+    });
   });
+  const flatPlanSteps = MOMENT_ORDER.flatMap((moment) => unorderedPlanSteps.filter((s) => s.moment === moment));
   const flatPlanChecks: Record<number, boolean> = {};
   flatPlanSteps.forEach((s, i) => {
     flatPlanChecks[i] = !!planPrograms.find((p) => p.id === s.programId)?.checks[s.localIndex];
@@ -272,7 +287,10 @@ export default function HomePage() {
               : t('plan_guided_body_tpl').replace('{day}', String(planDay ?? 1))
           }
           welcomeExtra={<PlanTopicsList groups={planTaskGroups} t={t} />}
-          stepTopics={flatPlanSteps.map((s) => s.topicLabel)}
+          stepTopics={flatPlanSteps.map((s) => {
+            const momentKey = MOMENT_LABEL_KEY[s.moment];
+            return momentKey ? `${s.topicLabel} · ${t(momentKey)}` : s.topicLabel;
+          })}
           tasks={flatPlanSteps.map((s) => s.task)}
           enTasks={flatPlanSteps.map((s) => s.enTask)}
           checks={flatPlanChecks}
