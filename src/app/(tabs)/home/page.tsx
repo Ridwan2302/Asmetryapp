@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ActiveProgramCard } from '@/components/ActiveProgramCard';
 import { OutlineButton, PrimaryButton } from '@/components/Button';
 import { EncouragementModal } from '@/components/EncouragementModal';
@@ -14,7 +14,7 @@ import { Screen } from '@/components/Screen';
 import { METRIC_CONFIG } from '@/data/metricConfig';
 import { getProgram, localizeProgram } from '@/data/programs';
 import { PLAN_TOPIC } from '@/data/planTopics';
-import { deltaVsPrior, gradeOf, greeting } from '@/lib/calc';
+import { addDaysIso, calendarDayOfMonth, daysSinceIso, deltaVsPrior, gradeOf, greeting, shortCalendarDate } from '@/lib/calc';
 import { CoachState, getCoachState } from '@/lib/coach';
 import { requestNotificationPermission } from '@/lib/notifications';
 import { Translator, useT } from '@/lib/i18n';
@@ -70,6 +70,9 @@ export default function HomePage() {
         })
         .filter((g): g is NonNullable<typeof g> => !!g)
     : [];
+
+  const planDayDate = plan && planDay != null ? addDaysIso(plan.startedAt, planDay - 1) : null;
+  const planDayDateLabel = planDayDate ? shortCalendarDate(planDayDate, language) : null;
 
   const planDoneCount = planTaskGroups.reduce((acc, g) => acc + g.wk.tasks.reduce((a, _, i) => a + (g.sp.checks[i] ? 1 : 0), 0), 0);
   const planTotalTasks = planTaskGroups.reduce((acc, g) => acc + g.wk.tasks.length, 0);
@@ -202,6 +205,7 @@ export default function HomePage() {
             {!planComplete && planDay != null && (
               <span className="text-[13px] font-bold text-ink">
                 {t('coach_day_label')} {planDay} <span className="text-soft">{t('coach_of_28')}</span>
+                {planDayDateLabel && <span className="text-soft"> · {planDayDateLabel}</span>}
               </span>
             )}
           </div>
@@ -227,6 +231,8 @@ export default function HomePage() {
               onOpen={() => setPlanGuidedOpen(true)}
               reminder={planPrograms[0]?.reminder ?? '08:00'}
               onReminderChange={handlePlanReminderChange}
+              startedAt={plan.startedAt}
+              minDone={planPrograms.length ? Math.min(...planPrograms.map((p) => p.done)) : 0}
               t={t}
             />
           )}
@@ -260,7 +266,11 @@ export default function HomePage() {
           dayNum={planDay ?? 1}
           weekFocus=""
           weekWhy={t('plan_guided_why')}
-          welcomeBody={t('plan_guided_body_tpl').replace('{day}', String(planDay ?? 1))}
+          welcomeBody={
+            planDayDateLabel
+              ? t('plan_guided_body_with_date_tpl').replace('{day}', String(planDay ?? 1)).replace('{date}', planDayDateLabel)
+              : t('plan_guided_body_tpl').replace('{day}', String(planDay ?? 1))
+          }
           welcomeExtra={<PlanTopicsList groups={planTaskGroups} t={t} />}
           stepTopics={flatPlanSteps.map((s) => s.topicLabel)}
           tasks={flatPlanSteps.map((s) => s.task)}
@@ -288,6 +298,8 @@ function PlanTodayCard({
   onOpen,
   reminder,
   onReminderChange,
+  startedAt,
+  minDone,
   t,
 }: {
   doneCount: number;
@@ -297,6 +309,8 @@ function PlanTodayCard({
   onOpen: () => void;
   reminder: string;
   onReminderChange: (time: string) => void;
+  startedAt: string;
+  minDone: number;
   t: Translator;
 }) {
   const started = doneCount > 0;
@@ -327,6 +341,9 @@ function PlanTodayCard({
           </button>
         </>
       )}
+
+      <PlanCalendarStrip startedAt={startedAt} doneCount={minDone} t={t} />
+
       <div className="mt-4 flex items-center justify-between rounded-[16px] bg-fill p-3">
         <span className="text-[13px] font-medium text-soft">{t('remind')}</span>
         <input
@@ -336,6 +353,62 @@ function PlanTodayCard({
           className="rounded-[10px] bg-card px-2.5 py-[6px] text-[13px] font-medium text-ink outline-none"
         />
       </div>
+    </div>
+  );
+}
+
+/** A compact 28-day strip, one pill per plan day, labelled with its real calendar date — not
+ * just "day 12". Lets someone see at a glance whether they're on pace (today's pill lines up
+ * with how many days they've actually logged) or have fallen behind (a muted-red pill between
+ * the last logged day and today). Degrades to plain day numbers if `startedAt` predates this
+ * feature and isn't a real ISO date. */
+function PlanCalendarStrip({
+  startedAt,
+  doneCount,
+  t,
+}: {
+  startedAt: string;
+  doneCount: number;
+  t: Translator;
+}) {
+  const todayRef = useRef<HTMLDivElement>(null);
+  const todayOffset = daysSinceIso(startedAt);
+
+  useEffect(() => {
+    todayRef.current?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  }, []);
+
+  return (
+    <div
+      className="mt-4 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1"
+      style={{ scrollbarWidth: 'none' }}
+      aria-label={t('plan_calendar_label')}
+    >
+      {Array.from({ length: 28 }, (_, i) => {
+        const iso = addDaysIso(startedAt, i);
+        const dayOfMonth = iso ? calendarDayOfMonth(iso) : null;
+        const isToday = todayOffset != null && i === todayOffset;
+        const isDone = i < doneCount;
+        const isMissed = !isDone && todayOffset != null && i < todayOffset;
+        return (
+          <div
+            key={i}
+            ref={isToday ? todayRef : undefined}
+            className={`flex h-[46px] w-9 shrink-0 flex-col items-center justify-center gap-0.5 rounded-[12px] text-[13px] font-bold ${
+              isToday
+                ? 'bg-accent text-white'
+                : isDone
+                  ? 'bg-success/15 text-success'
+                  : isMissed
+                    ? 'bg-negative/10 text-negative'
+                    : 'bg-fill text-soft'
+            }`}
+          >
+            <span className="text-[9px] font-semibold opacity-70">{i + 1}</span>
+            <span>{dayOfMonth ?? '—'}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }

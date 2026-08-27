@@ -46,6 +46,54 @@ export function monthYear(d: Date = new Date()): string {
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }).toUpperCase();
 }
 
+/** "YYYY-MM-DD" in local time — unlike `dateStr`, this round-trips through real date math
+ * (year included, no locale-dependent month name), so a plan's start date can be used to
+ * compute which calendar date each of its 28 days actually falls on. */
+export function isoDateStr(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function parseIsoDate(iso: string): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return null;
+  const [, y, m, d] = match;
+  return new Date(Number(y), Number(m) - 1, Number(d));
+}
+
+/** The ISO date `days` after `iso`, or null if `iso` isn't a valid "YYYY-MM-DD" (e.g. a plan
+ * started before this field was switched from a display string to a real date). */
+export function addDaysIso(iso: string, days: number): string | null {
+  const base = parseIsoDate(iso);
+  if (!base) return null;
+  base.setDate(base.getDate() + days);
+  return isoDateStr(base);
+}
+
+/** Whole calendar days between `iso` and today (local time), or null if `iso` is invalid. */
+export function daysSinceIso(iso: string): number | null {
+  const base = parseIsoDate(iso);
+  if (!base) return null;
+  const today = new Date();
+  const a = new Date(base.getFullYear(), base.getMonth(), base.getDate()).getTime();
+  const b = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  return Math.round((b - a) / 86400000);
+}
+
+/** Day-of-month for an ISO date, or null if invalid — for compact calendar cells ("28"). */
+export function calendarDayOfMonth(iso: string): number | null {
+  return parseIsoDate(iso)?.getDate() ?? null;
+}
+
+/** "28 août" / "Aug 28" for an ISO date, or null if invalid. */
+export function shortCalendarDate(iso: string, lang: 'en' | 'fr'): string | null {
+  const d = parseIsoDate(iso);
+  if (!d) return null;
+  return d.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short' });
+}
+
 export function greeting(t: Translator, d: Date = new Date()): string {
   const h = d.getHours();
   if (h < 12) return t('greeting_morning');

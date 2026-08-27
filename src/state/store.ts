@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { dateStr, monthYear } from '../lib/calc';
+import { isoDateStr, monthYear } from '../lib/calc';
 import { ActivePlan, DEFAULT_LIFESTYLE, DEFAULT_PROFILE, DEFAULT_SETTINGS, Language, Lifestyle, Profile, ScanEntry, Settings, StartedProgram, Theme } from './types';
 
 interface AppState {
@@ -130,7 +130,7 @@ export const useAppStore = create<AppState>()(
             .map((id): StartedProgram => ({ id, done: 0, checks: {}, reminder: '08:00' }));
           return {
             started: [...state.started, ...newlyStarted],
-            plan: { programIds, scanId, startedAt: dateStr() },
+            plan: { programIds, scanId, startedAt: isoDateStr() },
           };
         }),
 
@@ -144,6 +144,7 @@ export const useAppStore = create<AppState>()(
       restartPlan: (programIds) =>
         set((state) => ({
           started: state.started.map((s) => (programIds.includes(s.id) ? { ...s, done: 0, checks: {} } : s)),
+          plan: state.plan ? { ...state.plan, startedAt: isoDateStr() } : state.plan,
         })),
 
       addScan: (entry) => set((state) => ({ scans: [...state.scans, entry] })),

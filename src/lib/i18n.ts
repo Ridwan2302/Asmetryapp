@@ -163,8 +163,10 @@ const en = {
   plan_done_today_title: 'Done for today',
   plan_done_today_sub: 'Come back tomorrow to keep going.',
   plan_guided_body_tpl: 'This is day {day} of your plan.',
+  plan_guided_body_with_date_tpl: 'This is day {day} of your plan — {date}.',
   plan_guided_why: 'Each step below targets something specific we found — go through them one at a time, at your own pace.',
   plan_topics_heading: 'Today, we will work on:',
+  plan_calendar_label: 'Your 28-day calendar',
 
   topic_face_structure: 'Face structure',
   topic_jaw: 'Jawline',
@@ -531,8 +533,10 @@ const fr: Record<keyof typeof en, string> = {
   plan_done_today_title: 'Terminé pour aujourd’hui',
   plan_done_today_sub: 'Revenez demain pour continuer.',
   plan_guided_body_tpl: 'Vous voici au jour {day} de votre plan.',
+  plan_guided_body_with_date_tpl: 'Vous voici au jour {day} de votre plan — {date}.',
   plan_guided_why: 'Chaque étape ci-dessous correspond à un point précis que nous avons identifié — avancez-y une à une, à votre rythme.',
   plan_topics_heading: 'Aujourd’hui, nous allons travailler sur :',
+  plan_calendar_label: 'Votre calendrier sur 28 jours',
 
   topic_face_structure: 'Structure du visage',
   topic_jaw: 'Mâchoire',
