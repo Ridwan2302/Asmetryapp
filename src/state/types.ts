@@ -54,6 +54,7 @@ export interface Settings {
   haptics: boolean;
   grid: boolean;
   private: boolean;
+  voice: boolean;
 }
 
 /** Self-reported habits, collected once during onboarding — the counterpart to ScanMetrics
@@ -82,4 +83,5 @@ export const DEFAULT_SETTINGS: Settings = {
   haptics: true,
   grid: false,
   private: true,
+  voice: true,
 };
