@@ -445,7 +445,7 @@ function PrescriptionModal({
       >
         <div className="mb-5 flex items-start justify-between border-b border-dashed border-border pb-4">
           <div>
-            <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">Rx · {copy.anatomy}</div>
+            <div className="text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">{copy.anatomy}</div>
             <div className="mt-1 text-[22px] leading-[1.1] font-bold tracking-[-0.3px] text-ink">{copy.name}</div>
             <div className="mt-1 text-[13px] text-soft">{copy.tagline}</div>
           </div>

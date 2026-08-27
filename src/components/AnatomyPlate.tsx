@@ -24,7 +24,7 @@ function SleepPlate() {
         <text x={266} y={100}>SLEEP WINDOW</text>
         <line x1={80} y1={96} x2={80} y2={60} stroke="currentColor" strokeWidth={0.5} />
         <text x={40} y={54}>DEEP-WAVE</text>
-        <text x={120} y={200} opacity={0.6}>24-HOUR CIRCADIAN CYCLE</text>
+        <text x={120} y={200} opacity={0.6}>24-HOUR SLEEP CYCLE</text>
       </g>
     </svg>
   );

@@ -47,7 +47,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['nasal breathing check'],
+    keywords: ['nasal breathing check', 'nose-breathing check'],
     guide: {
       en: {
         title: 'Nasal Breathing Check',
@@ -87,7 +87,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Hold it as your default resting posture all day, not just during dedicated practice — check in on it every waking hour until it’s automatic.',
         ],
         benefits: [
-          'Applies gentle, constant pressure that supports a well-developed maxilla over time.',
+          'Applies gentle, constant pressure that supports a well-developed upper jaw over time.',
           'Builds nasal breathing as a lasting habit instead of mouth breathing.',
           'Costs nothing and stacks with every other program.',
         ],
@@ -101,7 +101,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Adoptez-la comme posture de repos par défaut toute la journée, pas seulement pendant les exercices dédiés — vérifiez-la à chaque heure éveillée jusqu’à ce qu’elle devienne automatique.',
         ],
         benefits: [
-          'Applique une pression douce et constante qui favorise un bon développement du maxillaire dans la durée.',
+          'Applique une pression douce et constante qui favorise un bon développement de la mâchoire supérieure dans la durée.',
           'Installe la respiration nasale comme habitude durable, à la place de la respiration par la bouche.',
           'Ne coûte rien et se combine avec tous les autres programmes.',
         ],
@@ -109,13 +109,13 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['cheekbone lift', 'cheek + buccal circuit', 'cheekbone lift + buccal', 'buccal hollow'],
+    keywords: ['cheekbone lift', 'cheek + cheek circuit', 'cheekbone lift + cheek', 'cheek hollow', 'cheek hollow', 'cheek circuit'],
     guide: {
       en: {
-        title: 'Cheekbone Lift & Buccal Holds',
+        title: 'Cheekbone Lift & Cheek Holds',
         steps: [
           'Smile without showing your teeth, then push your cheeks up and back toward your ears using the muscle, not your hand — hold each rep a full second at the top.',
-          'For buccal holds, suck your cheeks in against your teeth and hold — you should feel it under the cheekbone, not in the jaw.',
+          'For cheek holds, suck your cheeks in against your teeth and hold — you should feel it under the cheekbone, not in the jaw.',
           'When doing them as a combined circuit, alternate the two movements rather than resting fully between them.',
         ],
         benefits: [
@@ -140,7 +140,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['under-eye tapping', 'inner-to-outer drainage', 'de-puff + drainage', 'compress + massage', 'temple + orbital'],
+    keywords: ['under-eye tapping', 'inner-to-outer drainage', 'inner-to-outer eye massage', 'de-puff + drainage', 'de-puff + massage', 'compress + massage', 'temple + eye-area', 'temple + eye-area'],
     guide: {
       en: {
         title: 'Under-Eye & Facial Drainage Taps',
@@ -171,7 +171,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['gua sha', 'lymphatic', 'am + pm lymphatic', 'facial massage', 'face gua sha'],
+    keywords: ['gua sha', 'lymphatic', 'am + pm lymphatic', 'facial massage', 'face gua sha', 'face massage', 'morning + evening face massage'],
     guide: {
       en: {
         title: 'Gua Sha & Lymphatic Drainage',
@@ -204,7 +204,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['cold-water', 'cold water', 'cold compress', 'cold immersion', 'cold-water face rinse'],
+    keywords: ['cold-water', 'cold water', 'cold compress', 'cold immersion', 'cold-water face rinse', 'cold-rinse recovery', 'cold compress + massage'],
     guide: {
       en: {
         title: 'Cold-Water Face Immersion',
@@ -242,7 +242,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
       en: {
         title: 'Face Structure Recap Circuit',
         steps: [
-          'Run through mewing, the cheekbone lift + buccal hold circuit, and a full gua sha pass back to back in one session.',
+          'Run through mewing, the cheekbone lift + cheek hold circuit, and a full gua sha pass back to back in one session.',
           'Keep good form throughout at a pace you can sustain — this isn’t about going harder than before.',
         ],
         benefits: [
@@ -304,14 +304,14 @@ const DEMO_ENTRIES: DemoEntry[] = [
       en: {
         title: 'Jaw Clenching & Resistance Gum',
         steps: [
-          'Chew firmly on one side at a time, not both — this isolates each masseter fully.',
+          'Chew firmly on one side at a time, not both — this isolates each side of the jaw muscle fully.',
           'Keep your jaw relaxed between repetitions; a tight neck or headache means you’re clenching too hard.',
-          'For isometric or weighted holds, bite down firmly and hold without grinding, breathing normally throughout.',
+          'For static or weighted holds, bite down firmly and hold without grinding, breathing normally throughout.',
           'Follow the program’s progression — softer gum and lighter holds early, firmer gum and longer or weighted holds as the weeks go on.',
         ],
         benefits: [
-          'Builds masseter size and strength for a sharper, wider jawline.',
-          'Sharpens the gonial angle over consistent weeks of training.',
+          'Builds jaw-muscle size and strength for a sharper, wider jawline.',
+          'Sharpens the jaw angle over consistent weeks of training.',
           'Fully adjustable intensity, so it scales with your current jaw strength.',
         ],
       },
@@ -365,7 +365,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['jaw-fascia release', 'deep masseter release'],
+    keywords: ['jaw-fascia release', 'deep jaw muscle release', 'jaw massage', 'deep jaw massage'],
     guide: {
       en: {
         title: 'Jaw-Fascia Release',
@@ -376,7 +376,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
         ],
         benefits: [
           'Releases tension built up from clenching, without adding training load.',
-          'Keeps the jaw joint healthy alongside masseter training.',
+          'Keeps the jaw joint healthy alongside jaw-muscle training.',
           'A few minutes of release balances out the harder training days.',
         ],
       },
@@ -406,7 +406,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Repeat on the other side, keeping the jaw relaxed throughout.',
         ],
         benefits: [
-          'Keeps the neck and jaw mobile alongside heavier masseter training.',
+          'Keeps the neck and jaw mobile alongside heavier jaw-muscle training.',
           'Forcing a stretch can strain the jaw joint, so slow and gentle is what actually helps.',
         ],
       },
@@ -435,7 +435,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Perform slow, controlled repetitions rather than fast pulses.',
         ],
         benefits: [
-          'Targets the small muscles around the chin and lower lip that complement masseter training.',
+          'Targets the small muscles around the chin and lower lip that complement jaw-muscle training.',
           'Adds definition to the lower-face area that pure jaw-clenching work doesn’t reach.',
         ],
       },
@@ -483,7 +483,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
 
   // ---------- Hunter Eyes ----------
   {
-    keywords: ['lateral gaze holds'],
+    keywords: ['lateral gaze holds', 'side-gaze holds'],
     guide: {
       en: {
         title: 'Lateral Gaze Holds',
@@ -522,7 +522,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Keep the forehead and nose completely still throughout.',
         ],
         benefits: [
-          'Trains a more positive canthal tilt and a sharper, more alert-looking gaze.',
+          'Trains a more positive eye tilt and a sharper, more alert-looking gaze.',
           'Longer holds in later weeks push past the adaptation from the earlier, shorter sets.',
         ],
       },
@@ -534,19 +534,19 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Gardez le front et le nez complètement immobiles tout du long.',
         ],
         benefits: [
-          'Entraîne une inclinaison canthale plus positive et un regard plus net et plus éveillé.',
+          'Entraîne une inclinaison du regard plus positive et un regard plus net et plus éveillé.',
           'Les maintiens plus longs des semaines suivantes dépassent l’adaptation des séries plus courtes du début.',
         ],
       },
     },
   },
   {
-    keywords: ['canthal + brow superset'],
+    keywords: ['outer-corner + brow combo', 'outer-corner + brow combo'],
     guide: {
       en: {
-        title: 'Canthal & Brow Superset',
+        title: 'Outer-Corner & Brow Combo',
         steps: [
-          'Perform a set of canthal lift resistance immediately followed by a set of brow-set downward press, with no rest in between.',
+          'Perform a set of outer-corner lift resistance immediately followed by a set of brow-set downward press, with no rest in between.',
           'Rest briefly, then repeat for the prescribed number of rounds.',
         ],
         benefits: [
@@ -555,9 +555,9 @@ const DEMO_ENTRIES: DemoEntry[] = [
         ],
       },
       fr: {
-        title: 'Superset canthal et sourcil',
+        title: 'Combo coin externe et sourcil',
         steps: [
-          'Enchaînez une série de résistance au lift canthal immédiatement suivie d’une série de pression descendante au sourcil, sans repos entre les deux.',
+          'Enchaînez une série de résistance au lift du coin externe immédiatement suivie d’une série de pression descendante au sourcil, sans repos entre les deux.',
           'Reposez-vous brièvement, puis répétez pour le nombre de tours prescrit.',
         ],
         benefits: [
@@ -568,29 +568,29 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['canthal lift resistance'],
+    keywords: ['outer-corner lift resistance', 'outer-corner lift resistance'],
     guide: {
       en: {
-        title: 'Canthal Lift Resistance',
+        title: 'Outer-Corner Lift Resistance',
         steps: [
           'Place a finger lightly at the outer corner of the eye.',
           'Press up and out with the finger while your eye muscle actively resists the movement.',
           'Keep the pressure light — this is resisted engagement, not a stretch.',
         ],
         benefits: [
-          'Trains the outer-corner muscles to hold a slightly lifted position under load, which is what actually shifts canthal tilt.',
+          'Trains the outer-corner muscles to hold a slightly lifted position under load, which is what actually shifts eye tilt.',
           'More effective than passive holds alone since it adds real resistance.',
         ],
       },
       fr: {
-        title: 'Résistance au lift canthal',
+        title: 'Résistance au lift du coin externe',
         steps: [
           'Placez un doigt légèrement sur le coin externe de l’œil.',
           'Appuyez vers le haut et l’extérieur avec le doigt pendant que le muscle de l’œil résiste activement au mouvement.',
           'Gardez une pression légère — c’est un engagement résisté, pas un étirement.',
         ],
         benefits: [
-          'Entraîne les muscles du coin externe à tenir une position légèrement relevée sous tension, ce qui modifie réellement l’inclinaison canthale.',
+          'Entraîne les muscles du coin externe à tenir une position légèrement relevée sous tension, ce qui modifie réellement l’inclinaison du regard.',
           'Plus efficace que des maintiens passifs seuls puisque cela ajoute une vraie résistance.',
         ],
       },
@@ -608,7 +608,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
         ],
         benefits: [
           'Trains the brow to hold a stable, neutral position rather than drifting upward with fatigue.',
-          'Pairs directly with canthal work to support the overall eye-area look.',
+          'Pairs directly with outer-corner work to support the overall eye-area look.',
         ],
       },
       fr: {
@@ -620,7 +620,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
         ],
         benefits: [
           'Entraîne le sourcil à tenir une position stable et neutre plutôt que de remonter avec la fatigue.',
-          'Se combine directement avec le travail canthal pour soutenir le regard dans son ensemble.',
+          'Se combine directement avec le travail du coin externe pour soutenir le regard dans son ensemble.',
         ],
       },
     },
@@ -637,7 +637,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
         ],
         benefits: [
           'Correct screen distance prevents eye strain that undermines the definition you’re training.',
-          'Protects the results built during dedicated orbital and canthal training.',
+          'Protects the results built during dedicated eye-area training.',
         ],
       },
       fr: {
@@ -649,34 +649,34 @@ const DEMO_ENTRIES: DemoEntry[] = [
         ],
         benefits: [
           'Une bonne distance à l’écran évite une fatigue oculaire qui nuirait à la définition que vous entraînez.',
-          'Protège les résultats construits pendant l’entraînement orbitaire et canthal dédié.',
+          'Protège les résultats construits pendant l’entraînement du contour des yeux dédié.',
         ],
       },
     },
   },
   {
-    keywords: ['full orbital circuit'],
+    keywords: ['full eye-area circuit', 'full eye-area circuit'],
     guide: {
       en: {
         title: 'Hunter Eyes Recap Circuit',
         steps: [
-          'Run through lateral gaze holds, squint training and canthal lift resistance back to back in one session.',
+          'Run through lateral gaze holds, squint training and outer-corner lift resistance back to back in one session.',
           'Finish with a drainage pass to de-puff before checking your neutral, resting gaze in the mirror.',
         ],
         benefits: [
           'Proves the tilt holds under a neutral, resting gaze — not just mid-exercise.',
-          'Confirms the whole orbital routine now runs together as one habit.',
+          'Confirms the whole eye-area routine now runs together as one habit.',
         ],
       },
       fr: {
         title: 'Circuit de récapitulatif — Hunter Eyes',
         steps: [
-          'Enchaînez les maintiens du regard latéral, l’entraînement du plissement et la résistance au lift canthal en une seule séance.',
+          'Enchaînez les maintiens du regard latéral, l’entraînement du plissement et la résistance au lift du coin externe en une seule séance.',
           'Terminez par un passage de drainage anti-poches avant de vérifier votre regard neutre au repos dans le miroir.',
         ],
         benefits: [
           'Prouve que l’inclinaison tient avec un regard neutre au repos — pas seulement pendant l’exercice.',
-          'Confirme que toute la routine orbitaire s’enchaîne désormais comme une seule habitude.',
+          'Confirme que toute la routine du contour des yeux s’enchaîne désormais comme une seule habitude.',
         ],
       },
     },
@@ -715,7 +715,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['elevate head', 'elevate your head'],
+    keywords: ['elevate head', 'elevate your head', 'head slightly raised'],
     guide: {
       en: {
         title: 'Elevated Sleep Position',
@@ -746,12 +746,12 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['full fat-loss circuit'],
+    keywords: ['full fat-loss circuit', 'full circuit'],
     guide: {
       en: {
         title: 'Facial Fat-Loss Recap Circuit',
         steps: [
-          'Combine a gua sha drainage pass with the cheekbone lift + buccal hold circuit and a set of chewing-gum resistance work in one session.',
+          'Combine a gua sha drainage pass with the cheekbone lift + cheek hold circuit and a set of chewing-gum resistance work in one session.',
           'Check in on your deficit, water and sodium habits from the past three weeks at the same time.',
         ],
         benefits: [
@@ -839,7 +839,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['push/pull superset'],
+    keywords: ['push/pull superset', 'push + pull combo'],
     guide: {
       en: {
         title: 'Push/Pull Superset Circuit',
@@ -901,7 +901,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['core + waist vacuum', 'vacuum'],
+    keywords: ['core + waist vacuum', 'vacuum', 'core hold'],
     guide: {
       en: {
         title: 'Stomach Vacuum',
@@ -1021,10 +1021,10 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['thoracic extension'],
+    keywords: ['upper-back stretch', 'upper-back stretch'],
     guide: {
       en: {
-        title: 'Thoracic Extensions Over a Chair',
+        title: 'Upper-Back Stretch Over a Chair',
         steps: [
           'Sit toward the front of a sturdy chair with your hands behind your head.',
           'Arch your upper back over the top of the chair back, opening the chest toward the ceiling.',
@@ -1110,7 +1110,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['desk ergonomics'],
+    keywords: ['desk ergonomics', 'desk setup'],
     guide: {
       en: {
         title: 'Desk Ergonomics Check',
@@ -1139,7 +1139,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['deep neck flexor'],
+    keywords: ['deep neck flexor', 'neck-strengthening'],
     guide: {
       en: {
         title: 'Deep Neck Flexor Holds',
@@ -1150,7 +1150,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
         ],
         benefits: [
           'Strengthens the small stabilizing muscles that keep good head position under real, all-day load.',
-          'Complements chin tucks by training the same muscles isometrically.',
+          'Complements chin tucks by training the same muscles with a static hold.',
         ],
       },
       fr: {
@@ -2009,7 +2009,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
 
   // ---------- Hormonal Optimization Diet ----------
   {
-    keywords: ['protein target', 'protein:', 'hit protein'],
+    keywords: ['protein target', 'protein:', 'hit protein', 'eat enough protein', 'eat a little lighter', 'eat protein with every meal'],
     guide: {
       en: {
         title: 'Protein Target',
@@ -2038,98 +2038,98 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['cut liquid sugar'],
+    keywords: ['cut liquid sugar', 'cut sugary drinks + fried food'],
     guide: {
       en: {
-        title: 'Cut Liquid Sugar & Seed-Oil Fried Food',
+        title: 'Cut Sugary Drinks & Fried Food',
         steps: [
           'Replace soda, juice and sweetened drinks with water, black coffee or unsweetened tea.',
-          'Cut food fried in seed oils (most fast food and packaged snacks) in favor of home-cooked meals with olive oil or butter.',
+          'Cut deep-fried food (most fast food and packaged snacks) in favor of home-cooked meals with olive oil or butter.',
         ],
         benefits: [
-          'Liquid sugar causes the sharpest blood-sugar spikes, which directly suppress testosterone production.',
-          'Removes two of the biggest hormone disruptors first, before adding anything else to the diet.',
+          'Sugary drinks cause the sharpest energy spikes and crashes of anything in a typical diet.',
+          'Removes two of the biggest everyday disruptors first, before adding anything else to how you eat.',
         ],
       },
       fr: {
-        title: 'Supprimer le sucre liquide et les fritures à l’huile de graines',
+        title: 'Supprimer les boissons sucrées et les fritures',
         steps: [
           'Remplacez sodas, jus et boissons sucrées par de l’eau, du café noir ou du thé non sucré.',
-          'Supprimez les aliments frits dans l’huile de graines (la plupart des fast-foods et snacks industriels) au profit de repas faits maison à l’huile d’olive ou au beurre.',
+          'Supprimez les fritures (la plupart des fast-foods et snacks industriels) au profit de repas faits maison à l’huile d’olive ou au beurre.',
         ],
         benefits: [
-          'Le sucre liquide provoque les pics de glycémie les plus marqués, qui suppriment directement la production de testostérone.',
-          'Élimine d’abord deux des plus grands perturbateurs hormonaux, avant d’ajouter quoi que ce soit d’autre au régime.',
+          'Les boissons sucrées provoquent les pics d’énergie suivis des coups de fatigue les plus marqués de toute l’alimentation.',
+          'Élimine d’abord deux des plus grands perturbateurs du quotidien, avant de changer quoi que ce soit d’autre.',
         ],
       },
     },
   },
   {
-    keywords: ['whole-food carbs'],
+    keywords: ['whole-food carbs', 'whole, unprocessed food'],
     guide: {
       en: {
-        title: 'Whole-Food Carbs Only',
+        title: 'Whole, Unprocessed Food',
         steps: [
-          'Choose rice, oats, potatoes and fruit over bread, pastries and packaged carb sources.',
-          'Pair carbs with protein or fat at the same meal to blunt the blood-sugar spike.',
+          'Choose rice, oats, potatoes and fruit over bread, pastries and packaged food.',
+          'Pair carbs with protein or fat at the same meal to keep energy steadier for longer.',
         ],
         benefits: [
-          'Whole-food carbs digest more slowly, which keeps insulin — and by extension testosterone — more stable.',
-          'Same energy for training, without the crash that refined carbs cause.',
+          'Whole foods digest more slowly, which keeps your energy steadier through the day.',
+          'Same fuel for training, without the crash that packaged, processed food causes.',
         ],
       },
       fr: {
-        title: 'Glucides uniquement issus d’aliments complets',
+        title: 'Aliments complets et non transformés',
         steps: [
-          'Choisissez riz, flocons d’avoine, pommes de terre et fruits plutôt que pain, viennoiseries et glucides industriels.',
-          'Associez les glucides à une protéine ou un lipide au même repas pour atténuer le pic de glycémie.',
+          'Choisissez riz, flocons d’avoine, pommes de terre et fruits plutôt que pain, viennoiseries et aliments industriels.',
+          'Associez les glucides à une protéine ou un lipide au même repas pour garder une énergie plus stable plus longtemps.',
         ],
         benefits: [
-          'Les glucides issus d’aliments complets se digèrent plus lentement, ce qui garde l’insuline — et donc la testostérone — plus stable.',
-          'La même énergie pour l’entraînement, sans le coup de fatigue que causent les glucides raffinés.',
+          'Les aliments complets se digèrent plus lentement, ce qui garde une énergie plus stable dans la journée.',
+          'La même énergie pour l’entraînement, sans le coup de fatigue que causent les aliments industriels.',
         ],
       },
     },
   },
   {
-    keywords: ['zinc + magnesium'],
+    keywords: ['meals rich in nuts', 'nuts, seeds & greens'],
     guide: {
       en: {
-        title: 'Zinc & Magnesium Rich Meals',
+        title: 'Meals Rich in Nuts, Seeds & Greens',
         steps: [
-          'Include a zinc source (red meat, shellfish, pumpkin seeds) at least once daily.',
-          'Include a magnesium source (leafy greens, nuts, dark chocolate) at least once daily, ideally in the evening.',
+          'Include a handful of nuts or seeds (pumpkin seeds, almonds) at least once daily.',
+          'Include leafy greens or dark chocolate at least once daily, ideally in the evening.',
         ],
         benefits: [
-          'Both minerals are directly involved in testosterone production and are commonly under-eaten.',
-          'Magnesium in the evening also supports the sleep quality the rest of the program relies on.',
+          'These natural foods are commonly under-eaten and support the body\'s everyday balance.',
+          'Eating them in the evening also supports the sleep quality the rest of the program relies on.',
         ],
       },
       fr: {
-        title: 'Repas riches en zinc et magnésium',
+        title: 'Repas riches en noix, graines et légumes verts',
         steps: [
-          'Incluez une source de zinc (viande rouge, fruits de mer, graines de courge) au moins une fois par jour.',
-          'Incluez une source de magnésium (légumes verts, noix, chocolat noir) au moins une fois par jour, idéalement le soir.',
+          'Incluez une poignée de noix ou de graines (graines de courge, amandes) au moins une fois par jour.',
+          'Incluez des légumes verts ou du chocolat noir au moins une fois par jour, idéalement le soir.',
         ],
         benefits: [
-          'Ces deux minéraux sont directement impliqués dans la production de testostérone et souvent sous-consommés.',
-          'Le magnésium le soir soutient aussi la qualité de sommeil dont dépend le reste du programme.',
+          'Ces aliments naturels sont souvent sous-consommés et soutiennent l’équilibre naturel du corps au quotidien.',
+          'En manger le soir soutient aussi la qualité de sommeil dont dépend le reste du programme.',
         ],
       },
     },
   },
   {
-    keywords: ['strength train', 'resistance training progression'],
+    keywords: ['strength train', 'resistance training progression', 'strength training, a little heavier'],
     guide: {
       en: {
         title: 'Strength Training Progression',
         steps: [
           'Favor compound movements (squats, presses, rows, deadlifts) that work multiple muscle groups at once.',
           'Add small amounts of weight or repetitions week to week rather than jumping too fast.',
-          'Prioritize consistent, gradual overload over sporadic maxing out.',
+          'Prioritize consistent, gradual progress over sporadic maxing out.',
         ],
         benefits: [
-          'Compound movements drive the biggest hormonal response per session.',
+          'Compound movements give you the biggest natural boost per session.',
           'Gradual progression builds real, lasting strength without injury risk.',
         ],
       },
@@ -2138,38 +2138,38 @@ const DEMO_ENTRIES: DemoEntry[] = [
         steps: [
           'Privilégiez les mouvements polyarticulaires (squats, développés, rowing, soulevé de terre) qui sollicitent plusieurs groupes musculaires à la fois.',
           'Ajoutez de petites quantités de poids ou de répétitions semaine après semaine plutôt que d’avancer trop vite.',
-          'Priorisez une surcharge progressive et régulière plutôt que des efforts maximaux sporadiques.',
+          'Priorisez une progression régulière et graduelle plutôt que des efforts maximaux sporadiques.',
         ],
         benefits: [
-          'Les mouvements polyarticulaires déclenchent la plus grande réponse hormonale par séance.',
-          'Une progression progressive construit une force réelle et durable sans risque de blessure.',
+          'Les mouvements polyarticulaires donnent le plus grand bénéfice naturel par séance.',
+          'Une progression graduelle construit une force réelle et durable sans risque de blessure.',
         ],
       },
     },
   },
   {
-    keywords: ['fasting'],
+    keywords: ['fasting', '12-hour overnight gap'],
     guide: {
       en: {
-        title: 'Overnight Fasting Window',
+        title: 'A Longer Overnight Gap Without Eating',
         steps: [
           'Stop eating at least 12 hours before your first meal the next day — usually just means no late-night snacking.',
-          'Keep the window consistent night to night rather than fasting 15 hours one day and 8 the next.',
+          'Keep the gap consistent night to night rather than 15 hours one day and 8 the next.',
         ],
         benefits: [
-          'A consistent overnight fast supports insulin sensitivity, which keeps blood sugar — and hormone signaling — more stable.',
-          'Easier to sustain than it sounds, since most of the window is spent asleep.',
+          'A consistent overnight gap keeps your energy steadier through the day.',
+          'Easier to sustain than it sounds, since most of the gap is spent asleep.',
         ],
       },
       fr: {
-        title: 'Fenêtre de jeûne nocturne',
+        title: 'Une pause plus longue sans manger la nuit',
         steps: [
           'Arrêtez de manger au moins 12 heures avant votre premier repas du lendemain — cela revient souvent à simplement éviter le grignotage tardif.',
-          'Gardez cette fenêtre constante d’une nuit à l’autre plutôt que de jeûner 15 heures un jour et 8 le lendemain.',
+          'Gardez cette pause constante d’une nuit à l’autre plutôt que 15 heures un jour et 8 le lendemain.',
         ],
         benefits: [
-          'Un jeûne nocturne constant soutient la sensibilité à l’insuline, ce qui garde la glycémie — et la signalisation hormonale — plus stable.',
-          'Plus facile à tenir qu’il n’y paraît, puisque l’essentiel de la fenêtre se passe pendant le sommeil.',
+          'Une pause nocturne constante garde une énergie plus stable dans la journée.',
+          'Plus facile à tenir qu’il n’y paraît, puisque l’essentiel de la pause se passe pendant le sommeil.',
         ],
       },
     },
@@ -2181,76 +2181,76 @@ const DEMO_ENTRIES: DemoEntry[] = [
         title: 'Healthy Fats',
         steps: [
           'Include eggs, olive oil and fatty fish (salmon, sardines) regularly through the week.',
-          'Don’t default to low-fat versions of foods — dietary cholesterol from these sources is a literal building block for testosterone.',
+          'Don’t default to low-fat versions of foods — these natural fats are real building blocks your body relies on.',
         ],
         benefits: [
-          'Directly supports hormone production, unlike carbs or protein alone.',
-          'Adds alongside the resistance training already in the program rather than replacing it.',
+          'Directly supports your body\'s natural balance, unlike carbs or protein alone.',
+          'Adds alongside the strength training already in the program rather than replacing it.',
         ],
       },
       fr: {
         title: 'Bonnes graisses',
         steps: [
           'Incluez régulièrement œufs, huile d’olive et poissons gras (saumon, sardines) sur la semaine.',
-          'Ne vous rabattez pas par défaut sur des versions allégées — le cholestérol alimentaire de ces sources est un élément constitutif direct de la testostérone.',
+          'Ne vous rabattez pas par défaut sur des versions allégées — ces bonnes graisses sont de vrais matériaux de base dont le corps a besoin.',
         ],
         benefits: [
-          'Soutient directement la production hormonale, contrairement aux glucides ou aux protéines seuls.',
+          'Soutient directement l’équilibre naturel du corps, contrairement aux glucides ou aux protéines seuls.',
           'S’ajoute au travail de musculation déjà présent dans le programme plutôt que de le remplacer.',
         ],
       },
     },
   },
   {
-    keywords: ['stress / cortisol wind-down'],
+    keywords: ['stress wind-down', 'evening wind-down to lower stress'],
     guide: {
       en: {
-        title: 'Stress & Cortisol Wind-Down',
+        title: 'Evening Wind-Down to Lower Stress',
         steps: [
           'Set aside 10–15 minutes each evening for something that actively lowers stress: slow breathing, a short walk, journaling or stretching.',
           'Keep it screen-free and separate from your regular evening wind-down routine.',
         ],
         benefits: [
-          'Chronically elevated cortisol directly suppresses testosterone production.',
+          'Chronic stress works against everything else in this program.',
           'A short daily practice compounds far more than occasional, longer sessions.',
         ],
       },
       fr: {
-        title: 'Décompression du stress et du cortisol',
+        title: 'Décompression du soir pour réduire le stress',
         steps: [
           'Réservez 10 à 15 minutes chaque soir à quelque chose qui réduit activement le stress : respiration lente, courte marche, journaling ou étirements.',
           'Gardez ce moment sans écran et séparé de votre rituel du soir habituel.',
         ],
         benefits: [
-          'Un cortisol chroniquement élevé supprime directement la production de testostérone.',
+          'Un stress chronique va à l’encontre de tout le reste de ce programme.',
           'Une courte pratique quotidienne se cumule bien plus que des séances occasionnelles et plus longues.',
         ],
       },
     },
   },
   {
-    keywords: ['full nutrient-dense day'],
+    keywords: ['full nutrient-dense day', 'full, nutrient-rich day'],
     guide: {
       en: {
-        title: 'Hormonal Recap Day',
+        title: 'Nutrient-Rich Recap Day',
         steps: [
-          'Combine your protein target, healthy fats, zinc/magnesium meals and overnight fast into one full day.',
+          'Combine eating enough protein, healthy fats, mineral-rich meals and the overnight gap into one full day.',
           'Note your energy, mood and training performance at the end of the day.',
         ],
         benefits: [
-          'Confirms every nutrition principle from the past three weeks fits together in a single real day, not just in isolation.',
-          'Energy and training performance are the honest, immediate readout of whether the fundamentals are actually working.',
+          'Confirms every habit from the past three weeks fits together in a single real day, not just in isolation.',
+          'Energy and training performance are the honest, immediate readout of whether the basics are actually working.',
         ],
       },
       fr: {
-        title: 'Journée de récapitulatif — Régime hormonal',
+        title: 'Journée de récapitulatif riche en nutriments',
         steps: [
-          'Combinez votre objectif protéines, les bonnes graisses, les repas zinc/magnésium et le jeûne nocturne en une seule journée complète.',
+          'Combinez assez de protéines, les bonnes graisses, les repas riches en minéraux et la pause nocturne en une seule journée complète.',
           'Notez votre énergie, votre humeur et votre performance à l’entraînement en fin de journée.',
         ],
         benefits: [
-          'Confirme que tous les principes nutritionnels des trois dernières semaines s’articulent en une vraie journée, pas seulement isolément.',
-          'L’énergie et la performance à l’entraînement sont le reflet honnête et immédiat de l’efficacité réelle des fondamentaux.',
+          'Confirme que toutes les habitudes des trois dernières semaines s’articulent en une vraie journée, pas seulement isolément.',
+          'L’énergie et la performance à l’entraînement sont le reflet honnête et immédiat de l’efficacité réelle des bases.',
         ],
       },
     },
@@ -2265,8 +2265,8 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Write both down somewhere you’ll actually see again — a note, the app’s tracker, or a calendar.',
         ],
         benefits: [
-          'Hormonal shifts show up in waist measurement and energy before they show up anywhere else.',
-          'A simple weekly number is how you actually confirm the diet is working, not just how it feels day to day.',
+          'Real change shows up in waist measurement and energy before it shows up anywhere else.',
+          'A simple weekly number is how you actually confirm it\'s working, not just how it feels day to day.',
         ],
       },
       fr: {
@@ -2276,8 +2276,8 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Notez les deux quelque part que vous reverrez vraiment — une note, le suivi de l’application, ou un calendrier.',
         ],
         benefits: [
-          'Les changements hormonaux se manifestent dans le tour de taille et l’énergie avant de se voir ailleurs.',
-          'Un simple chiffre hebdomadaire permet de vraiment confirmer que le régime fonctionne, pas seulement une impression au jour le jour.',
+          'Le vrai changement se manifeste dans le tour de taille et l’énergie avant de se voir ailleurs.',
+          'Un simple chiffre hebdomadaire permet de vraiment confirmer que ça fonctionne, pas seulement une impression au jour le jour.',
         ],
       },
     },
@@ -2295,7 +2295,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Once the week proves it, keep that same time permanently rather than treating it as a temporary experiment.',
         ],
         benefits: [
-          'Wake time anchors your circadian rhythm more strongly than bedtime does.',
+          'Wake time anchors your natural rhythm more strongly than bedtime does.',
           'A fixed anchor is what every other sleep habit in the program builds on.',
         ],
       },
@@ -2307,7 +2307,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Une fois la semaine validée, gardez cette même heure de façon permanente plutôt que de la traiter comme un essai temporaire.',
         ],
         benefits: [
-          'L’heure de réveil ancre le rythme circadien plus fortement que l’heure du coucher.',
+          'L’heure de réveil ancre le rythme naturel plus fortement que l’heure du coucher.',
           'Cet ancrage fixe est ce sur quoi repose chaque autre habitude de sommeil du programme.',
         ],
       },
@@ -2324,7 +2324,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'On overcast days, stay outside longer; even cloudy daylight is far brighter than indoor lighting.',
         ],
         benefits: [
-          'Morning light exposure is the strongest signal that locks in your circadian rhythm.',
+          'Morning light exposure is the strongest signal that locks in your natural rhythm.',
           'Directly supports the fixed wake time by reinforcing the same signal every day.',
         ],
       },
@@ -2336,7 +2336,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Les jours nuageux, restez dehors plus longtemps ; même une lumière voilée est bien plus intense qu’un éclairage intérieur.',
         ],
         benefits: [
-          'L’exposition à la lumière du matin est le signal le plus fort pour verrouiller le rythme circadien.',
+          'L’exposition à la lumière du matin est le signal le plus fort pour verrouiller le rythme naturel.',
           'Soutient directement l’heure de réveil fixe en renforçant le même signal chaque jour.',
         ],
       },
@@ -2565,7 +2565,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['full protocol nightly'],
+    keywords: ['full protocol nightly', 'full routine nightly'],
     guide: {
       en: {
         title: 'Full Sleep Protocol Nightly',
@@ -2729,28 +2729,28 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['add electrolytes', 'electrolytes am + post-training', 'sodium/potassium', 'hydration + electrolytes'],
+    keywords: ['pinch of natural salt', 'natural minerals in the morning', 'potassium-rich foods', 'water + natural minerals'],
     guide: {
       en: {
-        title: 'Electrolyte Balance',
+        title: 'Natural Minerals for Hydration',
         steps: [
-          'Add a pinch of salt or an electrolyte packet once daily, and again after training if you sweat heavily.',
-          'Balance sodium with potassium-rich foods (bananas, leafy greens, potatoes) rather than salt alone.',
+          'Add a small pinch of salt to a glass of water once daily, and again after training if you sweat heavily.',
+          'Balance it with potassium-rich foods (bananas, leafy greens, potatoes) rather than salt alone.',
         ],
         benefits: [
-          'Minerals let cells actually hold onto the water you drink instead of flushing it straight out.',
-          'Water alone without electrolytes can flush out what your body actually needs, especially with a high water target.',
+          'These natural minerals let your cells actually hold onto the water you drink instead of flushing it straight out.',
+          'Water alone, without any minerals, can flush out what your body actually needs, especially with a high water target.',
         ],
       },
       fr: {
-        title: 'Équilibre en électrolytes',
+        title: 'Minéraux naturels pour l’hydratation',
         steps: [
-          'Ajoutez une pincée de sel ou un sachet d’électrolytes une fois par jour, et à nouveau après l’entraînement en cas de forte transpiration.',
-          'Équilibrez le sodium avec des aliments riches en potassium (bananes, légumes verts, pommes de terre) plutôt que le sel seul.',
+          'Ajoutez une petite pincée de sel à un verre d’eau une fois par jour, et à nouveau après l’entraînement en cas de forte transpiration.',
+          'Équilibrez avec des aliments riches en potassium (bananes, légumes verts, pommes de terre) plutôt que le sel seul.',
         ],
         benefits: [
-          'Les minéraux permettent aux cellules de vraiment retenir l’eau que vous buvez au lieu de l’évacuer directement.',
-          'L’eau seule sans électrolytes peut évacuer ce dont le corps a réellement besoin, surtout avec un objectif d’eau élevé.',
+          'Ces minéraux naturels permettent aux cellules de vraiment retenir l’eau que vous buvez au lieu de l’évacuer directement.',
+          'L’eau seule, sans aucun minéral, peut évacuer ce dont le corps a réellement besoin, surtout avec un objectif d’eau élevé.',
         ],
       },
     },
@@ -2763,7 +2763,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
         steps: [
           'Cut back on packaged and restaurant food, which carries most of the excess sodium in a typical diet.',
           'Cook more meals at home where you control the salt directly.',
-          'This is about excess salt on top of meals, not the electrolytes you deliberately add — those stay.',
+          'This is about excess salt on top of meals, not the minerals you deliberately add — those stay.',
         ],
         benefits: [
           'Excess sodium is one of the biggest drivers of water retention and visible facial puffiness.',
@@ -2775,7 +2775,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
         steps: [
           'Réduisez les plats industriels et de restaurant, qui apportent l’essentiel du sodium en excès dans une alimentation typique.',
           'Cuisinez davantage à la maison, où vous contrôlez directement la quantité de sel.',
-          'Il s’agit de l’excès de sel ajouté aux repas, pas des électrolytes ajoutés volontairement — ceux-là restent.',
+          'Il s’agit de l’excès de sel ajouté aux repas, pas des minéraux ajoutés volontairement — ceux-là restent.',
         ],
         benefits: [
           'L’excès de sodium est l’un des plus grands facteurs de rétention d’eau et de poches visibles sur le visage.',
@@ -2848,7 +2848,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Treat this as additional to your water target, not a replacement for it.',
         ],
         benefits: [
-          'Food-based water comes with electrolytes and fiber that help the body actually retain and use it.',
+          'Food-based water comes with minerals and fiber that help the body actually retain and use it.',
           'An easy way to boost hydration without needing to drink more.',
         ],
       },
@@ -2859,7 +2859,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
           'Considérez cela comme un ajout à votre objectif d’eau, pas un remplacement.',
         ],
         benefits: [
-          'L’eau apportée par l’alimentation vient avec des électrolytes et des fibres qui aident le corps à vraiment la retenir et l’utiliser.',
+          'L’eau apportée par l’alimentation vient avec des minéraux et des fibres qui aident le corps à vraiment la retenir et l’utiliser.',
           'Un moyen facile d’augmenter l’hydratation sans avoir à boire davantage.',
         ],
       },
@@ -2978,7 +2978,7 @@ const DEMO_ENTRIES: DemoEntry[] = [
     },
   },
   {
-    keywords: ['review sleep, training, diet', 'diet + sleep + hydration', 'sleep + hydration + sun-care'],
+    keywords: ['review sleep, training, diet', 'review sleep, training, eating', 'diet + sleep + hydration', 'sleep + hydration + sun-care'],
     guide: {
       en: {
         title: 'Weekly Habit Review',
