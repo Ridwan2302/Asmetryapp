@@ -38,3 +38,27 @@ export function inferMoment(enTask: string): DayMoment {
 
 /** Chronological bucket order for a merged, multi-program day. */
 export const MOMENT_ORDER: DayMoment[] = ['wake_up', 'morning', 'twice_daily', 'afternoon', 'anytime', 'evening', 'before_bed'];
+
+/** The hour (24h, local time) at which a moment's steps unlock — buckets absent from this map
+ * (anytime, twice_daily) are never locked, since they're either flexible by nature or need
+ * attention at both ends of the day anyway. */
+export const MOMENT_UNLOCK_HOUR: Partial<Record<DayMoment, number>> = {
+  wake_up: 5,
+  morning: 8,
+  afternoon: 12,
+  evening: 17,
+  before_bed: 21,
+};
+
+export function isMomentUnlocked(moment: DayMoment, hour: number): boolean {
+  const unlockHour = MOMENT_UNLOCK_HOUR[moment];
+  return unlockHour == null || hour >= unlockHour;
+}
+
+/** "17h00" / "5:00 PM" — for telling someone when a locked step actually becomes available. */
+export function formatUnlockHour(hour: number, lang: 'en' | 'fr'): string {
+  if (lang === 'fr') return `${hour}h00`;
+  const suffix = hour < 12 ? 'AM' : 'PM';
+  const h12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${h12}:00 ${suffix}`;
+}

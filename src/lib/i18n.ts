@@ -173,6 +173,10 @@ const en = {
   moment_evening: 'Evening',
   moment_before_bed: 'Before bed',
   moment_twice_daily: 'Morning & evening',
+  guided_locked_title: 'Not yet',
+  guided_locked_body_tpl: "This step is planned for {moment}, from {hour}. It's too early for it — come back then, or do it now if you'd rather not wait.",
+  guided_locked_bypass: "I'll do it now anyway",
+  guided_reason_prefix: 'Why: ',
 
   topic_face_structure: 'Face structure',
   topic_jaw: 'Jawline',
@@ -549,6 +553,10 @@ const fr: Record<keyof typeof en, string> = {
   moment_evening: 'Soir',
   moment_before_bed: 'Avant le coucher',
   moment_twice_daily: 'Matin et soir',
+  guided_locked_title: 'Pas encore',
+  guided_locked_body_tpl: 'Cette étape est prévue pour {moment}, à partir de {hour}. C’est trop tôt pour elle — revenez à ce moment-là, ou faites-la maintenant si vous préférez ne pas attendre.',
+  guided_locked_bypass: 'Je la fais quand même maintenant',
+  guided_reason_prefix: 'Pourquoi : ',
 
   topic_face_structure: 'Structure du visage',
   topic_jaw: 'Mâchoire',

@@ -14,3 +14,18 @@ export const PLAN_TOPIC: Record<string, { labelKey: TranslationKey; descKey: Tra
   sleep: { labelKey: 'topic_sleep', descKey: 'topic_desc_sleep' },
   hydration: { labelKey: 'topic_hydration', descKey: 'topic_desc_hydration' },
 };
+
+/** One accent color per topic so a step reads as "which subject" at a glance, without having to
+ * read the badge text — used at low opacity for the badge background/icon and works in both
+ * light and dark mode since it's blended over the surface rather than a flat fill. */
+export const PLAN_TOPIC_COLOR: Record<string, string> = {
+  'face-structure': '#6366F1',
+  jawmaxing: '#3B82F6',
+  'hunter-eyes': '#06B6D4',
+  skinmaxing: '#14B8A6',
+  'skin-clarity': '#EC4899',
+  posture: '#F97316',
+  bodymaxing: '#22C55E',
+  sleep: '#8B5CF6',
+  hydration: '#0EA5E9',
+};

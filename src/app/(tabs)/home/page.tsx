@@ -11,14 +11,16 @@ import { GuidedSession } from '@/components/GuidedSession';
 import { Pill } from '@/components/Pill';
 import { RingProgress } from '@/components/RingProgress';
 import { Screen } from '@/components/Screen';
-import { METRIC_CONFIG } from '@/data/metricConfig';
+import { TopicIcon } from '@/components/TopicIcon';
+import { LIFESTYLE_METRIC_CONFIG } from '@/data/lifestyleConfig';
+import { METRIC_CONFIG, noteForBand } from '@/data/metricConfig';
 import { getProgram, localizeProgram } from '@/data/programs';
-import { PLAN_TOPIC } from '@/data/planTopics';
+import { PLAN_TOPIC, PLAN_TOPIC_COLOR } from '@/data/planTopics';
 import { addDaysIso, calendarDayOfMonth, daysSinceIso, deltaVsPrior, gradeOf, greeting, shortCalendarDate } from '@/lib/calc';
 import { CoachState, getCoachState } from '@/lib/coach';
 import { requestNotificationPermission } from '@/lib/notifications';
 import { Translator, TranslationKey, useT } from '@/lib/i18n';
-import { DayMoment, inferMoment, MOMENT_ORDER } from '@/lib/timeOfDay';
+import { DayMoment, formatUnlockHour, inferMoment, isMomentUnlocked, MOMENT_ORDER, MOMENT_UNLOCK_HOUR } from '@/lib/timeOfDay';
 import { useAppStore } from '@/state/store';
 
 const MOMENT_LABEL_KEY: Partial<Record<DayMoment, TranslationKey>> = {
@@ -37,6 +39,7 @@ export default function HomePage() {
   const profilePic = useAppStore((s) => s.profilePic);
   const setProfilePic = useAppStore((s) => s.setProfilePic);
   const scans = useAppStore((s) => s.scans);
+  const lifestyle = useAppStore((s) => s.lifestyle);
   const started = useAppStore((s) => s.started);
   const plan = useAppStore((s) => s.plan);
   const language = useAppStore((s) => s.language);
@@ -81,6 +84,19 @@ export default function HomePage() {
         .filter((g): g is NonNullable<typeof g> => !!g)
     : [];
 
+  // The specific detected weak point that got a program into the plan in the first place —
+  // repeated on every one of that program's steps so the reason for doing it is never far away.
+  function reasonForProgram(programId: string): string | null {
+    if (!latest) return null;
+    const candidates = [
+      ...METRIC_CONFIG.filter((m) => m.programId === programId).map((m) => ({ value: latest.m[m.key], noteKeys: m.noteKeys, labelKey: m.labelKey })),
+      ...LIFESTYLE_METRIC_CONFIG.filter((m) => m.programId === programId).map((m) => ({ value: lifestyle[m.key], noteKeys: m.noteKeys, labelKey: m.labelKey })),
+    ];
+    if (!candidates.length) return null;
+    const worst = candidates.reduce((w, c) => (c.value < w.value ? c : w), candidates[0]);
+    return `${t(worst.labelKey)} ${worst.value}/100 — ${noteForBand(worst.noteKeys, worst.value, t)}`;
+  }
+
   const planDayDate = plan && planDay != null ? addDaysIso(plan.startedAt, planDay - 1) : null;
   const planDayDateLabel = planDayDate ? shortCalendarDate(planDayDate, language) : null;
 
@@ -94,13 +110,15 @@ export default function HomePage() {
   // Steps are then grouped into morning / twice-daily / anytime / evening, in that chronological
   // order, instead of an undifferentiated back-to-back sequence — someone can't realistically do
   // 12 unrelated steps in one sitting, so the walk now tells them when each one actually belongs.
+  const currentHour = new Date().getHours();
   const unorderedPlanSteps = planTaskGroups.flatMap((g) => {
     const topic = PLAN_TOPIC[g.sp.id];
     const topicLabel = topic ? t(topic.labelKey) : g.copy.name;
+    const reason = reasonForProgram(g.sp.id);
     return g.wk.tasks.map((task, i) => {
       const enTask = g.enWk.tasks[i] ?? task;
       const moment = inferMoment(enTask);
-      return { programId: g.sp.id, localIndex: i, task, enTask, topicLabel, moment };
+      return { programId: g.sp.id, localIndex: i, task, enTask, topicLabel, moment, reason };
     });
   });
   const flatPlanSteps = MOMENT_ORDER.flatMap((moment) => unorderedPlanSteps.filter((s) => s.moment === moment));
@@ -290,9 +308,16 @@ export default function HomePage() {
               : t('plan_guided_body_tpl').replace('{day}', String(planDay ?? 1))
           }
           welcomeExtra={<PlanTopicsList groups={planTaskGroups} t={t} />}
-          stepTopics={flatPlanSteps.map((s) => {
+          stepTopics={flatPlanSteps.map((s) => (
+            <StepBadge key={`${s.programId}-${s.localIndex}`} programId={s.programId} label={s.topicLabel} momentKey={MOMENT_LABEL_KEY[s.moment]} t={t} />
+          ))}
+          stepReasons={flatPlanSteps.map((s) => s.reason)}
+          stepLocked={flatPlanSteps.map((s) => !isMomentUnlocked(s.moment, currentHour))}
+          stepUnlockLabels={flatPlanSteps.map((s) => {
             const momentKey = MOMENT_LABEL_KEY[s.moment];
-            return momentKey ? `${s.topicLabel} · ${t(momentKey)}` : s.topicLabel;
+            const unlockHour = MOMENT_UNLOCK_HOUR[s.moment];
+            if (!momentKey || unlockHour == null) return '';
+            return t('guided_locked_body_tpl').replace('{moment}', t(momentKey).toLowerCase()).replace('{hour}', formatUnlockHour(unlockHour, language));
           })}
           tasks={flatPlanSteps.map((s) => s.task)}
           enTasks={flatPlanSteps.map((s) => s.enTask)}
@@ -446,9 +471,12 @@ function PlanTopicsList({
       <div className="mb-1 text-center text-[11px] font-semibold tracking-[0.3px] text-soft uppercase">{t('plan_topics_heading')}</div>
       {groups.map((g) => {
         const topic = PLAN_TOPIC[g.sp.id];
+        const color = PLAN_TOPIC_COLOR[g.sp.id] ?? '#8E8E93';
         return (
           <div key={g.sp.id} className="flex items-center gap-2.5 rounded-[14px] bg-fill px-3.5 py-2.5">
-            <span className="h-[6px] w-[6px] shrink-0 rounded-full bg-accent" />
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: `${color}1F` }}>
+              <TopicIcon programId={g.sp.id} size={13} color={color} />
+            </span>
             <div className="text-[14px] leading-[1.3] text-ink">
               <span className="font-semibold">{topic ? t(topic.labelKey) : g.copy.name}</span>
               {topic && <span className="text-soft"> — {t(topic.descKey)}</span>}
@@ -456,6 +484,32 @@ function PlanTopicsList({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function StepBadge({
+  programId,
+  label,
+  momentKey,
+  t,
+}: {
+  programId: string;
+  label: string;
+  momentKey?: TranslationKey;
+  t: Translator;
+}) {
+  const color = PLAN_TOPIC_COLOR[programId] ?? '#8E8E93';
+  return (
+    <div
+      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.2px] uppercase"
+      style={{ backgroundColor: `${color}1F`, color }}
+    >
+      <TopicIcon programId={programId} size={12} color={color} />
+      <span>
+        {label}
+        {momentKey ? ` · ${t(momentKey)}` : ''}
+      </span>
     </div>
   );
 }
