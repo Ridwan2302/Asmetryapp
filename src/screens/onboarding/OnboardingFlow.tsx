@@ -113,6 +113,7 @@ export function OnboardingFlow({ mode }: { mode: 'initial' | 'edit' }) {
           age={parseInt(age, 10) || profile.age}
           height={parseInt(height, 10) || profile.height}
           weight={parseInt(weight, 10) || profile.weight}
+          sex={sex}
           onFinish={finish}
           t={t}
         />
@@ -379,7 +380,7 @@ function LifestyleForm({
   );
 }
 
-function ResultStep({ bmi, age, height, weight, onFinish, t }: { bmi: number; age: number; height: number; weight: number; onFinish: () => void; t: Translator }) {
+function ResultStep({ bmi, age, height, weight, sex, onFinish, t }: { bmi: number; age: number; height: number; weight: number; sex: Sex; onFinish: () => void; t: Translator }) {
   const healthy = bmi > 0 && bmi >= 18.5 && bmi < 25;
   return (
     <div className="flex min-h-dvh flex-col justify-between px-6 pt-[calc(env(safe-area-inset-top)+24px)] pb-10">
@@ -388,7 +389,7 @@ function ResultStep({ bmi, age, height, weight, onFinish, t }: { bmi: number; ag
         <h2 className="mb-5 text-[28px] leading-[1.15] font-bold tracking-[-0.4px] text-ink">{t('baseline_captured')}</h2>
         <div className="flex items-center gap-4 rounded-[24px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
           <div className="relative h-[190px] w-[120px] shrink-0 overflow-hidden rounded-[16px]">
-            <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
+            <Image src={sex === 'F' ? '/images/body-model-female.png' : '/images/body-model.png'} alt="" fill className="object-cover object-top" />
           </div>
           <div className="flex-1">
             <div className="text-[13px] font-medium text-soft">{t('bmi_label')}</div>

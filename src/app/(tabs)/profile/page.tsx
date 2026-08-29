@@ -87,7 +87,7 @@ export default function ProfilePage() {
 
       <div className="mb-8 flex items-center gap-5 rounded-[20px] bg-card p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)]">
         <div className="relative h-[180px] w-[104px] shrink-0 overflow-hidden rounded-[18px]">
-          <Image src="/images/body-model.png" alt="" fill className="object-cover object-top" />
+          <Image src={profile.sex === 'F' ? '/images/body-model-female.png' : '/images/body-model.png'} alt="" fill className="object-cover object-top" />
         </div>
         <div className="flex-1">
           <div className="text-[13px] font-medium text-soft">{t('your_anatomy_model')}</div>
