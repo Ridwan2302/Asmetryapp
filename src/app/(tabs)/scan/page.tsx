@@ -10,6 +10,7 @@ import { getProgram, levelKey, localizeProgram } from '@/data/programs';
 import { dateStr } from '@/lib/calc';
 import { AnalysisResult, analyzeFace, NoFaceDetectedError, preloadFaceModel } from '@/lib/faceAnalysis';
 import { Translator, TranslationKey, useT } from '@/lib/i18n';
+import { syncPushReminders } from '@/lib/push';
 import { playResultChime } from '@/lib/sound';
 import { useAppStore } from '@/state/store';
 
@@ -334,6 +335,7 @@ function ResultView({ captureUrl, result, onDone, t }: { captureUrl: string | nu
       picks.map((m) => m.programId),
       scanId
     );
+    void syncPushReminders();
     onDone();
     router.push('/home');
     // Only ever auto-switches theme on the user's very first scan, as a one-time demonstration

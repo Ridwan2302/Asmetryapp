@@ -6,6 +6,7 @@ import { Screen } from '@/components/Screen';
 import { ASMETRY_PROGRAMS, PROGRAM_SECTIONS, levelKey, localizeProgram, sectionKey } from '@/data/programs';
 import type { AnatomyPlate } from '@/data/programs';
 import { useT } from '@/lib/i18n';
+import { syncPushReminders } from '@/lib/push';
 import { useAppStore } from '@/state/store';
 
 export default function ProgramsPage() {
@@ -49,6 +50,7 @@ export default function ProgramsPage() {
                       onClick={(e) => {
                         e.preventDefault();
                         toggleProgram(p.id);
+                        void syncPushReminders();
                       }}
                       className={`press absolute top-3 right-3 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
                         isActive ? 'bg-accent text-white' : 'bg-white/90 text-[#1d1d1f]'

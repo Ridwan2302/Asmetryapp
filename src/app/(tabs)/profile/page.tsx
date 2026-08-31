@@ -12,6 +12,7 @@ import { TrashIcon } from '@/components/TrashIcon';
 import { bmiOf } from '@/lib/calc';
 import { TranslationKey, useT } from '@/lib/i18n';
 import { requestNotificationPermission } from '@/lib/notifications';
+import { disablePush, syncPushReminders } from '@/lib/push';
 import { stopSpeaking } from '@/lib/speech';
 import { useAppStore } from '@/state/store';
 import { Settings } from '@/state/types';
@@ -131,7 +132,15 @@ export default function ProfilePage() {
             key={row.id}
             onClick={() => {
               toggleSetting(row.id);
-              if (row.id === 'notifications' && !settings.notifications) void requestNotificationPermission();
+              if (row.id === 'notifications') {
+                if (!settings.notifications) {
+                  void requestNotificationPermission().then((granted) => {
+                    if (granted) void syncPushReminders();
+                  });
+                } else {
+                  void disablePush();
+                }
+              }
               if (row.id === 'voice' && settings.voice) stopSpeaking();
             }}
             className="flex w-full items-center justify-between border-b border-border px-4 py-3.5 text-left"

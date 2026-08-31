@@ -19,6 +19,7 @@ import { PLAN_TOPIC, PLAN_TOPIC_COLOR } from '@/data/planTopics';
 import { addDaysIso, calendarDayOfMonth, daysSinceIso, deltaVsPrior, gradeOf, greeting, shortCalendarDate } from '@/lib/calc';
 import { CoachState, getCoachState } from '@/lib/coach';
 import { requestNotificationPermission } from '@/lib/notifications';
+import { syncPushReminders } from '@/lib/push';
 import { Translator, TranslationKey, useT } from '@/lib/i18n';
 import { DayMoment, formatUnlockHour, inferMoment, isMomentUnlocked, MOMENT_ORDER, MOMENT_UNLOCK_HOUR } from '@/lib/timeOfDay';
 import { resolveTaskMoment } from '@/lib/taskMoments';
@@ -177,7 +178,9 @@ export default function HomePage() {
   function handlePlanReminderChange(time: string) {
     if (!plan) return;
     plan.programIds.forEach((id) => setReminder(id, time));
-    void requestNotificationPermission();
+    void requestNotificationPermission().then((granted) => {
+      if (granted) void syncPushReminders();
+    });
   }
 
   return (

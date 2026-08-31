@@ -12,6 +12,7 @@ import { getProgram, levelKey, localizeProgram, sectionKey } from '@/data/progra
 import { tapHaptic } from '@/lib/haptics';
 import { useT } from '@/lib/i18n';
 import { requestNotificationPermission } from '@/lib/notifications';
+import { syncPushReminders } from '@/lib/push';
 import { plateTint } from '@/lib/plateColors';
 import { useAppStore } from '@/state/store';
 
@@ -67,13 +68,21 @@ export function ProgramDetail({ id }: { id: string }) {
 
   function handleReminderChange(time: string) {
     setReminder(program!.id, time);
-    void requestNotificationPermission();
+    void requestNotificationPermission().then((granted) => {
+      if (granted) void syncPushReminders();
+    });
   }
 
   function handleRestart() {
     tapHaptic();
     restartProgram(program!.id);
     setOpenWeekOverride(null);
+  }
+
+  function handleToggleProgram() {
+    tapHaptic();
+    toggleProgram(program!.id);
+    void syncPushReminders();
   }
 
   return (
@@ -241,9 +250,9 @@ export function ProgramDetail({ id }: { id: string }) {
 
       <div className="mt-6">
         {isActive ? (
-          <OutlineButton label={t('stop_program')} onClick={() => toggleProgram(program.id)} />
+          <OutlineButton label={t('stop_program')} onClick={handleToggleProgram} />
         ) : (
-          <PrimaryButton label={t('start_program')} onClick={() => toggleProgram(program.id)} />
+          <PrimaryButton label={t('start_program')} onClick={handleToggleProgram} />
         )}
       </div>
 
