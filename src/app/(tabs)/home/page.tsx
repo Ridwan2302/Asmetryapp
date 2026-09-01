@@ -11,7 +11,6 @@ import { GuidedSession } from '@/components/GuidedSession';
 import { Pill } from '@/components/Pill';
 import { RingProgress } from '@/components/RingProgress';
 import { Screen } from '@/components/Screen';
-import { TopicIcon } from '@/components/TopicIcon';
 import { LIFESTYLE_METRIC_CONFIG } from '@/data/lifestyleConfig';
 import { METRIC_CONFIG, noteForBand } from '@/data/metricConfig';
 import { getProgram, localizeProgram } from '@/data/programs';
@@ -478,9 +477,7 @@ function PlanTopicsList({
         const color = PLAN_TOPIC_COLOR[g.sp.id] ?? '#8E8E93';
         return (
           <div key={g.sp.id} className="flex items-center gap-2.5 rounded-[14px] bg-fill px-3.5 py-2.5">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: `${color}1F` }}>
-              <TopicIcon programId={g.sp.id} size={13} color={color} />
-            </span>
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
             <div className="text-[14px] leading-[1.3] text-ink">
               <span className="font-semibold">{topic ? t(topic.labelKey) : g.copy.name}</span>
               {topic && <span className="text-soft"> — {t(topic.descKey)}</span>}
@@ -509,7 +506,6 @@ function StepBadge({
       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.2px] uppercase"
       style={{ backgroundColor: `${color}1F`, color }}
     >
-      <TopicIcon programId={programId} size={12} color={color} />
       <span>
         {label}
         {momentKey ? ` · ${t(momentKey)}` : ''}
